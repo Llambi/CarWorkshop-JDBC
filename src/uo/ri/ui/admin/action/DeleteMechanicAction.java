@@ -1,16 +1,13 @@
 package uo.ri.ui.admin.action;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import alb.util.console.Console;
-import alb.util.jdbc.Jdbc;
 import alb.util.menu.Action;
+import uo.ri.business.MechanicCRUDService;
 import uo.ri.business.dto.MechanicDto;
-import uo.ri.business.mechanic.DeleteMechanic;
+import uo.ri.business.impl.MechanicCRUDImpl;
+import uo.ri.business.impl.mechanic.DeleteMechanic;
 import uo.ri.common.BusinessException;
+import uo.ri.conf.ServiceFactory;
 
 public class DeleteMechanicAction implements Action {
 
@@ -21,8 +18,7 @@ public class DeleteMechanicAction implements Action {
         MechanicDto mechanic = new MechanicDto();
         mechanic.id = Console.readLong("Id de mecánico");
 
-        DeleteMechanic deleteMechanic = new DeleteMechanic(mechanic);
-        deleteMechanic.execute();
+        new ServiceFactory().getMechanicCRUDService().deleteMechanic(mechanic);
 
         Console.println("Se ha eliminado el mecánico");
     }

@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class Dates {
 
 	public static Date fromString(String string) {
-		String dateString[] = string.split("/");
+		String dateString[] = string.split("-");
 		
 		return Dates.fromDdMmYyyy(
 				Integer.parseInt(dateString[0]), 

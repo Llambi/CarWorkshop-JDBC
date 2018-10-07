@@ -1,8 +1,8 @@
-package uo.ri.business.mechanic;
+package uo.ri.business.impl.mechanic;
 
 import alb.util.jdbc.Jdbc;
-import alb.util.menu.Action;
 import uo.ri.business.dto.MechanicDto;
+import uo.ri.conf.Conf;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DeleteMechanic {
-    private static String SQL = "delete from TMecanicos where id = ?";
     private MechanicDto mechanic;
 
     public DeleteMechanic(MechanicDto mechanic) {
@@ -25,7 +24,7 @@ public class DeleteMechanic {
         try {
             c = Jdbc.getConnection();
 
-            pst = c.prepareStatement(SQL);
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_DELETE_MECHANIC"));
             pst.setLong(1, mechanic.id);
 
             pst.executeUpdate();

@@ -1,18 +1,16 @@
-package uo.ri.business.mechanic;
+package uo.ri.business.impl.mechanic;
 
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.MechanicDto;
+import uo.ri.conf.Conf;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
-import java.util.List;
 
 public class ListMechanics {
-
-    private static String SQL = "select id, dni, nombre, apellidos from TMecanicos";
 
     public LinkedList<MechanicDto> execute() {
         Connection c = null;
@@ -23,7 +21,7 @@ public class ListMechanics {
         try {
             c = Jdbc.getConnection();
 
-            pst = c.prepareStatement(SQL);
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_ALL_MECHANICS"));
 
             rs = pst.executeQuery();
             while (rs.next()) {

@@ -1,26 +1,22 @@
-package uo.ri.business.mechanic;
+package uo.ri.business.impl.mechanic;
 
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.MechanicDto;
+import uo.ri.conf.Conf;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UpdateMechanic {
-
-    private static String SQL =
-            "update TMecanicos " +
-                    "set nombre = ?, apellidos = ? " +
-                    "where id = ?";
+public class AddMechanic {
     private MechanicDto mechanic;
 
-    public UpdateMechanic(MechanicDto mechanic) {
+    public AddMechanic(MechanicDto mechanic) {
         this.mechanic = mechanic;
     }
 
-    public void execute(){
+    public void execute() {
         // Procesar
         Connection c = null;
         PreparedStatement pst = null;
@@ -29,17 +25,16 @@ public class UpdateMechanic {
         try {
             c = Jdbc.getConnection();
 
-            pst = c.prepareStatement(SQL);
-            pst.setString(1, mechanic.name);
-            pst.setString(2, mechanic.surname);
-            pst.setLong(3, mechanic.id);
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_ADD_MECHANIC"));
+            pst.setString(1, mechanic.dni);
+            pst.setString(2, mechanic.name);
+            pst.setString(3, mechanic.surname);
 
             pst.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
-        finally {
+        } finally {
             Jdbc.close(rs, pst, c);
         }
     }

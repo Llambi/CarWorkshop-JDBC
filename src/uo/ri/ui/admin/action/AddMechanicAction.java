@@ -1,16 +1,13 @@
 package uo.ri.ui.admin.action;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import alb.util.console.Console;
-import alb.util.jdbc.Jdbc;
 import alb.util.menu.Action;
+import uo.ri.business.MechanicCRUDService;
 import uo.ri.business.dto.MechanicDto;
-import uo.ri.business.mechanic.AddMechanic;
+import uo.ri.business.impl.MechanicCRUDImpl;
+import uo.ri.business.impl.mechanic.AddMechanic;
 import uo.ri.common.BusinessException;
+import uo.ri.conf.ServiceFactory;
 
 public class AddMechanicAction implements Action {
 
@@ -25,8 +22,7 @@ public class AddMechanicAction implements Action {
         mechanicDto.name = Console.readString("Nombre");
         mechanicDto.surname = Console.readString("Apellidos");
 
-        AddMechanic addMechanic = new AddMechanic(mechanicDto);
-        addMechanic.execute();
+        new ServiceFactory().getMechanicCRUDService().addMechanic(mechanicDto);
 
         // Mostrar resultado
         Console.println("Nuevo mecánico añadido");
