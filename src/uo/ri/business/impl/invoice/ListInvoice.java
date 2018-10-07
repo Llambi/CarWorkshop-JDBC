@@ -11,13 +11,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UpdateInvoice {
+public class ListInvoice {
 
     private Connection connection;
-    private InvoiceDto invoice;
+    private Long number;
 
-    public UpdateInvoice(InvoiceDto invoice) {
-        this.invoice = invoice;
+    public ListInvoice(Long number) {
+        this.number = number;
     }
 
     public InvoiceDto execute() throws BusinessException {
@@ -28,7 +28,7 @@ public class UpdateInvoice {
             connection = Jdbc.getConnection();
             connection.setAutoCommit(false);
 
-            invoice = verificarFacturaNoAbonada(this.invoice);
+            invoice = verificarFacturaNoAbonada(this.number);
 
             connection.commit();
 
@@ -45,19 +45,19 @@ public class UpdateInvoice {
         return invoice;
     }
 
-    private InvoiceDto verificarFacturaNoAbonada(InvoiceDto invoice) throws SQLException, BusinessException {
+    private InvoiceDto verificarFacturaNoAbonada(Long number) throws SQLException, BusinessException {
         PreparedStatement pst = null;
         ResultSet rs = null;
         InvoiceDto resultInvoice;
         try {
 
             pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_INVOICE"));
-            pst.setLong(1, invoice.number);
+            pst.setLong(1, number);
 
             rs = pst.executeQuery();
 
             if (!rs.next()) {
-                throw new BusinessException("No existe la factura con numero: " + invoice.number);
+                throw new BusinessException("No existe la factura con numero: " + number);
             }
 
             resultInvoice = new InvoiceDto();
