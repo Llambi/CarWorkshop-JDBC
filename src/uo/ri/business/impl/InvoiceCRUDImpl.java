@@ -7,10 +7,11 @@ import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.impl.invoice.CreateInvoice;
 import uo.ri.business.impl.invoice.ListInvoice;
 import uo.ri.business.impl.invoice.ReadInvoice;
-import uo.ri.business.impl.paymentMean.FindClientPaymentMean;
+import uo.ri.business.impl.invoice.UpdateInvoice;
 import uo.ri.common.BusinessException;
 
 import java.util.List;
+import java.util.Map;
 
 public class InvoiceCRUDImpl implements InvoiceCRUDService {
     @Override
@@ -29,7 +30,9 @@ public class InvoiceCRUDImpl implements InvoiceCRUDService {
     }
 
     @Override
-    public List<PaymentMeanDto> findClientPaymentMean(InvoiceDto invoice) throws BusinessException {
-        return new FindClientPaymentMean(invoice).execute();
+    public double checkTotalInvoice(InvoiceDto invoice, Map<Integer, PaymentMeanDto> formatoPagos, List<PaymentMeanDto> mediosPago) throws BusinessException {
+        return new UpdateInvoice(invoice, formatoPagos, mediosPago).execute();
     }
+
+
 }

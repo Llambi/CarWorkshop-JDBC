@@ -6,6 +6,7 @@ import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.common.BusinessException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface InvoiceCRUDService {
 
@@ -15,6 +16,6 @@ public interface InvoiceCRUDService {
 
     InvoiceDto ListInvoice(Long number) throws BusinessException;
 
-    List<PaymentMeanDto> findClientPaymentMean(InvoiceDto invoice) throws BusinessException;
+    double checkTotalInvoice(InvoiceDto invoice, Map<Integer, PaymentMeanDto> formatoPagos, List<PaymentMeanDto> mediosPago) throws BusinessException;
 
 }
