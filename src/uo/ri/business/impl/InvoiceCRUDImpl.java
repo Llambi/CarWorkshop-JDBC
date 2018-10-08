@@ -3,11 +3,15 @@ package uo.ri.business.impl;
 import uo.ri.business.InvoiceCRUDService;
 import uo.ri.business.dto.BreakdownDto;
 import uo.ri.business.dto.InvoiceDto;
+import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.impl.invoice.CreateInvoice;
+import uo.ri.business.impl.invoice.ListInvoice;
 import uo.ri.business.impl.invoice.ReadInvoice;
+import uo.ri.business.impl.invoice.UpdateInvoice;
 import uo.ri.common.BusinessException;
 
 import java.util.List;
+import java.util.Map;
 
 public class InvoiceCRUDImpl implements InvoiceCRUDService {
     @Override
@@ -19,4 +23,16 @@ public class InvoiceCRUDImpl implements InvoiceCRUDService {
     public List<BreakdownDto> readInvoice(Long id) {
         return new ReadInvoice(id).execute();
     }
+
+    @Override
+    public InvoiceDto ListInvoice(Long number) throws BusinessException {
+        return new ListInvoice(number).execute();
+    }
+
+    @Override
+    public double checkTotalInvoice(InvoiceDto invoice, Map<Integer, PaymentMeanDto> formatoPagos, List<PaymentMeanDto> mediosPago) throws BusinessException {
+        return new UpdateInvoice(invoice, formatoPagos, mediosPago).execute();
+    }
+
+
 }
