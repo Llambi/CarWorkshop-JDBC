@@ -1,4 +1,4 @@
-package uo.ri.business.impl.invoice;
+package uo.ri.business.impl.transactionScript.invoice;
 
 import alb.util.date.Dates;
 import alb.util.jdbc.Jdbc;

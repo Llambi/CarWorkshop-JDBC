@@ -1,10 +1,10 @@
-package uo.ri.business.impl.invoice;
+package uo.ri.business.impl.transactionScript.invoice;
 
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.PaymentMeanCRUDService;
 import uo.ri.business.dto.*;
 import uo.ri.business.impl.PaymentMeanCRUDImpl;
-import uo.ri.common.BusinessException;
+import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.Conf;
 
 import java.sql.Connection;

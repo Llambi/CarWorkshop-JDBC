@@ -1,11 +1,15 @@
-package uo.ri.business.impl.invoice;
+package uo.ri.business.impl.transactionScript.invoice;
 
 import alb.util.date.Dates;
 import alb.util.jdbc.Jdbc;
 import alb.util.math.Round;
+import uo.ri.business.dto.BreakdownDto;
 import uo.ri.business.dto.InvoiceDto;
-import uo.ri.common.BusinessException;
+import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.Conf;
+import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.BreakdownGateway;
+import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,7 +31,7 @@ public class CreateInvoice {
         InvoiceDto invoice = new InvoiceDto();
 
         try {
-            connection = Jdbc.getConnection();
+            connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
             verificarAveriasTerminadas(ids);
@@ -63,87 +67,60 @@ public class CreateInvoice {
         return invoice;
     }
 
-    private void verificarAveriasTerminadas(List<Long> ids) throws SQLException, BusinessException {
+    private void verificarAveriasTerminadas(List<Long> ids) throws BusinessException {
         PreparedStatement pst = null;
         ResultSet rs = null;
+        BreakdownGateway breakdownGateway = GatewayFactory.getBreakdownGateway();
+        for (Long id : ids) {
+            BreakdownDto breakdown = null;
 
-        try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_VERIFICAR_ESTADO_AVERIA"));
-
-            for (Long id : ids) {
-                pst.setLong(1, id);
-
-                rs = pst.executeQuery();
-                if (!rs.next()) {
-                    throw new BusinessException("No existe la averia " + id);
-                }
-
-                String status = rs.getString(1);
-                if (!"TERMINADA".equalsIgnoreCase(status)) {
-                    throw new BusinessException("No está terminada la avería " + id);
-                }
-
-                rs.close();
+            try {
+                breakdown = breakdownGateway.findBreakdown(id);
+            } catch (PersistanceException e) {
+                throw new BusinessException("No existe la averia:\n\t" + e.getStackTrace());
             }
-        } finally {
-            Jdbc.close(rs, pst);
+
+            if (!"TERMINADA".equalsIgnoreCase(breakdown.status)) {
+                throw new BusinessException("No está terminada la avería " + id);
+            }
+        }
+
+
+    }
+
+    private void cambiarEstadoAverias(List<Long> ids) throws BusinessException {
+
+        for (Long id : ids) {
+            try {
+                GatewayFactory.getBreakdownGateway().updateBreakdown(id,"status", "FACTURADA");
+            } catch (PersistanceException e) {
+                throw new BusinessException("Averia no actualizada:\n\t" + e.getStackTrace());
+            }
         }
 
     }
 
-    private void cambiarEstadoAverias(List<Long> ids) throws SQLException {
+    private void vincularAveriasConFactura(long idFactura, List<Long> ids) throws BusinessException {
 
-        PreparedStatement pst = null;
-        try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_ACTUALIZAR_ESTADO_AVERIA"));
-
-            for (Long id : ids) {
-                pst.setString(1, "FACTURADA");
-                pst.setLong(2, id);
-
-                pst.executeUpdate();
+        for (Long id : ids){
+            try {
+                GatewayFactory.getBreakdownGateway().updateBreakdown(id,"factura_id",idFactura);
+            } catch (PersistanceException e) {
+                throw new BusinessException("Averia no vinculada:\n\t" + e.getStackTrace());
             }
-        } finally {
-            Jdbc.close(pst);
         }
     }
 
-    private void vincularAveriasConFactura(long idFactura, List<Long> ids) throws SQLException {
-
-        PreparedStatement pst = null;
+    private long crearFactura(InvoiceDto invoice) throws BusinessException, SQLException {
+        Long numero = null;
         try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_VINCULAR_AVERIA_FACTURA"));
-
-            for (Long id : ids) {
-                pst.setLong(1, idFactura);
-                pst.setLong(2, id);
-
-                pst.executeUpdate();
-            }
-        } finally {
-            Jdbc.close(pst);
+            numero= getGeneratedKey(GatewayFactory.getInvoiceGateway().createInvoice(invoice).number);
+        } catch (BusinessException e) {
+            e.printStackTrace();
+        } catch (PersistanceException e) {
+            throw new BusinessException("Factura no creada:\n\t"+e.getStackTrace());
         }
-    }
-
-    private long crearFactura(InvoiceDto invoice) throws SQLException {
-
-        PreparedStatement pst = null;
-
-        try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_INSERTAR_FACTURA"));
-            pst.setLong(1, invoice.number);
-            pst.setDate(2, new java.sql.Date(invoice.date.getTime()));
-            pst.setDouble(3, invoice.vat);
-            pst.setDouble(4, invoice.total);
-            pst.setString(5, "SIN_ABONAR");
-
-            pst.executeUpdate();
-
-            return getGeneratedKey(invoice.number); // Id de la nueva factura generada
-
-        } finally {
-            Jdbc.close(pst);
-        }
+    return numero;
     }
 
     private long getGeneratedKey(long numeroFactura) throws SQLException {

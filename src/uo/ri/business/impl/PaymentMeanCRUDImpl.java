@@ -4,9 +4,9 @@ import uo.ri.business.PaymentMeanCRUDService;
 import uo.ri.business.dto.InvoiceDto;
 import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.dto.VoucherDto;
-import uo.ri.business.impl.paymentMean.FindClientPaymentMean;
-import uo.ri.business.impl.paymentMean.updatePaymentMean;
-import uo.ri.common.BusinessException;
+import uo.ri.business.impl.transactionScript.paymentMean.FindClientPaymentMean;
+import uo.ri.business.impl.transactionScript.paymentMean.updatePaymentMean;
+import uo.ri.business.exception.BusinessException;
 
 import java.sql.Connection;
 import java.util.List;

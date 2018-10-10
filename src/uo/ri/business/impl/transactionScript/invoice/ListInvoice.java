@@ -1,9 +1,9 @@
-package uo.ri.business.impl.invoice;
+package uo.ri.business.impl.transactionScript.invoice;
 
 import alb.util.date.Dates;
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.InvoiceDto;
-import uo.ri.common.BusinessException;
+import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.Conf;
 
 import java.sql.Connection;

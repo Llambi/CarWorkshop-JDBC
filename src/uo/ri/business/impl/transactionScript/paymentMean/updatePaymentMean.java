@@ -1,4 +1,4 @@
-package uo.ri.business.impl.paymentMean;
+package uo.ri.business.impl.transactionScript.paymentMean;
 
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.PaymentMeanDto;
