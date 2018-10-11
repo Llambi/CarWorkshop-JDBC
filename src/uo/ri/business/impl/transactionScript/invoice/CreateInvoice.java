@@ -11,6 +11,7 @@ import uo.ri.conf.GatewayFactory;
 import uo.ri.persistence.BreakdownGateway;
 import uo.ri.persistence.exception.PersistanceException;
 
+import java.lang.reflect.GenericArrayType;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -92,7 +93,7 @@ public class CreateInvoice {
 
         for (Long id : ids) {
             try {
-                GatewayFactory.getBreakdownGateway().updateBreakdown(id,"status", "FACTURADA");
+                GatewayFactory.getBreakdownGateway().updateBreakdown(id, "status", "FACTURADA");
             } catch (PersistanceException e) {
                 throw new BusinessException("Averia no actualizada:\n\t" + e.getStackTrace());
             }
@@ -102,60 +103,42 @@ public class CreateInvoice {
 
     private void vincularAveriasConFactura(long idFactura, List<Long> ids) throws BusinessException {
 
-        for (Long id : ids){
+        for (Long id : ids) {
             try {
-                GatewayFactory.getBreakdownGateway().updateBreakdown(id,"factura_id",idFactura);
+                GatewayFactory.getBreakdownGateway().updateBreakdown(id, "factura_id", idFactura);
             } catch (PersistanceException e) {
                 throw new BusinessException("Averia no vinculada:\n\t" + e.getStackTrace());
             }
         }
     }
 
-    private long crearFactura(InvoiceDto invoice) throws BusinessException, SQLException {
+    private long crearFactura(InvoiceDto invoice) throws BusinessException {
         Long numero = null;
         try {
-            numero= getGeneratedKey(GatewayFactory.getInvoiceGateway().createInvoice(invoice).number);
-        } catch (BusinessException e) {
-            e.printStackTrace();
+            numero = getGeneratedKey(GatewayFactory.getInvoiceGateway().createInvoice(invoice).number);
         } catch (PersistanceException e) {
-            throw new BusinessException("Factura no creada:\n\t"+e.getStackTrace());
+            throw new BusinessException("Factura no creada:\n\t" + e.getStackTrace());
         }
-    return numero;
+        return numero;
     }
 
-    private long getGeneratedKey(long numeroFactura) throws SQLException {
-        PreparedStatement pst = null;
-        ResultSet rs = null;
+    private long getGeneratedKey(long numeroFactura) throws BusinessException {
 
         try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_RECUPERAR_CLAVE_GENERADA"));
-            pst.setLong(1, numeroFactura);
-            rs = pst.executeQuery();
-            rs.next();
-
-            return rs.getLong(1);
-
-        } finally {
-            Jdbc.close(rs, pst);
+            return GatewayFactory.getInvoiceGateway().ListInvoice(numeroFactura).id;
+        } catch (PersistanceException e) {
+            throw new BusinessException("Clave no generada:\n\t" + e.getStackTrace());
         }
+
     }
 
-    private Long generarNuevoNumeroFactura() throws SQLException {
-        PreparedStatement pst = null;
-        ResultSet rs = null;
-
+    private Long generarNuevoNumeroFactura() throws BusinessException {
         try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_ULTIMO_NUMERO_FACTURA"));
-            rs = pst.executeQuery();
-
-            if (rs.next()) {
-                return rs.getLong(1) + 1; // +1, el siguiente
-            } else {  // todavía no hay ninguna
-                return 1L;
-            }
-        } finally {
-            Jdbc.close(rs, pst);
+            return GatewayFactory.getInvoiceGateway().ListLastInvoice();
+        } catch (PersistanceException e) {
+            throw new BusinessException("Error al generar un nuevo numero de factura:\n\t" + e.getStackTrace());
         }
+
     }
 
     private double porcentajeIva(Date fechaFactura) {
@@ -178,56 +161,32 @@ public class CreateInvoice {
         return totalFactura;
     }
 
-    private void actualizarImporteAveria(Long idAveria, double totalAveria) throws SQLException {
-        PreparedStatement pst = null;
+    private void actualizarImporteAveria(Long idAveria, double totalAveria) throws BusinessException {
 
         try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_IMPORTE_AVERIA"));
-            pst.setDouble(1, totalAveria);
-            pst.setLong(2, idAveria);
-            pst.executeUpdate();
-        } finally {
-            Jdbc.close(pst);
+            GatewayFactory.getBreakdownGateway().updateBreakdown(idAveria, "importe", totalAveria);
+        } catch (PersistanceException e) {
+            throw new BusinessException("No se ha actualizado el importe de la averia:\n\t"+ e.getStackTrace());
         }
+
     }
 
-    private double consultaImporteRepuestos(Long idAveria) throws SQLException {
-        PreparedStatement pst = null;
-        ResultSet rs = null;
+    private double consultaImporteRepuestos(Long idAveria) throws BusinessException {
 
         try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_IMPORTE_REPUESTOS"));
-            pst.setLong(1, idAveria);
-
-            rs = pst.executeQuery();
-            if (!rs.next()) {
-                return 0.0; // La averia puede no tener repuestos
-            }
-
-            return rs.getDouble(1);
-
-        } finally {
-            Jdbc.close(rs, pst);
+            return GatewayFactory.getSpareGateway().getSpareTotalImport(idAveria);
+        } catch (PersistanceException e) {
+            throw new BusinessException("Error en el calculo del importe de los repuestos:\n\t"+e.getStackTrace());
         }
+
     }
 
-    private double consultaImporteManoObra(Long idAveria) throws BusinessException, SQLException {
-        PreparedStatement pst = null;
-        ResultSet rs = null;
+    private double consultaImporteManoObra(Long idAveria) throws BusinessException {
 
         try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_IMPORTE_MANO_OBRA"));
-            pst.setLong(1, idAveria);
-
-            rs = pst.executeQuery();
-            if (!rs.next()) {
-                throw new BusinessException("La averia no existe o no se puede facturar");
-            }
-
-            return rs.getDouble(1);
-
-        } finally {
-            Jdbc.close(rs, pst);
+            return GatewayFactory.getInterventionGateway().getManPowerTotalImport(idAveria);
+        } catch (PersistanceException e) {
+            throw new BusinessException("Error en el calculo del importe de la mano de obra:\n\t"+e.getStackTrace());
         }
 
     }

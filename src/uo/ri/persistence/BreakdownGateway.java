@@ -10,5 +10,6 @@ public interface BreakdownGateway {
     BreakdownDto findBreakdown(long id) throws PersistanceException;
     void updateBreakdown(Long id,String column, String status) throws PersistanceException;
     void updateBreakdown(Long id,String column, Long status) throws PersistanceException;
+    void updateBreakdown(Long id,String column, Double status) throws PersistanceException;
 
 }

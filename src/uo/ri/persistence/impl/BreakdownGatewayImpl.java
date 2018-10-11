@@ -85,4 +85,23 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
         }
     }
 
+    @Override
+    public void updateBreakdown(Long id, String column, Double status) throws PersistanceException {
+        PreparedStatement pst = null;
+        try {
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_ACTUALIZAR_ESTADO_AVERIA_GENERICO"));
+
+            pst.setString(1, column);
+            pst.setDouble(2, status);
+            pst.setLong(3, id);
+
+            pst.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new PersistanceException("No se ha actualizado la averia: \n\t" + e.getStackTrace());
+        } finally {
+            Jdbc.close(pst);
+        }
+    }
+
 }
