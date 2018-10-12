@@ -1,5 +1,6 @@
 package uo.ri.persistence.impl;
 
+import alb.util.date.Dates;
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.BreakdownDto;
 import uo.ri.conf.Conf;
@@ -9,6 +10,8 @@ import uo.ri.persistence.exception.PersistanceException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class BreakdownGatewayImpl implements BreakdownGateway {
     @Override
@@ -101,6 +104,38 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
             throw new PersistanceException("No se ha actualizado la averia: \n\t" + e.getStackTrace());
         } finally {
             Jdbc.close(pst);
+        }
+    }
+
+    @Override
+    public List<BreakdownDto> findUninvoicedBreakdown(Long id) throws PersistanceException {
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        try {
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_AVERIAS_NO_FACTURADAS_CLIENTE"));
+
+            pst.setLong(1, id);
+
+            rs = pst.executeQuery();
+
+            List<BreakdownDto> breakdowns = new LinkedList<>();
+            while (rs.next()) {
+                BreakdownDto breakdown = new BreakdownDto();
+                breakdown.id = rs.getLong(1);
+                breakdown.date = Dates.fromString(rs.getString(2));
+                breakdown.status = rs.getString(3);
+                breakdown.total = Double.parseDouble(rs.getString(4));
+                breakdown.description = rs.getString(5);
+
+                breakdowns.add(breakdown);
+            }
+
+            return breakdowns;
+
+        } catch (SQLException e) {
+            throw new PersistanceException("Error al recuperar averias si facturar:\n\t"+e.getStackTrace());
+        } finally {
+            Jdbc.close(rs, pst);
         }
     }
 

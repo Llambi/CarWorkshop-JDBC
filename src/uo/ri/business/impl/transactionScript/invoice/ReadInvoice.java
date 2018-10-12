@@ -3,7 +3,10 @@ package uo.ri.business.impl.transactionScript.invoice;
 import alb.util.date.Dates;
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.BreakdownDto;
+import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.Conf;
+import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,12 +24,12 @@ public class ReadInvoice {
         this.id = id;
     }
 
-    public List<BreakdownDto> execute() {
+    public List<BreakdownDto> execute() throws BusinessException {
 
         List<BreakdownDto> breakdowns = null;
 
         try {
-            connection = Jdbc.getConnection();
+            connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
             breakdowns = obtenerAveriasNoFacturadas(id);
@@ -46,35 +49,14 @@ public class ReadInvoice {
         return breakdowns;
     }
 
-    private List<BreakdownDto> obtenerAveriasNoFacturadas(Long id) {
-        PreparedStatement pst = null;
-        ResultSet rs = null;
+    private List<BreakdownDto> obtenerAveriasNoFacturadas(Long id) throws BusinessException {
+
         try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_AVERIAS_NO_FACTURADAS_CLIENTE"));
-
-            pst.setLong(1, id);
-
-            rs = pst.executeQuery();
-
-            List<BreakdownDto> breakdowns = new LinkedList<>();
-            while (rs.next()) {
-                BreakdownDto breakdown = new BreakdownDto();
-                breakdown.id = rs.getLong(1);
-                breakdown.date = Dates.fromString(rs.getString(2));
-                breakdown.status = rs.getString(3);
-                breakdown.total = Double.parseDouble(rs.getString(4));
-                breakdown.description = rs.getString(5);
-
-                breakdowns.add(breakdown);
-            }
-
-            return breakdowns;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            Jdbc.close(rs, pst);
+            return GatewayFactory.getBreakdownGateway().findUninvoicedBreakdown(id);
+        } catch (PersistanceException e) {
+            throw new BusinessException("Fallo al recuperar las averias no facturadas:\n\t"+e.getStackTrace());
         }
+
     }
 }
 
