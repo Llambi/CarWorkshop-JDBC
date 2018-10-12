@@ -4,11 +4,11 @@ import uo.ri.business.InvoiceCRUDService;
 import uo.ri.business.dto.BreakdownDto;
 import uo.ri.business.dto.InvoiceDto;
 import uo.ri.business.dto.PaymentMeanDto;
-import uo.ri.business.impl.invoice.CreateInvoice;
-import uo.ri.business.impl.invoice.ListInvoice;
-import uo.ri.business.impl.invoice.ReadInvoice;
-import uo.ri.business.impl.invoice.UpdateInvoice;
-import uo.ri.common.BusinessException;
+import uo.ri.business.impl.transactionScript.invoice.CreateInvoice;
+import uo.ri.business.impl.transactionScript.invoice.ListInvoice;
+import uo.ri.business.impl.transactionScript.invoice.ReadInvoice;
+import uo.ri.business.impl.transactionScript.invoice.UpdateInvoice;
+import uo.ri.business.exception.BusinessException;
 
 import java.util.List;
 import java.util.Map;

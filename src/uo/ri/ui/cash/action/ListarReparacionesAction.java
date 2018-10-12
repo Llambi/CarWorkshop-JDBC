@@ -3,11 +3,7 @@ package uo.ri.ui.cash.action;
 import alb.util.console.Console;
 import alb.util.date.Dates;
 import alb.util.menu.Action;
-import uo.ri.business.InvoiceCRUDService;
 import uo.ri.business.dto.BreakdownDto;
-import uo.ri.business.dto.ClientDto;
-import uo.ri.business.impl.InvoiceCRUDImpl;
-import uo.ri.business.impl.invoice.ReadInvoice;
 import uo.ri.conf.ServiceFactory;
 
 import java.util.List;

@@ -5,7 +5,7 @@ import alb.util.date.Dates;
 import alb.util.menu.Action;
 import uo.ri.business.InvoiceCRUDService;
 import uo.ri.business.dto.*;
-import uo.ri.common.BusinessException;
+import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.ServiceFactory;
 import uo.ri.ui.util.Printer;
 

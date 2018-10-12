@@ -4,9 +4,9 @@ import uo.ri.business.PaymentMeanCRUDService;
 import uo.ri.business.dto.InvoiceDto;
 import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.dto.VoucherDto;
-import uo.ri.business.impl.paymentMean.FindClientPaymentMean;
-import uo.ri.business.impl.paymentMean.updatePaymentMean;
-import uo.ri.common.BusinessException;
+import uo.ri.business.impl.transactionScript.paymentMean.FindClientPaymentMean;
+import uo.ri.business.impl.transactionScript.paymentMean.updatePaymentMean;
+import uo.ri.business.exception.BusinessException;
 
 import java.sql.Connection;
 import java.util.List;
@@ -18,12 +18,12 @@ public class PaymentMeanCRUDImpl implements PaymentMeanCRUDService {
     }
 
     @Override
-    public void updatePaymentMean(Connection connection, PaymentMeanDto paymentMean) {
-        new updatePaymentMean(connection, paymentMean).execute();
+    public void updatePaymentMean(PaymentMeanDto paymentMean) {
+        new updatePaymentMean(paymentMean).execute();
     }
 
     @Override
-    public void updatePaymentMean(Connection connection, VoucherDto paymentMean) {
-        new updatePaymentMean(connection, paymentMean).execute();
+    public void updatePaymentMean(VoucherDto paymentMean) {
+        new updatePaymentMean(paymentMean).execute();
     }
 }

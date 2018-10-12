@@ -1,4 +1,4 @@
-package uo.ri.common;
+package uo.ri.business.exception;
 
 public class BusinessException extends Exception {
 	private static final long serialVersionUID = -308694287126038961L;

@@ -9,15 +9,15 @@ import uo.ri.business.impl.PaymentMeanCRUDImpl;
 
 public class ServiceFactory {
 
-    public MechanicCRUDService getMechanicCRUDService() {
+    public static MechanicCRUDService getMechanicCRUDService() {
         return new MechanicCRUDImpl();
     }
 
-    public InvoiceCRUDService getInvoiceCRUDService() {
+    public static InvoiceCRUDService getInvoiceCRUDService() {
         return new InvoiceCRUDImpl();
     }
 
-    public PaymentMeanCRUDService getPaymentMeanCRUDService(){
+    public static PaymentMeanCRUDService getPaymentMeanCRUDService(){
         return new PaymentMeanCRUDImpl();
     }
 }

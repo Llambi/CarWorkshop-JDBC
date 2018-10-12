@@ -2,10 +2,10 @@ package uo.ri.business.impl;
 
 import uo.ri.business.MechanicCRUDService;
 import uo.ri.business.dto.MechanicDto;
-import uo.ri.business.impl.mechanic.AddMechanic;
-import uo.ri.business.impl.mechanic.DeleteMechanic;
-import uo.ri.business.impl.mechanic.ListMechanics;
-import uo.ri.business.impl.mechanic.UpdateMechanic;
+import uo.ri.business.impl.transactionScript.mechanic.AddMechanic;
+import uo.ri.business.impl.transactionScript.mechanic.DeleteMechanic;
+import uo.ri.business.impl.transactionScript.mechanic.ListMechanics;
+import uo.ri.business.impl.transactionScript.mechanic.UpdateMechanic;
 
 import java.util.List;
 
