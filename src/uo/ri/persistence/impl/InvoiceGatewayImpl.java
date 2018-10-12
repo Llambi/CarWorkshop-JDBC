@@ -1,5 +1,6 @@
 package uo.ri.persistence.impl;
 
+import alb.util.date.Dates;
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.BreakdownDto;
 import uo.ri.business.dto.InvoiceDto;
@@ -48,21 +49,31 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
     public InvoiceDto ListInvoice(Long number) throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
-        InvoiceDto invoice = new InvoiceDto();
+        InvoiceDto resultInvoice = new InvoiceDto();
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_RECUPERAR_CLAVE_GENERADA"));
-            pst.setLong(1, number);
-            rs = pst.executeQuery();
-            rs.next();
 
-            invoice.id = rs.getLong(1);
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_INVOICE"));
+            pst.setLong(1, number);
+
+            rs = pst.executeQuery();
+
+            if (!rs.next()) {
+                throw new PersistanceException("No existe la factura con numero: " + number);
+            }
+
+            resultInvoice.id = rs.getLong(1);
+            resultInvoice.date = Dates.fromString(rs.getString(2));
+            resultInvoice.total = rs.getLong(3);
+            resultInvoice.vat = rs.getLong(4);
+            resultInvoice.number = rs.getLong(5);
+            resultInvoice.status = rs.getString(6);
 
         } catch (SQLException e) {
-            throw new PersistanceException("Factura no existe:\n\t"+e.getStackTrace());
+            throw new PersistanceException("Error al recuperar la factura:"+e.getStackTrace());
         } finally {
             Jdbc.close(rs, pst);
         }
-        return invoice;
+        return resultInvoice;
     }
 
     @Override

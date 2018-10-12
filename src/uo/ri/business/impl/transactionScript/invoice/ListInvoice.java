@@ -1,14 +1,12 @@
 package uo.ri.business.impl.transactionScript.invoice;
 
-import alb.util.date.Dates;
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.InvoiceDto;
 import uo.ri.business.exception.BusinessException;
-import uo.ri.conf.Conf;
+import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ListInvoice {
@@ -21,11 +19,10 @@ public class ListInvoice {
     }
 
     public InvoiceDto execute() throws BusinessException {
-        //TODO: Queda parte de la liquidacion de una factura.
         InvoiceDto invoice = null;
 
         try {
-            connection = Jdbc.getConnection();
+            connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
             invoice = verificarFacturaNoAbonada(this.number);
@@ -45,36 +42,20 @@ public class ListInvoice {
         return invoice;
     }
 
-    private InvoiceDto verificarFacturaNoAbonada(Long number) throws SQLException, BusinessException {
-        PreparedStatement pst = null;
-        ResultSet rs = null;
-        InvoiceDto resultInvoice;
+    private InvoiceDto verificarFacturaNoAbonada(Long number) throws BusinessException {
+
         try {
+            InvoiceDto invoice = GatewayFactory.getInvoiceGateway().ListInvoice(number);
 
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_INVOICE"));
-            pst.setLong(1, number);
-
-            rs = pst.executeQuery();
-
-            if (!rs.next()) {
-                throw new BusinessException("No existe la factura con numero: " + number);
+            if (!"ABONADA".equalsIgnoreCase(invoice.status)) {
+                throw new BusinessException("No está abonada la factura con numero: " + invoice.number);
             }
 
-            resultInvoice = new InvoiceDto();
-            resultInvoice.id = rs.getLong(1);
-            resultInvoice.date = Dates.fromString(rs.getString(2));
-            resultInvoice.total = rs.getLong(3);
-            resultInvoice.vat = rs.getLong(4);
-            resultInvoice.number = rs.getLong(5);
-            resultInvoice.status = rs.getString(6);
+            return invoice;
 
-            if (!"ABONADA".equalsIgnoreCase(resultInvoice.status)) {
-                throw new BusinessException("No está abonada la factura con numero: " + resultInvoice.number);
-            }
-
-        } finally {
-            Jdbc.close(rs, pst);
+        } catch (PersistanceException e) {
+            throw new BusinessException("Error al recuperara la factura:"+e.getStackTrace());
         }
-        return resultInvoice;
+
     }
 }
