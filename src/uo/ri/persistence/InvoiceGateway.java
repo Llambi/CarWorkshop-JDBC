@@ -13,9 +13,11 @@ public interface InvoiceGateway {
 
     List<BreakdownDto> readInvoice(Long id);
 
-    InvoiceDto ListInvoice(Long number) throws PersistanceException;
+    InvoiceDto listInvoice(Long number) throws PersistanceException;
 
-    Long ListLastInvoice() throws PersistanceException;
+    Long listLastInvoice() throws PersistanceException;
+
+    void updateInvoice(String campo, String estado, Long id) throws PersistanceException;
 
     double checkTotalInvoice(InvoiceDto invoice, Map<Integer, PaymentMeanDto> formatoPagos, List<PaymentMeanDto> mediosPago);
 

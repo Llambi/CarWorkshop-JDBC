@@ -46,7 +46,7 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
     }
 
     @Override
-    public InvoiceDto ListInvoice(Long number) throws PersistanceException {
+    public InvoiceDto listInvoice(Long number) throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
         InvoiceDto resultInvoice = new InvoiceDto();
@@ -77,7 +77,7 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
     }
 
     @Override
-    public Long ListLastInvoice() throws PersistanceException {
+    public Long listLastInvoice() throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
 
@@ -94,6 +94,24 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
             throw new PersistanceException("Problemas al recuperar la ultima factura:\n\t"+e.getStackTrace());
         } finally {
             Jdbc.close(rs, pst);
+        }
+    }
+
+    @Override
+    public void updateInvoice(String campo, String estado, Long id) throws PersistanceException {
+        PreparedStatement pst = null;
+
+        try {
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_INVOICE_GENERICO"));
+            pst.setString(1, campo);
+            pst.setString(1, estado);
+            pst.setLong(2, id);
+            pst.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new PersistanceException("Factura no actualizada:\n\t"+e.getStackTrace());
+        } finally {
+            Jdbc.close(pst);
         }
     }
 

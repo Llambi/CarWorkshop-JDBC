@@ -4,6 +4,8 @@ import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.*;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.Conf;
+import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,10 +27,10 @@ public class FindClientPaymentMean {
         Long idCliente;
         List<PaymentMeanDto> paymentMeans;
         try {
-            connection = Jdbc.getConnection();
+            connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
-            idCliente = findClientByFactura();
+            idCliente = findClientByFactura().id;
             paymentMeans = findMediosPagoCliente(idCliente);
 
             connection.commit();
@@ -44,80 +46,28 @@ public class FindClientPaymentMean {
         return paymentMeans;
     }
 
-    private Long findClientByFactura() throws BusinessException {
-        PreparedStatement pst = null;
-        ResultSet rs = null;
-        long idCliente = 0L;
+    private ClientDto findClientByFactura() throws BusinessException {
+
         try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CLIENTE_ID_BY_ID_FACTURA"));
-            pst.setLong(1, invoice.id);
-            rs = pst.executeQuery();
-
-            while (rs.next()) {
-                idCliente = rs.getLong("cliente_id");
-            }
-
-            if (idCliente == 0) {
+            ClientDto cliente = GatewayFactory.getClientGateway().findClient("FACTURA_ID", invoice.id);
+            if (cliente.id == 0) {
                 throw new BusinessException(
                         "El cliente no se encuentra en el sistema");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            Jdbc.close(rs, pst);
+            return cliente;
+        } catch (PersistanceException e) {
+            throw new BusinessException("Error al recuperar el cliente:\n\t"+e.getStackTrace());
         }
-        return idCliente;
+
     }
 
     private List<PaymentMeanDto> findMediosPagoCliente(Long idCliente) throws BusinessException {
-        PreparedStatement pst = null;
-        ResultSet rs = null;
-        List<PaymentMeanDto> paymentMeans = new LinkedList<>();
-        try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_ALL_MEDIOS_PAGO"));
-            pst.setLong(1, idCliente);
-            rs = pst.executeQuery();
 
-            while (rs.next()) {
-                PaymentMeanDto paymentMean;
-                switch (rs.getString("dtype")) {
-                    case "TMetalico":
-                        CashDto metalico = new CashDto();
-                        metalico.id = rs.getLong("id");
-                        metalico.accumulated = rs.getDouble("acumulado");
-                        metalico.clientId = rs.getLong("cliente_id");
-                        paymentMean = metalico;
-                        break;
-                    case "TBonos":
-                        VoucherDto bono = new VoucherDto();
-                        bono.id = rs.getLong("id");
-                        bono.accumulated = rs.getDouble("acumulado");
-                        bono.clientId = rs.getLong("cliente_id");
-                        bono.code = rs.getString("codigo");
-                        bono.available = rs.getDouble("disponible");
-                        bono.description = rs.getString("descripcion");
-                        paymentMean = bono;
-                        break;
-                    case "TTarjetasCredito":
-                        CardDto tarjeta = new CardDto();
-                        tarjeta.id = rs.getLong("id");
-                        tarjeta.accumulated = rs.getDouble("acumulado");
-                        tarjeta.clientId = rs.getLong("cliente_id");
-                        tarjeta.cardNumber = rs.getString("numero");
-                        tarjeta.cardType = rs.getString("tipo");
-                        tarjeta.cardExpiration = rs.getTimestamp("validez");
-                        paymentMean = tarjeta;
-                        break;
-                    default:
-                        throw new BusinessException("No existe el metodo de pago: " + rs.getString("dtype"));
-                }
-                paymentMeans.add(paymentMean);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            Jdbc.close(rs, pst);
+        try {
+            return GatewayFactory.getPaymentMeanGateway().findPaymentMean("cliente_id", idCliente);
+        } catch (PersistanceException e) {
+            throw new BusinessException("Error al recuperar los medios de pago del cliente:\n\t"+e.getStackTrace());
         }
-        return paymentMeans;
+
     }
 }

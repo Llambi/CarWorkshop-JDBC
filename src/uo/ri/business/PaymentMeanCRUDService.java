@@ -12,7 +12,7 @@ public interface PaymentMeanCRUDService {
 
     List<PaymentMeanDto> findClientPaymentMean(InvoiceDto invoice) throws BusinessException;
 
-    void updatePaymentMean(Connection connection, PaymentMeanDto paymentMean);
+    void updatePaymentMean(PaymentMeanDto paymentMean);
 
-    void updatePaymentMean(Connection connection, VoucherDto paymentMean);
+    void updatePaymentMean(VoucherDto paymentMean);
 }

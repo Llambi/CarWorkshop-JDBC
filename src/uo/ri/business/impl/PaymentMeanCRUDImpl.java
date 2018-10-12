@@ -18,12 +18,12 @@ public class PaymentMeanCRUDImpl implements PaymentMeanCRUDService {
     }
 
     @Override
-    public void updatePaymentMean(Connection connection, PaymentMeanDto paymentMean) {
-        new updatePaymentMean(connection, paymentMean).execute();
+    public void updatePaymentMean(PaymentMeanDto paymentMean) {
+        new updatePaymentMean(paymentMean).execute();
     }
 
     @Override
-    public void updatePaymentMean(Connection connection, VoucherDto paymentMean) {
-        new updatePaymentMean(connection, paymentMean).execute();
+    public void updatePaymentMean(VoucherDto paymentMean) {
+        new updatePaymentMean(paymentMean).execute();
     }
 }

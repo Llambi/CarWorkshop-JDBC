@@ -6,12 +6,10 @@ import alb.util.math.Round;
 import uo.ri.business.dto.BreakdownDto;
 import uo.ri.business.dto.InvoiceDto;
 import uo.ri.business.exception.BusinessException;
-import uo.ri.conf.Conf;
 import uo.ri.conf.GatewayFactory;
 import uo.ri.persistence.BreakdownGateway;
 import uo.ri.persistence.exception.PersistanceException;
 
-import java.lang.reflect.GenericArrayType;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -125,7 +123,7 @@ public class CreateInvoice {
     private long getGeneratedKey(long numeroFactura) throws BusinessException {
 
         try {
-            return GatewayFactory.getInvoiceGateway().ListInvoice(numeroFactura).id;
+            return GatewayFactory.getInvoiceGateway().listInvoice(numeroFactura).id;
         } catch (PersistanceException e) {
             throw new BusinessException("Clave no generada:\n\t" + e.getStackTrace());
         }
@@ -134,7 +132,7 @@ public class CreateInvoice {
 
     private Long generarNuevoNumeroFactura() throws BusinessException {
         try {
-            return GatewayFactory.getInvoiceGateway().ListLastInvoice();
+            return GatewayFactory.getInvoiceGateway().listLastInvoice();
         } catch (PersistanceException e) {
             throw new BusinessException("Error al generar un nuevo numero de factura:\n\t" + e.getStackTrace());
         }

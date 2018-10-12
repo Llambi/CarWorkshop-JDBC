@@ -4,6 +4,7 @@ import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.dto.VoucherDto;
 import uo.ri.conf.Conf;
+import uo.ri.conf.GatewayFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,10 +14,7 @@ public class updatePaymentMean {
 
     private PaymentMeanDto paymentMean;
 
-    private Connection connection;
-
-    public updatePaymentMean(Connection connection, PaymentMeanDto paymentMean) {
-        this.connection = connection;
+    public updatePaymentMean(PaymentMeanDto paymentMean) {
         this.paymentMean = paymentMean;
     }
 
@@ -30,36 +28,10 @@ public class updatePaymentMean {
     }
 
     private void updatePayment() {
-        PreparedStatement pst = null;
-
-        try {
-            pst = connection.prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_GASTO_MEDIOPAGO_OTROS"));
-            pst.setDouble(1, paymentMean.accumulated);
-            pst.setLong(2, paymentMean.id);
-            pst.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            Jdbc.close(pst);
-        }
+        GatewayFactory.getPaymentMeanGateway().updatePaymentMean(paymentMean);
     }
 
     private void updateVoucher() {
-        PreparedStatement pst = null;
-        VoucherDto voucher = (VoucherDto) paymentMean;
-        try {
-            pst = connection.prepareStatement(
-                    Conf.getInstance().getProperty("SQL_UPDATE_GASTO_MEDIOPAGO_BONO"));
-            pst.setDouble(1, voucher.accumulated);
-            pst.setDouble(2, voucher.available);
-            pst.setLong(3, voucher.id);
-            pst.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            Jdbc.close(pst);
-        }
+        GatewayFactory.getPaymentMeanGateway().updatePaymentMean(paymentMean);
     }
 }

@@ -3,12 +3,12 @@ package uo.ri.business.impl.transactionScript.invoice;
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.PaymentMeanCRUDService;
 import uo.ri.business.dto.*;
-import uo.ri.business.impl.PaymentMeanCRUDImpl;
 import uo.ri.business.exception.BusinessException;
-import uo.ri.conf.Conf;
+import uo.ri.business.impl.PaymentMeanCRUDImpl;
+import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class UpdateInvoice {
     public double execute() throws BusinessException {
         double faltaPorPagar;
         try {
-            this.connection = Jdbc.getConnection();
+            this.connection = Jdbc.createThreadConnection();
             this.connection.setAutoCommit(false);
 
             faltaPorPagar = checkPaymentMeanSelected();
@@ -91,27 +91,20 @@ public class UpdateInvoice {
                 ((VoucherDto) paymentMeanSelected).available -= cantidad;
             }
 
-            invoiceService.updatePaymentMean(connection, paymentMeanSelected);
+            invoiceService.updatePaymentMean(paymentMeanSelected);
         }
 
         updateInvoiceAbonada();
     }
 
-    private void updateInvoiceAbonada() {
-        PreparedStatement pst = null;
+    private void updateInvoiceAbonada() throws BusinessException {
 
         try {
-            pst = connection
-                    .prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_INVOICE_ABONADA"));
-            pst.setString(1, "ABONADA");
-            pst.setLong(2, invoice.id);
-            pst.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            Jdbc.close(pst);
+            GatewayFactory.getInvoiceGateway().updateInvoice("status", "ABONADA", invoice.id);
+        } catch (PersistanceException e) {
+            throw new BusinessException("Factura no abonada:\n\t" + e.getStackTrace());
         }
+
     }
 
     private PaymentMeanDto findPaymentMean(Integer type) throws BusinessException {

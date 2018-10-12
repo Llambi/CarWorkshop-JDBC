@@ -45,7 +45,7 @@ public class ListInvoice {
     private InvoiceDto verificarFacturaNoAbonada(Long number) throws BusinessException {
 
         try {
-            InvoiceDto invoice = GatewayFactory.getInvoiceGateway().ListInvoice(number);
+            InvoiceDto invoice = GatewayFactory.getInvoiceGateway().listInvoice(number);
 
             if (!"ABONADA".equalsIgnoreCase(invoice.status)) {
                 throw new BusinessException("No está abonada la factura con numero: " + invoice.number);
