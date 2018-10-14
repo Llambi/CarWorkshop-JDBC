@@ -6,6 +6,7 @@ import uo.ri.conf.Conf;
 import uo.ri.persistence.ClientGateway;
 import uo.ri.persistence.exception.PersistanceException;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,11 +18,9 @@ public class ClientGatewayImpl implements ClientGateway {
         PreparedStatement pst = null;
         ResultSet rs = null;
         ClientDto client = new ClientDto();
-
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CLIENTE_GENERICO"));
-            pst.setString(1, campo);
-            pst.setLong(2, valor);
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CLIENTE_ID_BY_ID_FACTURA"));
+            pst.setBigDecimal(1, BigDecimal.valueOf(valor));
             rs = pst.executeQuery();
 
             while (rs.next()) {
@@ -30,7 +29,7 @@ public class ClientGatewayImpl implements ClientGateway {
 
             return client;
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar el cliente de la factura:\n\t" + e.getStackTrace());
+            throw new PersistanceException("Error al recuperar el cliente de la factura:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }

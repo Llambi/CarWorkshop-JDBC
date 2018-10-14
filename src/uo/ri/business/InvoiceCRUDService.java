@@ -12,7 +12,7 @@ public interface InvoiceCRUDService {
 
     InvoiceDto createInvoice(List<Long> ids) throws BusinessException;
 
-    List<BreakdownDto> readInvoice(Long id);
+    List<BreakdownDto> readInvoice(Long id) throws BusinessException;
 
     InvoiceDto ListInvoice(Long number) throws BusinessException;
 

@@ -47,8 +47,8 @@ public class ListInvoice {
         try {
             InvoiceDto invoice = GatewayFactory.getInvoiceGateway().listInvoice(number);
 
-            if (!"ABONADA".equalsIgnoreCase(invoice.status)) {
-                throw new BusinessException("No está abonada la factura con numero: " + invoice.number);
+            if ("ABONADA".equalsIgnoreCase(invoice.status)) {
+                throw new BusinessException("Ya está abonada la factura con numero: " + invoice.number);
             }
 
             return invoice;

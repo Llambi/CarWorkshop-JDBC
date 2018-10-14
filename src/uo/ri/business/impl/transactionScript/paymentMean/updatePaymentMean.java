@@ -32,6 +32,6 @@ public class updatePaymentMean {
     }
 
     private void updateVoucher() {
-        GatewayFactory.getPaymentMeanGateway().updatePaymentMean(paymentMean);
+        GatewayFactory.getPaymentMeanGateway().updatePaymentMean((VoucherDto) paymentMean);
     }
 }

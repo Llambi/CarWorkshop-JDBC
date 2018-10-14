@@ -20,7 +20,7 @@ public class InvoiceCRUDImpl implements InvoiceCRUDService {
     }
 
     @Override
-    public List<BreakdownDto> readInvoice(Long id) {
+    public List<BreakdownDto> readInvoice(Long id) throws BusinessException {
         return new ReadInvoice(id).execute();
     }
 
