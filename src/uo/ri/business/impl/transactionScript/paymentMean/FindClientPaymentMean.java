@@ -56,7 +56,7 @@ public class FindClientPaymentMean {
             }
             return cliente;
         } catch (PersistanceException e) {
-            throw new BusinessException("Error al recuperar el cliente:\n\t"+e.getStackTrace());
+            throw new BusinessException("Error al recuperar el cliente:\n\t"+e);
         }
 
     }

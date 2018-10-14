@@ -24,8 +24,7 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
         ResultSet rs = null;
         List<PaymentMeanDto> paymentMeans = new LinkedList<>();
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_FIND_ALL_MEDIOS_PAGO_GENERICO"));
-            pst.setString(1, campo);
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_FIND_ALL_MEDIOS_PAGO"));
             pst.setLong(1, valor);
             rs = pst.executeQuery();
 
@@ -46,7 +45,7 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
                         bono.clientId = rs.getLong("cliente_id");
                         bono.code = rs.getString("codigo");
                         bono.available = rs.getDouble("disponible");
-                        bono.description = rs.getString("descripcion");
+//                        bono.description = rs.getString("descripcion");   // No exite este campo en la bbdd.
                         paymentMean = bono;
                         break;
                     case "TTarjetasCredito":
@@ -65,7 +64,7 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
                 paymentMeans.add(paymentMean);
             }
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar los medios de pago:\n\t"+e.getStackTrace());
+            throw new PersistanceException("Error al recuperar los medios de pago:\n\t"+e);
         } finally {
             Jdbc.close(rs, pst);
         }

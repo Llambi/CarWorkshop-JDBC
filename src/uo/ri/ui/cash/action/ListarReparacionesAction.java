@@ -4,13 +4,14 @@ import alb.util.console.Console;
 import alb.util.date.Dates;
 import alb.util.menu.Action;
 import uo.ri.business.dto.BreakdownDto;
+import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.ServiceFactory;
 
 import java.util.List;
 
 public class ListarReparacionesAction implements Action {
 
-    // Para pruebas dni: 599414936
+    // Para pruebas dni: 222620568
 
 
     /**
@@ -23,7 +24,7 @@ public class ListarReparacionesAction implements Action {
      * id, fecha, status, importe y descripción
      */
     @Override
-    public void execute() {
+    public void execute() throws BusinessException {
 
        Long dni = Console.readLong("DNI del cliente");
 

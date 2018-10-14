@@ -63,10 +63,11 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
 
             resultInvoice.id = rs.getLong(1);
             resultInvoice.date = Dates.fromString(rs.getString(2));
-            resultInvoice.total = rs.getLong(3);
+            resultInvoice.amount = rs.getLong(3);
             resultInvoice.vat = rs.getLong(4);
             resultInvoice.number = rs.getLong(5);
             resultInvoice.status = rs.getString(6);
+            resultInvoice.total = resultInvoice.amount * (1+(resultInvoice.vat/100));
 
         } catch (SQLException e) {
             throw new PersistanceException("Error al recuperar la factura:"+e.getStackTrace());
@@ -102,8 +103,8 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
         PreparedStatement pst = null;
 
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_INVOICE_GENERICO"));
-            pst.setString(1, campo);
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_INVOICE_ABONADA"));
+//            pst.setString(1, campo);
             pst.setString(1, estado);
             pst.setLong(2, id);
             pst.executeUpdate();
