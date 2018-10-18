@@ -1,8 +1,8 @@
 package uo.ri.business.impl.transactionScript.mechanic;
 
 import uo.ri.business.dto.MechanicDto;
+import uo.ri.conf.GatewayFactory;
 
-import static uo.ri.conf.GatewayFactory.getMechanicGateway;
 
 public class AddMechanic {
     private MechanicDto mechanic;
@@ -12,7 +12,6 @@ public class AddMechanic {
     }
 
     public void execute() {
-        // Procesar
-        getMechanicGateway().addMechanic(mechanic);
+        GatewayFactory.getMechanicGateway().addMechanic(mechanic);
     }
 }

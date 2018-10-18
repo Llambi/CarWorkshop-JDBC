@@ -1,5 +1,6 @@
 package uo.ri.conf;
 
+import uo.ri.business.ContractTypeCRUDService;
 import uo.ri.persistence.*;
 import uo.ri.persistence.impl.*;
 
@@ -12,5 +13,5 @@ public class GatewayFactory {
     public static InterventionGateway getInterventionGateway(){return new InterventionGatewayImpl();}
     public static ClientGateway getClientGateway(){return new ClientGatewayImpl();}
     public static PaymentMeanGateway getPaymentMeanGateway(){return new PaymentMeanGatewayImpl();}
-
+    public static ContractTypeGateway getContractTypeGateway() {return new ContractTypeGatewayImpl();}
 }
