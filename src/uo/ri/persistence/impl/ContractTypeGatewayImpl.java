@@ -2,6 +2,7 @@ package uo.ri.persistence.impl;
 
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.ContractTypeDto;
+import uo.ri.business.dto.MechanicDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.ContractTypeGateway;
 
@@ -10,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class ContractTypeGatewayImpl implements ContractTypeGateway {
 
@@ -46,7 +48,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
     }
 
     @Override
-    public List<ContractTypeDto> findAllContractTypes() {
+    public Map<ContractTypeDto, List<MechanicDto>> findAllContractTypes() {
         return null;
     }
 }

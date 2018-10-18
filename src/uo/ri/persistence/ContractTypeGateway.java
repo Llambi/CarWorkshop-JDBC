@@ -1,8 +1,10 @@
 package uo.ri.persistence;
 
 import uo.ri.business.dto.ContractTypeDto;
+import uo.ri.business.dto.MechanicDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ContractTypeGateway {
 
@@ -12,5 +14,5 @@ public interface ContractTypeGateway {
 
     void updateContractType(ContractTypeDto contracTypeDto);
 
-    List<ContractTypeDto> findAllContractTypes();
+    Map<ContractTypeDto, List<MechanicDto>> findAllContractTypes();
 }
