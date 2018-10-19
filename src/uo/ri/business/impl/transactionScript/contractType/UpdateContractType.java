@@ -12,6 +12,6 @@ public class UpdateContractType {
     }
 
     public void execute() {
-        GatewayFactory.getContractTypeGateway().deleteContractType(contractTypeDto);
+        GatewayFactory.getContractTypeGateway().updateContractType(contractTypeDto);
     }
 }

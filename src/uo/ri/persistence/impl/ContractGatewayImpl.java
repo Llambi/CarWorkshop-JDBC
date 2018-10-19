@@ -24,7 +24,7 @@ public class ContractGatewayImpl implements ContractGateway {
         List<ContractDto> contracts = new LinkedList<>();
 
         try {
-            c = Jdbc.getConnection();
+            c = Jdbc.getCurrentConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPE_CONTRACT"));
             pst.setString(1, contractTypeDto.name);
@@ -46,7 +46,7 @@ public class ContractGatewayImpl implements ContractGateway {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            Jdbc.close(rs, pst, c);
+            Jdbc.close(rs, pst);
         }
         return contracts;
     }

@@ -82,6 +82,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
 
     @Override
     public Map<ContractTypeDto, List<MechanicDto>> findAllContractTypes() {
+        //TODO: Conseguir los mecanicos con un tipo de contrato en concreto agregandolos todos
         return null;
     }
 }

@@ -83,7 +83,6 @@ public class LiquidarFacturaAction implements Action {
                     "Selecciona la cantidad que desea pagar con este medio");
             paymentMean.accumulated = cantidad;
             pagosSeleccionados.put(eleccion, paymentMean);
-            //Todo: Arreglar pago en metodos
             restante = invoiceService.checkTotalInvoice(invoice, pagosSeleccionados,
                     mediosPago);
             pagado = total - restante;
