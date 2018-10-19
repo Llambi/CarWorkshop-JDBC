@@ -195,19 +195,4 @@ public class Printer {
         }
     }
 
-    /**
-     * Metodo que imprime por pantalla una lista dada de tipos de contrato con los trabajadores incluido en estos.
-     *
-     * @param contractTypeDtos Lista de contratos y trabajadores a imprimir.
-     */
-    public static void printContratTypes(Map<ContractTypeDto, List<MechanicDto>> contractTypeDtos) {
-        // TODO: Mejorar impresion de contratos y trabajadores.
-        for (Map.Entry<ContractTypeDto, List<MechanicDto>> entry : contractTypeDtos.entrySet()) {
-            Console.printf("Tipo de contrato %s:\n\n", entry.getKey());
-            for (MechanicDto mechanicDto : entry.getValue()) {
-                Console.printf("\t%s %s\t DNI: %s\n", mechanicDto.name, mechanicDto.surname, mechanicDto.dni);
-            }
-
-        }
-    }
 }

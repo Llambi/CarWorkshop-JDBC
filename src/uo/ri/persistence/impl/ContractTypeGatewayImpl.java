@@ -22,7 +22,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         ResultSet rs = null;
 
         try {
-            c = Jdbc.getConnection();
+            c = Jdbc.getCurrentConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_ADD_CONTRACT_TYPE"));
             pst.setString(1, contracTypeDto.name);
@@ -39,12 +39,45 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
 
     @Override
     public void deleteContractType(ContractTypeDto contracTypeDto) {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
 
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_DELETE_CONTRACT_TYPE"));
+            pst.setString(1, contracTypeDto.name);
+
+            pst.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Jdbc.close(rs, pst, c);
+        }
     }
 
     @Override
     public void updateContractType(ContractTypeDto contracTypeDto) {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
 
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_CONTRACT_TYPE"));
+            pst.setLong(1, contracTypeDto.compensationDays);
+            pst.setString(2, contracTypeDto.name);
+
+            pst.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Jdbc.close(rs, pst, c);
+        }
     }
 
     @Override

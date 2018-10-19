@@ -10,11 +10,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class updatePaymentMean {
+public class UpdatePaymentMean {
 
     private PaymentMeanDto paymentMean;
 
-    public updatePaymentMean(PaymentMeanDto paymentMean) {
+    public UpdatePaymentMean(PaymentMeanDto paymentMean) {
         this.paymentMean = paymentMean;
     }
 

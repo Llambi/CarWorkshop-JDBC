@@ -11,4 +11,5 @@ public interface ContractTypeCRUDService {
     void deleteContractType(ContractTypeDto contractTypeDto);
     void updateContractType(ContractTypeDto contractTypeDto);
     Map<ContractTypeDto, List<MechanicDto>> findAllContractType();
+    Double getTotalBaseSalary(ContractTypeDto contractTypeDto);
 }

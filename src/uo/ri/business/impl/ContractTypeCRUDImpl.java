@@ -7,6 +7,7 @@ import uo.ri.business.impl.transactionScript.contractType.AddContractType;
 import uo.ri.business.impl.transactionScript.contractType.DeleteContractType;
 import uo.ri.business.impl.transactionScript.contractType.ListContractType;
 import uo.ri.business.impl.transactionScript.contractType.UpdateContractType;
+import uo.ri.business.impl.transactionScript.payroll.ReadBaseSalary;
 
 import java.util.List;
 import java.util.Map;
@@ -30,5 +31,10 @@ public class ContractTypeCRUDImpl implements ContractTypeCRUDService {
     @Override
     public Map<ContractTypeDto, List<MechanicDto>> findAllContractType() {
         return new ListContractType().execute();
+    }
+
+    @Override
+    public Double getTotalBaseSalary(ContractTypeDto contractTypeDto) {
+        return new ReadBaseSalary(contractTypeDto).execute();
     }
 }
