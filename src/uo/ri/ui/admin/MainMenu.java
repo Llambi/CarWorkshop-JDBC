@@ -4,17 +4,19 @@ import alb.util.menu.BaseMenu;
 
 public class MainMenu extends BaseMenu {
 
-	public MainMenu() {
-		menuOptions = new Object[][] { 
-			{ "Administrador", null },
-			{ "Gestión de mecánicos", 			MecanicosMenu.class }, 
-			{ "Gestión de repuestos", 			RepuestosMenu.class },
-			{ "Gestión de tipos de vehículo", 	TiposVehiculoMenu.class },
-		};
-	}
+    public MainMenu() {
+        menuOptions = new Object[][]{
+                {"Administrador", null},
+                {"Gestión de mecánicos", MecanicosMenu.class},
+                {"Gestión de repuestos", RepuestosMenu.class},
+                {"Gestión de tipos de vehículo", TiposVehiculoMenu.class},
+                {"Gestión de contratos", ContratosMenu.class},
+                {"Gestion de tipos de contratos", ContractTypeMenu.class}
+        };
+    }
 
-	public static void main(String[] args) {
-		new MainMenu().execute();
-	}
+    public static void main(String[] args) {
+        new MainMenu().execute();
+    }
 
 }

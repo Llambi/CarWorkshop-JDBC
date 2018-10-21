@@ -1,5 +1,6 @@
 package uo.ri.persistence;
 
+import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.dto.MechanicDto;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface MechanicGateway {
     void updateMechanic(MechanicDto mechanic);
 
     List<MechanicDto> findAllMechanics();
+
+    List<MechanicDto> findAllMechanicsByContractType(ContractTypeDto contractTypeDto);
 }
