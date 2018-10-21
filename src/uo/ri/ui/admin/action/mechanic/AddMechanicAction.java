@@ -19,7 +19,7 @@ public class AddMechanicAction implements Action {
         mechanicDto.name = Console.readString("Nombre");
         mechanicDto.surname = Console.readString("Apellidos");
 
-        new ServiceFactory().getMechanicCRUDService().addMechanic(mechanicDto);
+        ServiceFactory.getMechanicCRUDService().addMechanic(mechanicDto);
 
         // Mostrar resultado
         Console.println("Nuevo mecánico añadido");

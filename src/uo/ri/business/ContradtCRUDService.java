@@ -1,15 +1,16 @@
-package uo.ri.persistence;
+package uo.ri.business;
 
 import uo.ri.business.dto.ContractCategoryDto;
 import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.dto.MechanicDto;
 
-import java.util.List;
+import java.util.Map;
 
-public interface ContractGateway {
-    List<ContractDto> findContract(ContractTypeDto contractDto);
-    List<ContractDto> findContract(MechanicDto mechanicDto);
+public interface ContradtCRUDService {
+
     void addContract(MechanicDto mechanicDto, ContractTypeDto contractTypeDto, ContractCategoryDto contractCategoryDto, ContractDto contractDto);
-    void updateContract(ContractDto previousContrac);
+    void deleteContract(ContractTypeDto contractTypeDto);
+    void updateContract(ContractTypeDto contractTypeDto);
+    Map<ContractTypeDto, Map<String, Object>> findAllContractType();
 }

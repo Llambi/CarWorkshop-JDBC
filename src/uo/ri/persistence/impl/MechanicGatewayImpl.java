@@ -1,6 +1,7 @@
 package uo.ri.persistence.impl;
 
 import alb.util.jdbc.Jdbc;
+import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.dto.MechanicDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.MechanicGateway;
@@ -106,6 +107,36 @@ public class MechanicGatewayImpl implements MechanicGateway {
             throw new RuntimeException(e);
         } finally {
             Jdbc.close(rs, pst, c);
+        }
+        return mechanics;
+    }
+
+    @Override
+    public List<MechanicDto> findAllMechanicsByContractType(ContractTypeDto contractTypeDto) {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        LinkedList<MechanicDto> mechanics = new LinkedList<>();
+
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_MECHANICS_BY_CONTRACT_TYPE"));
+            pst.setString(1,contractTypeDto.name);
+
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                MechanicDto mechanic = new MechanicDto();
+                mechanic.id = rs.getLong(1);
+                mechanic.dni = rs.getString(2);
+                mechanic.name = rs.getString(3);
+                mechanic.surname = rs.getString(4);
+                mechanics.add(mechanic);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Jdbc.close(rs, pst);
         }
         return mechanics;
     }

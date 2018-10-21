@@ -21,14 +21,14 @@ public class ListContractType {
             connection.setAutoCommit(false);
 
 
-            Map<ContractTypeDto, List<MechanicDto>> mechanicsByContractType = GatewayFactory.getContractTypeGateway().findAllContractTypes();
+            List<ContractTypeDto> ContractTypes = GatewayFactory.getContractTypeGateway().findAllContractTypes();
 
-            for (Map.Entry<ContractTypeDto, List<MechanicDto>> entry : mechanicsByContractType.entrySet()) {
+            for (ContractTypeDto contractTypeDto : ContractTypes) {
                 Map<String, Object> auxDic = new HashMap<>();
-                ContractTypeDto contractTypeDto = entry.getKey();
-                auxDic.put("mechanic", entry.getValue());
-                double acumSalary = GatewayFactory.getPayrollGateway().getTotalBaseSalary(contractTypeDto);
-                auxDic.put("acumSalary", acumSalary);
+
+                auxDic.put("mechanic", GatewayFactory.getMechanicGateway().findAllMechanicsByContractType(contractTypeDto));
+                auxDic.put("acumSalary", GatewayFactory.getPayrollGateway().getTotalBaseSalary(contractTypeDto));
+
                 mechanicsByContractTypeAndAcumSalary.put(contractTypeDto, auxDic);
             }
 

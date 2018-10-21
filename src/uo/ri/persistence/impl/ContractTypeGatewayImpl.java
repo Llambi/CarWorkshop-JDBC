@@ -2,7 +2,6 @@ package uo.ri.persistence.impl;
 
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.ContractTypeDto;
-import uo.ri.business.dto.MechanicDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.ContractTypeGateway;
 
@@ -10,8 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class ContractTypeGatewayImpl implements ContractTypeGateway {
 
@@ -33,7 +32,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            Jdbc.close(rs, pst, c);
+            Jdbc.close(rs, pst);
         }
     }
 
@@ -54,7 +53,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            Jdbc.close(rs, pst, c);
+            Jdbc.close(rs, pst);
         }
     }
 
@@ -76,13 +75,38 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            Jdbc.close(rs, pst, c);
+            Jdbc.close(rs, pst);
         }
     }
 
     @Override
-    public Map<ContractTypeDto, List<MechanicDto>> findAllContractTypes() {
-        //TODO: Conseguir los mecanicos con un tipo de contrato en concreto agregandolos todos
-        return null;
+    public List<ContractTypeDto> findAllContractTypes() {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        List<ContractTypeDto> contractTypes = new LinkedList<>();
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPE"));
+
+            pst.executeUpdate();
+
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                ContractTypeDto contractTypeDto = new ContractTypeDto();
+                contractTypeDto.id = rs.getLong(1);
+                contractTypeDto.name = rs.getString(2);
+                contractTypeDto.compensationDays = rs.getInt(3);
+
+                contractTypes.add(contractTypeDto);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+        return contractTypes;
     }
 }
