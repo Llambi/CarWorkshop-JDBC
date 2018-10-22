@@ -74,10 +74,10 @@ public class AddContract {
         Map<String,Object> liquidacion = null;
         if(contractYears>=1.0){
             liquidacion = new HashMap<>();
-            liquidacion.put("salarioBruto",contractDto.yearBaseSalary);
+            liquidacion.put("salarioBruto",previousContrac.yearBaseSalary);
             liquidacion.put("indemnizacion",contractTypeDto.compensationDays);
             liquidacion.put("añosContrato",Math.round(contractYears));
-            liquidacion.put("total",contractDto.yearBaseSalary*contractTypeDto.compensationDays*Math.round(contractYears));
+            liquidacion.put("total",previousContrac.yearBaseSalary*contractTypeDto.compensationDays*Math.round(contractYears));
         }
         return liquidacion;
     }

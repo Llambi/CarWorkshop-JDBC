@@ -1,55 +1,70 @@
 package alb.util.console;
 
+import uo.ri.business.dto.ContractDto;
+import uo.ri.business.dto.MechanicDto;
+import uo.ri.persistence.impl.ContracStatus;
+
 import java.io.PrintStream;
 import java.util.Map;
 
 /**
  * Métodos de utilidad para escribir cosas en pantalla de forma controlada.
  * Aquí irian todas las decoraciones pertinentes
- * 
+ *
  * @author alb
  */
 public class Printer {
-	private static PrintStream con = System.out;
-	
-	public static void printHeading(String string) {
-		con.println(string);
-	}
+    private static PrintStream con = System.out;
 
-	/**
-	 * Avisa de error lógico en la ejecución, muy probablemente por 
-	 * equivocación del usuario o por circunstancias que han cambiado 
-	 * durante el "think time" del usuario (control optimista y eso...)
-	 * 
-	 * @param e
-	 */
-	public static void printBusinessException(Exception e) {
-		con.println("Ha ocurrido un problema procesando su opcion:");
-		con.println("\t- " + e.getLocalizedMessage());
-	}
+    public static void printHeading(String string) {
+        con.println(string);
+    }
 
-	/**
-	 * Avisa de error irrecuperable
-	 * @param string
-	 * @param e
-	 */
-	public static void printRuntimeException(RuntimeException e) {
-		con.println("Ha ocurrido un error interno no recuperable, " +
-				"el programa debe terminar.\n" +
-				"[A continuación se muestra una traza del error]\n" +
-				"[la traza no sería visible por el usuario cuando la aplicación esté en producción]\n" + 
-				"[se mandaría al log del sistema]");
+    /**
+     * Avisa de error lógico en la ejecución, muy probablemente por
+     * equivocación del usuario o por circunstancias que han cambiado
+     * durante el "think time" del usuario (control optimista y eso...)
+     *
+     * @param e
+     */
+    public static void printBusinessException(Exception e) {
+        con.println("Ha ocurrido un problema procesando su opcion:");
+        con.println("\t- " + e.getLocalizedMessage());
+    }
 
-		e.printStackTrace();
-	}
+    /**
+     * Avisa de error irrecuperable
+     *
+     * @param string
+     * @param e
+     */
+    public static void printRuntimeException(RuntimeException e) {
+        con.println("Ha ocurrido un error interno no recuperable, " +
+                "el programa debe terminar.\n" +
+                "[A continuación se muestra una traza del error]\n" +
+                "[la traza no sería visible por el usuario cuando la aplicación esté en producción]\n" +
+                "[se mandaría al log del sistema]");
 
-	public static void print(String msg) {
-		con.println(msg);
-	}
+        e.printStackTrace();
+    }
 
-	public static void printException(String string, Exception e) {
-		con.println(string);
-		con.println("\t- " + e.getLocalizedMessage());
-	}
+    public static void print(String msg) {
+        con.println(msg);
+    }
 
+    public static void printException(String string, Exception e) {
+        con.println(string);
+        con.println("\t- " + e.getLocalizedMessage());
+    }
+
+    public static void printListContracts(MechanicDto mechanicDto, Map<ContractDto, Map<String, Object>> contracts) {
+        Console.println("El mecanico con DNI " + mechanicDto.dni + " tiene los siguientes contratos");
+        for (Map.Entry<ContractDto, Map<String, Object>> entry : contracts.entrySet()) {
+            ContractDto contractDto = entry.getKey();
+            int payrolls = (int) entry.getValue().get("payrolls");
+            double liquidacion = (double) entry.getValue().get("liquidacion");
+            Console.println("\tContrato no." + contractDto.id + (contractDto.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString()) ? " - ACTIVO" : ""));
+            Console.println(liquidacion>0?"\tLiquidacion de "+liquidacion+"€\n":"");
+        }
+    }
 }
