@@ -1,6 +1,9 @@
 package uo.ri.ui.util;
 
 import alb.util.console.Console;
+import uo.ri.business.dto.ContractDto;
+import uo.ri.business.dto.MechanicDto;
+import uo.ri.persistence.impl.ContracStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -216,5 +219,16 @@ public class Printer {
     public static void printTerminateContract() {
         Console.println();
         Console.println("Se ha extinto el contrato");
+    }
+
+    public static void printListContracts(MechanicDto mechanicDto, Map<ContractDto, Map<String, Object>> contracts) {
+        Console.println("El mecanico con DNI " + mechanicDto.dni + " tiene los siguientes contratos");
+        for (Map.Entry<ContractDto, Map<String, Object>> entry : contracts.entrySet()) {
+            ContractDto contractDto = entry.getKey();
+            int payrolls = (int) entry.getValue().get("payrolls");
+            double liquidacion = (double) entry.getValue().get("liquidacion");
+            Console.println("\tContrato no." + contractDto.id + (contractDto.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString()) ? " - ACTIVO" : ""));
+            Console.println(liquidacion>0?"\tLiquidacion de "+liquidacion+"€\n":"");
+        }
     }
 }
