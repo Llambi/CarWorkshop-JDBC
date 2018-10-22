@@ -1,5 +1,8 @@
 package alb.util.console;
 
+import uo.ri.business.dto.ContractDto;
+import uo.ri.business.dto.MechanicDto;
+
 import java.io.PrintStream;
 import java.util.Map;
 
@@ -52,4 +55,7 @@ public class Printer {
 		con.println("\t- " + e.getLocalizedMessage());
 	}
 
+    public static void printListContracts(MechanicDto mechanicDto, Map<ContractDto, Map<String, Object>> contracts) {
+		//TODO: printer de lista de contratos
+    }
 }
