@@ -56,15 +56,4 @@ public class Printer {
         con.println(string);
         con.println("\t- " + e.getLocalizedMessage());
     }
-
-    public static void printListContracts(MechanicDto mechanicDto, Map<ContractDto, Map<String, Object>> contracts) {
-        Console.println("El mecanico con DNI " + mechanicDto.dni + " tiene los siguientes contratos");
-        for (Map.Entry<ContractDto, Map<String, Object>> entry : contracts.entrySet()) {
-            ContractDto contractDto = entry.getKey();
-            int payrolls = (int) entry.getValue().get("payrolls");
-            double liquidacion = (double) entry.getValue().get("liquidacion");
-            Console.println("\tContrato no." + contractDto.id + (contractDto.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString()) ? " - ACTIVO" : ""));
-            Console.println(liquidacion>0?"\tLiquidacion de "+liquidacion+"€\n":"");
-        }
-    }
 }

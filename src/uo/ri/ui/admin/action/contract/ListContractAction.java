@@ -1,11 +1,11 @@
 package uo.ri.ui.admin.action.contract;
 
 import alb.util.console.Console;
-import alb.util.console.Printer;
 import alb.util.menu.Action;
 import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.MechanicDto;
 import uo.ri.conf.ServiceFactory;
+import uo.ri.ui.util.Printer;
 
 import java.util.Map;
 
