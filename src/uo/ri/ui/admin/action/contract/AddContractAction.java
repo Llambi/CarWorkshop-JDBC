@@ -8,8 +8,9 @@ import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.dto.MechanicDto;
 import uo.ri.conf.ServiceFactory;
+import uo.ri.ui.util.Printer;
 
-import java.util.Date;
+import java.util.Map;
 
 public class AddContractAction implements Action {
     @Override
@@ -30,7 +31,8 @@ public class AddContractAction implements Action {
         String endContractString = Console.readString("Fecha fin del contrato (Formato dd/mm/aaa)");
         contractDto.endDate = endContractString.equals("") ? null : Dates.fromString(endContractString);
 
-        ServiceFactory.getContractCRUDService().addContract(mechanicDto,contractTypeDto,contractCategoryDto,contractDto);
+        Map<String, Object> liquidacion = ServiceFactory.getContractCRUDService().addContract(mechanicDto,contractTypeDto,contractCategoryDto,contractDto);
+        Printer.printLiquidacion(liquidacion);
 
         Console.println("Contrato añadido");
     }

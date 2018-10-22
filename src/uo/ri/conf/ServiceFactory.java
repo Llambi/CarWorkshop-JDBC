@@ -21,7 +21,7 @@ public class ServiceFactory {
         return new ContractTypeCRUDImpl();
     }
 
-    public static ContradtCRUDService getContractCRUDService() {
+    public static ContractCRUDService getContractCRUDService() {
         return new ContractCRUDImpl();
     }
 }

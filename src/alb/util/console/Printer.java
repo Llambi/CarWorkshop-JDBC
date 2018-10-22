@@ -1,6 +1,7 @@
 package alb.util.console;
 
 import java.io.PrintStream;
+import java.util.Map;
 
 /**
  * Métodos de utilidad para escribir cosas en pantalla de forma controlada.

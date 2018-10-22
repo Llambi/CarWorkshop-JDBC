@@ -1,7 +1,7 @@
 package uo.ri.persistence.impl;
 
 import alb.util.jdbc.Jdbc;
-import uo.ri.business.ContractTypeCRUDService;
+import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.PayrollGateway;
@@ -10,8 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
 
 public class PayrollGatewayImpl implements PayrollGateway {
     @Override
@@ -38,5 +36,31 @@ public class PayrollGatewayImpl implements PayrollGateway {
             Jdbc.close(rs, pst);
         }
         return acumSalary;
+    }
+
+    @Override
+    public int countPayRolls(ContractDto contractDto) {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        int payrolls = 0;
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_COUNT_PAYROLLS_BY_CONTRACT_ID"));
+            pst.setLong(1, contractDto.id);
+            pst.executeUpdate();
+            rs = pst.executeQuery();
+
+            if (rs.next()) {
+                payrolls = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+        return payrolls;
     }
 }

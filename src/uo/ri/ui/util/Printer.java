@@ -1,8 +1,6 @@
 package uo.ri.ui.util;
 
 import alb.util.console.Console;
-import uo.ri.business.dto.ContractTypeDto;
-import uo.ri.business.dto.MechanicDto;
 
 import java.util.List;
 import java.util.Map;
@@ -195,4 +193,28 @@ public class Printer {
         }
     }
 
+    public static void printLiquidacion(Map<String, Object> liquidacion) {
+        if (liquidacion != null)
+            Console.printf("Se a liquidado un contrato del mecanico, con en siguiente resultado:\n" +
+                            "\t· Salario bruto : %.2f€\n" +
+                            "\t· Dias indemnizados : %d\n" +
+                            "\t· Años de contrato : %d\n" +
+                            "\t· Total : %.2f€\n\n", liquidacion.get("salarioBruto"), liquidacion.get("indemnizacion"),
+                    liquidacion.get("añosContrato"), liquidacion.get("total"));
+    }
+
+    public static void printDeleteContract() {
+        Console.println();
+        Console.println("Se ha eliminado el contrato");
+    }
+
+    public static void printUpdateContract() {
+        Console.println();
+        Console.println("Se ha actualizado el contrato");
+    }
+
+    public static void printTerminateContract() {
+        Console.println();
+        Console.println("Se ha extinto el contrato");
+    }
 }

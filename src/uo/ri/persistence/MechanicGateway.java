@@ -16,4 +16,6 @@ public interface MechanicGateway {
     List<MechanicDto> findAllMechanics();
 
     List<MechanicDto> findAllMechanicsByContractType(ContractTypeDto contractTypeDto);
+
+    MechanicDto findMechanic(MechanicDto mechanicDto);
 }

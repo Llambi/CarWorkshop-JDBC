@@ -9,7 +9,16 @@ import java.util.List;
 
 public interface ContractGateway {
     List<ContractDto> findContract(ContractTypeDto contractDto);
+
     List<ContractDto> findContract(MechanicDto mechanicDto);
+
+    ContractDto findContract(ContractDto contractDto);
+
     void addContract(MechanicDto mechanicDto, ContractTypeDto contractTypeDto, ContractCategoryDto contractCategoryDto, ContractDto contractDto);
-    void updateContract(ContractDto previousContrac);
+
+    void terminateContract(ContractDto previousContrac);
+
+    void updateContract(ContractDto contractDto);
+
+    void deleteContract(ContractDto contractDto);
 }
