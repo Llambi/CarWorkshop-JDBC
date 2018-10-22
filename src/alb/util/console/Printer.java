@@ -1,11 +1,6 @@
 package alb.util.console;
 
-import uo.ri.business.dto.ContractDto;
-import uo.ri.business.dto.MechanicDto;
-import uo.ri.persistence.impl.ContracStatus;
-
 import java.io.PrintStream;
-import java.util.Map;
 
 /**
  * Métodos de utilidad para escribir cosas en pantalla de forma controlada.
