@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -88,6 +87,40 @@ public class ContractGatewayImpl implements ContractGateway {
     }
 
     @Override
+    public ContractDto findContract(ContractDto contractDto) {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        ContractDto contract = new ContractDto();
+
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_BY_ID"));
+            pst.setLong(1, contractDto.id);
+
+            pst.executeUpdate();
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                contract.mechanicId = rs.getLong(1);
+                contract.typeId = rs.getLong(2);
+                contract.categoryId = rs.getLong(3);
+                contract.startDate = rs.getDate(4);
+                contract.endDate = rs.getDate(5);
+                contract.yearBaseSalary = rs.getDouble(6);
+                contract.id = contractDto.id;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+        return contract;
+    }
+
+    @Override
     public void addContract(MechanicDto mechanicDto, ContractTypeDto contractTypeDto, ContractCategoryDto contractCategoryDto, ContractDto contractDto) {
         Connection c = null;
         PreparedStatement pst = null;
@@ -101,10 +134,33 @@ public class ContractGatewayImpl implements ContractGateway {
             pst.setDate(2, new java.sql.Date(contractDto.endDate.getTime()));
             pst.setDouble(3, contractDto.yearBaseSalary);
             pst.setDouble(4, contractDto.compensation);
-            pst.setString(5, Contracstatus.ACTIVE.toString());
+            pst.setString(5, ContracStatus.ACTIVE.toString());
             pst.setLong(6, mechanicDto.id);
             pst.setLong(7, contractCategoryDto.id);
             pst.setLong(8, contractTypeDto.id);
+
+            pst.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+    }
+
+    @Override
+    public void terminateContract(ContractDto contractDto) {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_TERMINATE_CONTRACT"));
+            pst.setString(1, ContracStatus.FINISHED.toString());
+            pst.setDate(2, new java.sql.Date(contractDto.endDate.getTime()));
+            pst.setLong(3, contractDto.id);
 
             pst.executeUpdate();
 
@@ -125,8 +181,29 @@ public class ContractGatewayImpl implements ContractGateway {
             c = Jdbc.getCurrentConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_CONTRACT"));
-            pst.setString(1, Contracstatus.FINISHED.toString());
-            pst.setLong(2, contractDto.id);
+            pst.setDouble(1, contractDto.compensation);
+            pst.setDouble(2, contractDto.yearBaseSalary);
+
+            pst.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+    }
+
+    @Override
+    public void deleteContract(ContractDto contractDto) {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_DELETE_CONTRACT"));
+            pst.setLong(1, contractDto.id);
 
             pst.executeUpdate();
 

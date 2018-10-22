@@ -1,6 +1,6 @@
 package uo.ri.persistence.impl;
 
-public enum Contracstatus {
+public enum ContracStatus {
     FINISHED {
         public String toString() {
             return "FINISHED";

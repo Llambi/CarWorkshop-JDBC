@@ -1,7 +1,9 @@
 package uo.ri.persistence.impl;
 
 import alb.util.jdbc.Jdbc;
+import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
+import uo.ri.business.dto.MechanicDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.ContractTypeGateway;
 
@@ -108,5 +110,59 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
             Jdbc.close(rs, pst);
         }
         return contractTypes;
+    }
+
+    @Override
+    public ContractTypeDto findContractType(ContractTypeDto contractTypeDto) {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        ContractTypeDto contractType = new ContractTypeDto();
+
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPE_BY_NAME"));
+            pst.setString(1,contractTypeDto.name);
+
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                contractType.id = rs.getLong(1);
+                contractType.name = rs.getString(2);
+                contractType.compensationDays = rs.getInt(3);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+        return contractType;
+    }
+
+    @Override
+    public ContractTypeDto findContractType(ContractDto contractDto) {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        ContractTypeDto contractType = new ContractTypeDto();
+
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPE_BY_ID"));
+            pst.setLong(1,contractDto.typeId);
+
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                contractType.id = rs.getLong(1);
+                contractType.name = rs.getString(2);
+                contractType.compensationDays = rs.getInt(3);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+        return contractType;
     }
 }

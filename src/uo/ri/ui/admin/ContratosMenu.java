@@ -1,6 +1,7 @@
 package uo.ri.ui.admin;
 
 import alb.util.menu.BaseMenu;
+import uo.ri.ui.admin.action.contract.TerminateContractAction;
 import uo.ri.ui.admin.action.contract.AddContractAction;
 import uo.ri.ui.admin.action.contract.DeleteContractAction;
 import uo.ri.ui.admin.action.contract.ListContractAction;
@@ -14,6 +15,7 @@ public class ContratosMenu extends BaseMenu {
 
                 {"Añadir contrato a un mecanico", AddContractAction.class},
                 {"Modificar datos del contrato de un mecanico", UpdateContractAction.class},
+                {"Extinguir contrato de un mecanico", TerminateContractAction.class},
                 {"Eliminar contrato de un mecanico", DeleteContractAction.class},
                 {"Listar contratos de un mecanico", ListContractAction.class}
         };

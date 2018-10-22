@@ -1,32 +1,38 @@
 package uo.ri.business.impl;
 
-import uo.ri.business.ContradtCRUDService;
+import uo.ri.business.ContractCRUDService;
 import uo.ri.business.dto.ContractCategoryDto;
 import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.dto.MechanicDto;
-import uo.ri.business.impl.transactionScript.contract.AddContract;
+import uo.ri.business.impl.transactionScript.contract.*;
 
 import java.util.Map;
 
-public class ContractCRUDImpl implements ContradtCRUDService {
+public class ContractCRUDImpl implements ContractCRUDService {
     @Override
-    public void addContract(MechanicDto mechanicDto, ContractTypeDto contractTypeDto, ContractCategoryDto contractCategoryDto, ContractDto contractDto) {
-        new AddContract(mechanicDto, contractTypeDto, contractCategoryDto, contractDto).execute();
+    public Map<String, Object> addContract(MechanicDto mechanicDto, ContractTypeDto contractTypeDto, ContractCategoryDto contractCategoryDto, ContractDto contractDto) {
+        return new AddContract(mechanicDto, contractTypeDto, contractCategoryDto, contractDto).execute();
     }
 
     @Override
-    public void deleteContract(ContractTypeDto contractTypeDto) {
-
+    public void deleteContract(ContractDto contractDto) {
+        new DeleteContract(contractDto).execute();
     }
 
     @Override
-    public void updateContract(ContractTypeDto contractTypeDto) {
-
+    public void updateContract(ContractDto contractDto) {
+        new UpdateContract(contractDto).execute();
     }
 
     @Override
-    public Map<ContractTypeDto, Map<String, Object>> findAllContractType() {
-        return null;
+    public Map<ContractDto, Map<String, Object>> findAllContract(MechanicDto mechanicDto) {
+        return new FindAllContracts(mechanicDto).execute();
     }
+
+    @Override
+    public Map<String, Object> terminateContract(ContractDto contractDto) {
+        return new TerminateContract(contractDto).execute();
+    }
+
 }

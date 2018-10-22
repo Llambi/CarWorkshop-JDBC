@@ -1,5 +1,6 @@
 package uo.ri.conf;
 
+import uo.ri.business.dto.ContractCategoryDto;
 import uo.ri.persistence.*;
 import uo.ri.persistence.impl.*;
 
@@ -45,5 +46,9 @@ public class GatewayFactory {
 
     public static ContractGateway getContractGateway() {
         return new ContractGatewayImpl();
+    }
+
+    public static ContractCategoryGateway getContractCategoryGateway() {
+        return new ContractCategoryGatewayImpl();
     }
 }

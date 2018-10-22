@@ -3,6 +3,7 @@ package uo.ri.persistence.impl;
 import alb.util.date.Dates;
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.BreakdownDto;
+import uo.ri.business.dto.ContractDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.BreakdownGateway;
 import uo.ri.persistence.exception.PersistanceException;
@@ -51,7 +52,7 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
     }
 
     @Override
-    public void updateBreakdown(Long id,String column, String status) throws PersistanceException {
+    public void updateBreakdown(Long id, String column, String status) throws PersistanceException {
         PreparedStatement pst = null;
         try {
             pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_ACTUALIZAR_ESTADO_AVERIA_GENERICO"));
@@ -133,10 +134,41 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
             return breakdowns;
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar averias si facturar:\n\t"+e.getStackTrace());
+            throw new PersistanceException("Error al recuperar averias si facturar:\n\t" + e.getStackTrace());
         } finally {
             Jdbc.close(rs, pst);
         }
+    }
+
+    @Override
+    public List<BreakdownDto> findMechanicBreakDowns(ContractDto contractDto) {
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        List<BreakdownDto> breakdowns = new LinkedList<>();
+        try {
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_AVERIAS_MECCANICO"));
+
+            pst.setLong(1, contractDto.id);
+
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                BreakdownDto breakdown = new BreakdownDto();
+                breakdown.id = rs.getLong(1);
+                breakdown.date = Dates.fromString(rs.getString(2));
+                breakdown.status = rs.getString(3);
+                breakdown.total = Double.parseDouble(rs.getString(4));
+                breakdown.description = rs.getString(5);
+
+                breakdowns.add(breakdown);
+            }
+
+        } catch (SQLException ignored) {
+
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+        return breakdowns;
     }
 
 }
