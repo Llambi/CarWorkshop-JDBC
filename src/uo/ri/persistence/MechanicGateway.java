@@ -2,20 +2,21 @@ package uo.ri.persistence;
 
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.dto.MechanicDto;
+import uo.ri.persistence.exception.PersistanceException;
 
 import java.util.List;
 
 public interface MechanicGateway {
 
-    void addMechanic(MechanicDto mechanic);
+    void addMechanic(MechanicDto mechanic) throws PersistanceException;
 
-    void deleteMechanic(MechanicDto mechanic);
+    void deleteMechanic(MechanicDto mechanic) throws PersistanceException;
 
-    void updateMechanic(MechanicDto mechanic);
+    void updateMechanic(MechanicDto mechanic) throws PersistanceException;
 
-    List<MechanicDto> findAllMechanics();
+    List<MechanicDto> findAllMechanics() throws PersistanceException;
 
-    List<MechanicDto> findAllMechanicsByContractType(ContractTypeDto contractTypeDto);
+    List<MechanicDto> findAllMechanicsByContractType(ContractTypeDto contractTypeDto) throws PersistanceException;
 
-    MechanicDto findMechanic(MechanicDto mechanicDto);
+    MechanicDto findMechanic(MechanicDto mechanicDto) throws PersistanceException;
 }

@@ -27,7 +27,7 @@ public class InterventionGatewayImpl implements InterventionGateway {
             return rs.getDouble(1);
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error en el calculo del importe de la mano de obra:\n\t" + e.getStackTrace());
+            throw new PersistanceException("Error en el calculo del importe de la mano de obra:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }

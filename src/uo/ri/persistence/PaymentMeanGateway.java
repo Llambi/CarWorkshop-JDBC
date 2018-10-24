@@ -9,6 +9,6 @@ import java.util.List;
 public interface PaymentMeanGateway {
 
     List<PaymentMeanDto> findPaymentMean(String campo, Long valor) throws PersistanceException;
-    void updatePaymentMean(PaymentMeanDto paymentMean);
-    void updatePaymentMean(VoucherDto paymentMean);
+    void updatePaymentMean(PaymentMeanDto paymentMean) throws PersistanceException;
+    void updatePaymentMean(VoucherDto paymentMean) throws PersistanceException;
 }

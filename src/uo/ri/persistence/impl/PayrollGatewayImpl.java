@@ -5,6 +5,7 @@ import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.PayrollGateway;
+import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +14,7 @@ import java.sql.SQLException;
 
 public class PayrollGatewayImpl implements PayrollGateway {
     @Override
-    public Double getTotalBaseSalary(ContractTypeDto contractTypeDto) {
+    public Double getTotalBaseSalary(ContractTypeDto contractTypeDto) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -28,10 +29,12 @@ public class PayrollGatewayImpl implements PayrollGateway {
 
             if (rs.next()) {
                 acumSalary = rs.getDouble(1);
+            } else {
+                throw new PersistanceException("No existe un acumulado de salario por tipo de contrato con nombre: " + contractTypeDto.name);
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new PersistanceException("Error al recuperar el acumulado de salario de un tipo de contrato:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -39,7 +42,7 @@ public class PayrollGatewayImpl implements PayrollGateway {
     }
 
     @Override
-    public int countPayRolls(ContractDto contractDto) {
+    public int countPayRolls(ContractDto contractDto) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -54,10 +57,12 @@ public class PayrollGatewayImpl implements PayrollGateway {
 
             if (rs.next()) {
                 payrolls = rs.getInt(1);
+            } else {
+                throw new PersistanceException("No existen nominas para el contrato con identificador: " + contractDto.id);
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new PersistanceException("Error al recuperar las nominas de un contrato:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }

@@ -44,7 +44,7 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
 
 
         } catch (SQLException e) {
-            throw new PersistanceException("Erro base de datos:\n\t" + e.getStackTrace());
+            throw new PersistanceException("Erro base de datos:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -64,7 +64,7 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("No se ha actualizado la averia: \n\t" + e.getStackTrace());
+            throw new PersistanceException("No se ha actualizado la averia: \n\t" + e);
         } finally {
             Jdbc.close(pst);
         }
@@ -83,7 +83,7 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("No se ha actualizado la averia: \n\t" + e.getStackTrace());
+            throw new PersistanceException("No se ha actualizado la averia: \n\t" + e);
         } finally {
             Jdbc.close(pst);
         }
@@ -102,7 +102,7 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("No se ha actualizado la averia: \n\t" + e.getStackTrace());
+            throw new PersistanceException("No se ha actualizado la averia: \n\t" + e);
         } finally {
             Jdbc.close(pst);
         }
@@ -134,14 +134,14 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
             return breakdowns;
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar averias si facturar:\n\t" + e.getStackTrace());
+            throw new PersistanceException("Error al recuperar averias sin facturar:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
     }
 
     @Override
-    public List<BreakdownDto> findMechanicBreakDowns(ContractDto contractDto) {
+    public List<BreakdownDto> findMechanicBreakDowns(ContractDto contractDto) throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
         List<BreakdownDto> breakdowns = new LinkedList<>();
@@ -163,8 +163,8 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
                 breakdowns.add(breakdown);
             }
 
-        } catch (SQLException ignored) {
-
+        } catch (SQLException e) {
+            throw new PersistanceException("Error al recuperar averias de un mecanico dado:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }

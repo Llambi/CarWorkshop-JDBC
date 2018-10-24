@@ -11,14 +11,10 @@ import java.util.Map;
 public interface InvoiceGateway {
     InvoiceDto createInvoice(InvoiceDto invoice) throws PersistanceException;
 
-    List<BreakdownDto> readInvoice(Long id);
-
     InvoiceDto listInvoice(Long number) throws PersistanceException;
 
     Long listLastInvoice() throws PersistanceException;
 
     void updateInvoice(String campo, String estado, Long id) throws PersistanceException;
-
-    double checkTotalInvoice(InvoiceDto invoice, Map<Integer, PaymentMeanDto> formatoPagos, List<PaymentMeanDto> mediosPago);
 
 }

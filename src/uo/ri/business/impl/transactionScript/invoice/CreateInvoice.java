@@ -76,7 +76,7 @@ public class CreateInvoice {
             try {
                 breakdown = breakdownGateway.findBreakdown(id);
             } catch (PersistanceException e) {
-                throw new BusinessException("No existe la averia:\n\t" + e.getStackTrace());
+                throw new BusinessException("No existe la averia:\n\t" + e);
             }
 
             if (!"TERMINADA".equalsIgnoreCase(breakdown.status)) {
@@ -93,7 +93,7 @@ public class CreateInvoice {
             try {
                 GatewayFactory.getBreakdownGateway().updateBreakdown(id, "status", "FACTURADA");
             } catch (PersistanceException e) {
-                throw new BusinessException("Averia no actualizada:\n\t" + e.getStackTrace());
+                throw new BusinessException("Averia no actualizada:\n\t" + e);
             }
         }
 
@@ -105,7 +105,7 @@ public class CreateInvoice {
             try {
                 GatewayFactory.getBreakdownGateway().updateBreakdown(id, "factura_id", idFactura);
             } catch (PersistanceException e) {
-                throw new BusinessException("Averia no vinculada:\n\t" + e.getStackTrace());
+                throw new BusinessException("Averia no vinculada:\n\t" + e);
             }
         }
     }
@@ -115,7 +115,7 @@ public class CreateInvoice {
         try {
             numero = getGeneratedKey(GatewayFactory.getInvoiceGateway().createInvoice(invoice).number);
         } catch (PersistanceException e) {
-            throw new BusinessException("Factura no creada:\n\t" + e.getStackTrace());
+            throw new BusinessException("Factura no creada:\n\t" + e);
         }
         return numero;
     }
@@ -125,7 +125,7 @@ public class CreateInvoice {
         try {
             return GatewayFactory.getInvoiceGateway().listInvoice(numeroFactura).id;
         } catch (PersistanceException e) {
-            throw new BusinessException("Clave no generada:\n\t" + e.getStackTrace());
+            throw new BusinessException("Clave no generada:\n\t" + e);
         }
 
     }
@@ -134,7 +134,7 @@ public class CreateInvoice {
         try {
             return GatewayFactory.getInvoiceGateway().listLastInvoice();
         } catch (PersistanceException e) {
-            throw new BusinessException("Error al generar un nuevo numero de factura:\n\t" + e.getStackTrace());
+            throw new BusinessException("Error al generar un nuevo numero de factura:\n\t" + e);
         }
 
     }
@@ -144,7 +144,7 @@ public class CreateInvoice {
     }
 
     private double calcularImportesAverias(List<Long> ids)
-            throws BusinessException, SQLException {
+            throws BusinessException {
 
         double totalFactura = 0.0;
         for (Long id : ids) {
@@ -164,7 +164,7 @@ public class CreateInvoice {
         try {
             GatewayFactory.getBreakdownGateway().updateBreakdown(idAveria, "importe", totalAveria);
         } catch (PersistanceException e) {
-            throw new BusinessException("No se ha actualizado el importe de la averia:\n\t"+ e.getStackTrace());
+            throw new BusinessException("No se ha actualizado el importe de la averia:\n\t" + e);
         }
 
     }
@@ -174,7 +174,7 @@ public class CreateInvoice {
         try {
             return GatewayFactory.getSpareGateway().getSpareTotalImport(idAveria);
         } catch (PersistanceException e) {
-            throw new BusinessException("Error en el calculo del importe de los repuestos:\n\t"+e.getStackTrace());
+            throw new BusinessException("Error en el calculo del importe de los repuestos:\n\t" + e);
         }
 
     }
@@ -184,7 +184,7 @@ public class CreateInvoice {
         try {
             return GatewayFactory.getInterventionGateway().getManPowerTotalImport(idAveria);
         } catch (PersistanceException e) {
-            throw new BusinessException("Error en el calculo del importe de la mano de obra:\n\t"+e.getStackTrace());
+            throw new BusinessException("Error en el calculo del importe de la mano de obra:\n\t" + e);
         }
 
     }

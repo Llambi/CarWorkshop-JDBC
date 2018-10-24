@@ -54,7 +54,7 @@ public class ListInvoice {
             return invoice;
 
         } catch (PersistanceException e) {
-            throw new BusinessException("Error al recuperara la factura:"+e.getStackTrace());
+            throw new BusinessException("Error al recuperara la factura:" + e);
         }
 
     }

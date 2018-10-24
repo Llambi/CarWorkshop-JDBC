@@ -27,7 +27,7 @@ public class SpareGatewayImpl implements SpareGateway {
             return rs.getDouble(1);
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error en el calculo del importe total de repuestos:\n\t"+e.getStackTrace());
+            throw new PersistanceException("Error en el calculo del importe total de repuestos:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }

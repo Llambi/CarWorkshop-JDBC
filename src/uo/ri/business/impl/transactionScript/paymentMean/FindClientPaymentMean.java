@@ -1,17 +1,15 @@
 package uo.ri.business.impl.transactionScript.paymentMean;
 
 import alb.util.jdbc.Jdbc;
-import uo.ri.business.dto.*;
+import uo.ri.business.dto.ClientDto;
+import uo.ri.business.dto.InvoiceDto;
+import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.exception.BusinessException;
-import uo.ri.conf.Conf;
 import uo.ri.conf.GatewayFactory;
 import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 
 public class FindClientPaymentMean {
@@ -56,7 +54,7 @@ public class FindClientPaymentMean {
             }
             return cliente;
         } catch (PersistanceException e) {
-            throw new BusinessException("Error al recuperar el cliente:\n\t"+e);
+            throw new BusinessException("Error al recuperar el cliente:\n\t" + e);
         }
 
     }
@@ -66,7 +64,7 @@ public class FindClientPaymentMean {
         try {
             return GatewayFactory.getPaymentMeanGateway().findPaymentMean("cliente_id", idCliente);
         } catch (PersistanceException e) {
-            throw new BusinessException("Error al recuperar los medios de pago del cliente:\n\t"+e.getStackTrace());
+            throw new BusinessException("Error al recuperar los medios de pago del cliente:\n\t" + e);
         }
 
     }
