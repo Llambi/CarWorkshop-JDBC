@@ -9,14 +9,18 @@ import uo.ri.ui.util.Printer;
 
 import java.util.Map;
 
-public class TerminateContractAction implements Action{
+/**
+ * Clase que contiene la ui para terminar un contrato.
+ */
+public class TerminateContractAction implements Action {
 
     @Override
     public void execute() throws Exception {
         ContractDto contractDto = new ContractDto();
 
         contractDto.id = Console.readLong("Identificador del contrato a extinguir");
-        contractDto.endDate = Dates.fromString(Console.readString("Fecha de extincion del contrato (Formato dd-mm-aaaa)"));
+        contractDto.endDate = Dates.fromString(Console
+                .readString("Fecha de extincion del contrato (Formato dd-mm-aaaa)"));
 
         Map<String, Object> liquidacion = ServiceFactory.getContractCRUDService().terminateContract(contractDto);
 

@@ -10,11 +10,15 @@ import uo.ri.ui.util.Printer;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Clase que contiene la ui para listar los tipos de contratos.
+ */
 public class ListContractTypeAction implements Action {
     @Override
     public void execute() throws Exception {
 
-        Map<ContractTypeDto, Map<String, Object>> contractTypeDtos = ServiceFactory.getContractTypeCRUDService().findAllContractType();
+        Map<ContractTypeDto, Map<String, Object>> contractTypeDtos = ServiceFactory.getContractTypeCRUDService()
+                .findAllContractType();
         Printer.printListContractTypes(contractTypeDtos);
     }
 }

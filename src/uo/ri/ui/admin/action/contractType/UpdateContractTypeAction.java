@@ -5,9 +5,10 @@ import alb.util.menu.Action;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.conf.ServiceFactory;
 
+/**
+ * Clase que contiene la ui para actualizar un tipo de contrato.
+ */
 public class UpdateContractTypeAction implements Action {
-
-
 
     @Override
     public void execute() throws Exception {

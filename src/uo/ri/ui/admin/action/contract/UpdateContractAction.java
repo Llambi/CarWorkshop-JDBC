@@ -8,6 +8,9 @@ import uo.ri.conf.GatewayFactory;
 import uo.ri.conf.ServiceFactory;
 import uo.ri.ui.util.Printer;
 
+/**
+ * Clase que contiene la ui para actualizar un contrato.
+ */
 public class UpdateContractAction implements Action {
     @Override
     public void execute() throws Exception {

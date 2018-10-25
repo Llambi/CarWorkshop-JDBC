@@ -6,24 +6,25 @@ import uo.ri.business.dto.MechanicDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.ServiceFactory;
 
+/**
+ * Clase que contiene la ui para actualizar un mecanico.
+ */
 public class UpdateMechanicAction implements Action {
 
+    @Override
+    public void execute() throws BusinessException {
 
+        MechanicDto mechanic = new MechanicDto();
 
-	@Override
-	public void execute() throws BusinessException {
+        // Pedir datos
+        mechanic.id = Console.readLong("Id del mecánico");
+        mechanic.name = Console.readString("Nombre");
+        mechanic.surname = Console.readString("Apellidos");
 
-		MechanicDto mechanic = new MechanicDto();
+        ServiceFactory.getMechanicCRUDService().updateMechanic(mechanic);
 
-		// Pedir datos
-		mechanic.id = Console.readLong("Id del mecánico");
-		mechanic.name = Console.readString("Nombre");
-		mechanic.surname = Console.readString("Apellidos");
-
-		new ServiceFactory().getMechanicCRUDService().updateMechanic(mechanic);
-		
-		// Mostrar resultado
-		Console.println("Mecánico actualizado");
-	}
+        // Mostrar resultado
+        Console.println("Mecánico actualizado");
+    }
 
 }

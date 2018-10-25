@@ -6,6 +6,9 @@ import uo.ri.business.dto.MechanicDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.ServiceFactory;
 
+/**
+ * Clase que contiene la ui para añadir un mecanico.
+ */
 public class AddMechanicAction implements Action {
 
 

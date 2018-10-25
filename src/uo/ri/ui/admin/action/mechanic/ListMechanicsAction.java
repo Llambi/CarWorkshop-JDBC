@@ -8,6 +8,9 @@ import uo.ri.business.dto.MechanicDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.ServiceFactory;
 
+/**
+ * Clase que contiene la ui para listar los mecanicos.
+ */
 public class ListMechanicsAction implements Action {
 
 
@@ -16,7 +19,7 @@ public class ListMechanicsAction implements Action {
 
         Console.println("\nListado de mecánicos\n");
 
-        List<MechanicDto> listMechanics = new ServiceFactory().getMechanicCRUDService().findAllMechanics();
+        List<MechanicDto> listMechanics = ServiceFactory.getMechanicCRUDService().findAllMechanics();
 
         for (MechanicDto mechanic : listMechanics) {
             Console.printf("%d - %s - %s - %s\n",
