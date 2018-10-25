@@ -14,7 +14,16 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Clase que contiene la persistencia de los mecanicos
+ */
 public class MechanicGatewayImpl implements MechanicGateway {
+    /**
+     * Metodoque que inserta un mecanico
+     *
+     * @param mechanic Informacion del mecanico a insertar.
+     * @throws PersistanceException
+     */
     @Override
     public void addMechanic(MechanicDto mechanic) throws PersistanceException {
         Connection c = null;
@@ -38,6 +47,12 @@ public class MechanicGatewayImpl implements MechanicGateway {
         }
     }
 
+    /**
+     * Metodo que elimina un mecanico.
+     *
+     * @param mechanic Que contiene el identifaicador del mecanico a eliminar
+     * @throws PersistanceException
+     */
     @Override
     public void deleteMechanic(MechanicDto mechanic) throws PersistanceException {
         Connection c = null;
@@ -59,6 +74,12 @@ public class MechanicGatewayImpl implements MechanicGateway {
         }
     }
 
+    /**
+     * Metodo que actualiza un mecanico.
+     *
+     * @param mechanic Nueva informacion del mecanico.
+     * @throws PersistanceException
+     */
     @Override
     public void updateMechanic(MechanicDto mechanic) throws PersistanceException {
         Connection c = null;
@@ -82,6 +103,12 @@ public class MechanicGatewayImpl implements MechanicGateway {
         }
     }
 
+    /**
+     * Metodo que recupera todos los mecanicos.
+     *
+     * @return Lista con todos los mecanicos.
+     * @throws PersistanceException
+     */
     @Override
     public List<MechanicDto> findAllMechanics() throws PersistanceException {
         Connection c = null;
@@ -111,8 +138,16 @@ public class MechanicGatewayImpl implements MechanicGateway {
         return mechanics;
     }
 
+    /**
+     * Metodo que recupera todos los mecanicos con un mismo tipo de contrato.
+     *
+     * @param contractTypeDto Que contiene el nombre del tipo de contrato del que se quieren recuperar los mecanicos.
+     * @return Lista de mecanicos de un tipo de contrato.
+     * @throws PersistanceException
+     */
     @Override
-    public List<MechanicDto> findAllMechanicsByContractType(ContractTypeDto contractTypeDto) throws PersistanceException {
+    public List<MechanicDto> findAllMechanicsByContractType(ContractTypeDto contractTypeDto)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -141,6 +176,13 @@ public class MechanicGatewayImpl implements MechanicGateway {
         return mechanics;
     }
 
+    /**
+     * Metodo que recupera un mecanico dado su dni.
+     *
+     * @param mechanicDto Que contiene el dni del mecanico a recuperar.
+     * @return Mecanico que se ha encontrado.
+     * @throws PersistanceException
+     */
     @Override
     public MechanicDto findMechanic(MechanicDto mechanicDto) throws PersistanceException {
         Connection c = null;

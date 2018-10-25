@@ -11,7 +11,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Clase que contiene la persistencia de las facturas.
+ */
 public class InvoiceGatewayImpl implements InvoiceGateway {
+    /**
+     * Metodo que inserta una factura.
+     *
+     * @param invoice informacion de la factura a insertar.
+     * @return Factura que se ha insertado.
+     * @throws PersistanceException
+     */
     @Override
     public InvoiceDto createInvoice(InvoiceDto invoice) throws PersistanceException {
         PreparedStatement pst = null;
@@ -35,6 +45,13 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
         return invoice;
     }
 
+    /**
+     * Metodo que recupera una factura por su numero.
+     *
+     * @param number Numero de la factura.
+     * @return Factura que se ha encontrado.
+     * @throws PersistanceException
+     */
     @Override
     public InvoiceDto listInvoice(Long number) throws PersistanceException {
         PreparedStatement pst = null;
@@ -67,13 +84,20 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
         return resultInvoice;
     }
 
+    /**
+     * Metodo que recupera la ultima factura creada.
+     *
+     * @return Factura que se ha encontrado.
+     * @throws PersistanceException
+     */
     @Override
     public Long listLastInvoice() throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
 
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_ULTIMO_NUMERO_FACTURA"));
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_ULTIMO_NUMERO_FACTURA"));
             rs = pst.executeQuery();
 
             if (rs.next()) {
@@ -88,12 +112,21 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
         }
     }
 
+    /**
+     * Metodo que actualiza una factura dado su identificador.
+     *
+     * @param campo  Campo que se quiere actualizar.
+     * @param estado Valor al que se quiere actualizar el campo.
+     * @param id     Identificador de la factura a actualizar.
+     * @throws PersistanceException
+     */
     @Override
     public void updateInvoice(String campo, String estado, Long id) throws PersistanceException {
         PreparedStatement pst = null;
 
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_INVOICE_ABONADA"));
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_UPDATE_INVOICE_ABONADA"));
 //            pst.setString(1, campo);
             pst.setString(1, estado);
             pst.setLong(2, id);

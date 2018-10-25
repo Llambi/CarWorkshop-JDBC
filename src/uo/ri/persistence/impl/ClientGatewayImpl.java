@@ -11,15 +11,27 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Clase que contiene la persistencia para clientes.
+ */
 public class ClientGatewayImpl implements ClientGateway {
 
+    /**
+     * Metodo que recura un cliente.
+     *
+     * @param campo Campo por el que se quiere recuperar un cliente.
+     * @param valor Valor del campo que se quiere encontrar.
+     * @return Cliente que se ha obtenido.
+     * @throws PersistanceException
+     */
     @Override
     public ClientDto findClient(String campo, Long valor) throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
         ClientDto client = new ClientDto();
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CLIENTE_ID_BY_ID_FACTURA"));
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_CLIENTE_ID_BY_ID_FACTURA"));
             pst.setBigDecimal(1, BigDecimal.valueOf(valor));
             rs = pst.executeQuery();
 

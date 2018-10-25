@@ -12,7 +12,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Clase que contiene la persistencia de nominas.
+ */
 public class PayrollGatewayImpl implements PayrollGateway {
+    /**
+     * Metodo que recupera el total de salario base dado un tipo de contrato.
+     *
+     * @param contractTypeDto Que contiene el nombre del tipo de contrato del que se quieren sumar los salarios base.
+     * @return Double con el acumulado de salarios base.
+     * @throws PersistanceException
+     */
     @Override
     public Double getTotalBaseSalary(ContractTypeDto contractTypeDto) throws PersistanceException {
         Connection c = null;
@@ -29,17 +39,26 @@ public class PayrollGatewayImpl implements PayrollGateway {
             if (rs.next()) {
                 acumSalary = rs.getDouble(1);
             } else {
-                throw new PersistanceException("No existe un acumulado de salario por tipo de contrato con nombre: " + contractTypeDto.name);
+                throw new PersistanceException("No existe un acumulado de salario por tipo de contrato con nombre: "
+                        + contractTypeDto.name);
             }
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar el acumulado de salario de un tipo de contrato:\n\t" + e);
+            throw new PersistanceException("Error al recuperar el acumulado de salario de un tipo de contrato:\n\t"
+                    + e);
         } finally {
             Jdbc.close(rs, pst);
         }
         return acumSalary;
     }
 
+    /**
+     * Metodo que recupera el numero de nominas emitidas a un contrato
+     *
+     * @param contractDto Que contiene ep identificador del contrato de las nominas.
+     * @return Numero de nominas de un contrato.
+     * @throws PersistanceException
+     */
     @Override
     public int countPayRolls(ContractDto contractDto) throws PersistanceException {
         Connection c = null;
@@ -56,7 +75,8 @@ public class PayrollGatewayImpl implements PayrollGateway {
             if (rs.next()) {
                 payrolls = rs.getInt(1);
             } else {
-                throw new PersistanceException("No existen nominas para el contrato con identificador: " + contractDto.id);
+                throw new PersistanceException("No existen nominas para el contrato con identificador: "
+                        + contractDto.id);
             }
 
         } catch (SQLException e) {
