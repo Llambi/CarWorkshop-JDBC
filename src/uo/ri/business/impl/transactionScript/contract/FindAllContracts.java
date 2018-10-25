@@ -27,7 +27,7 @@ public class FindAllContracts {
 
     public Map<ContractDto, Map<String, Object>> execute() throws BusinessException {
 
-        Map<ContractDto, Map<String, Object>> contracts = null;
+        Map<ContractDto, Map<String, Object>> contracts = new HashMap<>();
         try {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);

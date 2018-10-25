@@ -24,7 +24,6 @@ public class PayrollGatewayImpl implements PayrollGateway {
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_GET_ACUMSALARI_BY_CONTRACT_TYPE"));
             pst.setString(1, contractTypeDto.name);
-            pst.executeUpdate();
             rs = pst.executeQuery();
 
             if (rs.next()) {
@@ -52,7 +51,6 @@ public class PayrollGatewayImpl implements PayrollGateway {
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_COUNT_PAYROLLS_BY_CONTRACT_ID"));
             pst.setLong(1, contractDto.id);
-            pst.executeUpdate();
             rs = pst.executeQuery();
 
             if (rs.next()) {

@@ -23,7 +23,7 @@ public class ContractCategoryGatewayImpl implements ContractCategoryGateway {
             c = Jdbc.getCurrentConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_CATEGORY_BY_NAME"));
-            pst.setString(1, contractCategory.name);
+            pst.setString(1, contractCategoryDto.name);
 
             rs = pst.executeQuery();
             if (rs.next()) {

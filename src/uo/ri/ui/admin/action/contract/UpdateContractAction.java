@@ -13,7 +13,7 @@ public class UpdateContractAction implements Action {
     public void execute() throws Exception {
         ContractDto contractDto = new ContractDto();
         contractDto.id = Console.readLong("Identificador del contrato a actualizar");
-        contractDto.endDate = Dates.fromString(Console.readString("Nuevo fin de contrato (Formato dd/mm/aaaa"));
+        contractDto.endDate = Dates.fromString(Console.readString("Nuevo fin de contrato (Formato dd-mm-aaaa"));
         contractDto.yearBaseSalary = Console.readDouble("Nuevo salario base por año");
 
         ServiceFactory.getContractCRUDService().updateContract(contractDto);

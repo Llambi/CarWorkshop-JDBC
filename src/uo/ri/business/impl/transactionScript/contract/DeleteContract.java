@@ -28,6 +28,9 @@ public class DeleteContract {
 
             //Recuperamos contrato
             contractDto = GatewayFactory.getContractGateway().findContract(contractDto);
+            if(contractDto.id==null){
+                throw new BusinessException("No se cumple lo requerido para eliminar el contrato.");
+            }
             if(!checkMechanicActivity()){
                 GatewayFactory.getContractGateway().deleteContract(contractDto);
             }else{

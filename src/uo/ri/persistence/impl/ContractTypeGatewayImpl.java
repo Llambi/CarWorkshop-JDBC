@@ -23,7 +23,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         ResultSet rs = null;
 
         try {
-            c = Jdbc.getCurrentConnection();
+            c = Jdbc.getConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_ADD_CONTRACT_TYPE"));
             pst.setString(1, contracTypeDto.name);
@@ -34,7 +34,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         } catch (SQLException e) {
             throw new PersistanceException("Error al insertar el tipo de contrato:\n\t" + e);
         } finally {
-            Jdbc.close(rs, pst);
+            Jdbc.close(rs, pst, c);
         }
     }
 
@@ -66,7 +66,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         ResultSet rs = null;
 
         try {
-            c = Jdbc.getCurrentConnection();
+            c = Jdbc.getConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_CONTRACT_TYPE"));
             pst.setLong(1, contracTypeDto.compensationDays);
@@ -77,7 +77,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         } catch (SQLException e) {
             throw new PersistanceException("Error al actualizar el tipo de contrato:\n\t" + e);
         } finally {
-            Jdbc.close(rs, pst);
+            Jdbc.close(rs, pst, c);
         }
     }
 
@@ -91,8 +91,6 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
             c = Jdbc.getCurrentConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPE"));
-
-            pst.executeUpdate();
 
             rs = pst.executeQuery();
             while (rs.next()) {

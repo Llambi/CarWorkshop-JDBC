@@ -146,9 +146,9 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
         ResultSet rs = null;
         List<BreakdownDto> breakdowns = new LinkedList<>();
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_AVERIAS_MECCANICO"));
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_AVERIAS_MECANICO"));
 
-            pst.setLong(1, contractDto.id);
+            pst.setLong(1, contractDto.mechanicId);
 
             rs = pst.executeQuery();
 
@@ -157,7 +157,7 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
                 breakdown.id = rs.getLong(1);
                 breakdown.date = Dates.fromString(rs.getString(2));
                 breakdown.status = rs.getString(3);
-                breakdown.total = Double.parseDouble(rs.getString(4));
+                breakdown.total = rs.getDouble(4);
                 breakdown.description = rs.getString(5);
 
                 breakdowns.add(breakdown);

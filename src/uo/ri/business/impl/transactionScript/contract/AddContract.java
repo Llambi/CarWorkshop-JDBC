@@ -46,12 +46,14 @@ public class AddContract {
 
             // ultimo contrato del mecanico dado
             List<ContractDto> contractDtoList = GatewayFactory.getContractGateway().findContract(mechanicDto);
-            ContractDto previousContrac = contractDtoList.get(contractDtoList.size() - 1);
-            previousContrac.endDate = Dates.lastDayOfMonth(Dates.today());
+            if(contractDtoList.size()>0) {
+                ContractDto previousContrac = contractDtoList.get(contractDtoList.size() - 1);
+                previousContrac.endDate = Dates.lastDayOfMonth(Dates.today());
 
-            if (isPreviousContract(previousContrac)) {
-                GatewayFactory.getContractGateway().terminateContract(previousContrac);
-                liquidacion = liquidarContrato(previousContrac);
+                if (isPreviousContract(previousContrac)) {
+                    GatewayFactory.getContractGateway().terminateContract(previousContrac);
+                    liquidacion = liquidarContrato(previousContrac);
+                }
             }
             GatewayFactory.getContractGateway().addContract(mechanicDto, contractTypeDto, contractCategoryDto, contractDto);
 
@@ -106,7 +108,7 @@ public class AddContract {
             flag = true;
 
         } else {
-            if (Dates.isBefore(contractDto.endDate, previousContrac.endDate)) {
+            if (Dates.isBefore(contractDto.startDate, previousContrac.endDate)) {
                 // hay que extiguir contrato y liquidar
                 flag = true;
             }
