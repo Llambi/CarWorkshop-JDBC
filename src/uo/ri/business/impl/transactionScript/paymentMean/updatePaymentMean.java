@@ -1,14 +1,10 @@
 package uo.ri.business.impl.transactionScript.paymentMean;
 
-import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.dto.VoucherDto;
-import uo.ri.conf.Conf;
+import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import uo.ri.persistence.exception.PersistanceException;
 
 public class UpdatePaymentMean {
 
@@ -18,20 +14,24 @@ public class UpdatePaymentMean {
         this.paymentMean = paymentMean;
     }
 
-    public void execute() {
-        if (paymentMean instanceof VoucherDto){
-            updateVoucher();
-        }else{
-            updatePayment();
+    public void execute() throws BusinessException {
+        try {
+            if (paymentMean instanceof VoucherDto) {
+                updateVoucher();
+            } else {
+                updatePayment();
+            }
+        } catch (PersistanceException e) {
+            throw new BusinessException("Imposible actualizar los medios de pago.\n\t" + e);
         }
 
     }
 
-    private void updatePayment() {
+    private void updatePayment() throws PersistanceException {
         GatewayFactory.getPaymentMeanGateway().updatePaymentMean(paymentMean);
     }
 
-    private void updateVoucher() {
+    private void updateVoucher() throws PersistanceException {
         GatewayFactory.getPaymentMeanGateway().updatePaymentMean((VoucherDto) paymentMean);
     }
 }

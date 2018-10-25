@@ -5,7 +5,6 @@ import uo.ri.business.dto.CardDto;
 import uo.ri.business.dto.CashDto;
 import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.dto.VoucherDto;
-import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.PaymentMeanGateway;
 import uo.ri.persistence.exception.PersistanceException;
@@ -64,7 +63,7 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
                 paymentMeans.add(paymentMean);
             }
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar los medios de pago:\n\t"+e);
+            throw new PersistanceException("Error al recuperar los medios de pago:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -72,7 +71,7 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
     }
 
     @Override
-    public void updatePaymentMean(PaymentMeanDto paymentMean) {
+    public void updatePaymentMean(PaymentMeanDto paymentMean) throws PersistanceException {
         PreparedStatement pst = null;
 
         try {
@@ -82,14 +81,14 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new PersistanceException("Error al actualizar los medios de pago:\n\t" + e);
         } finally {
             Jdbc.close(pst);
         }
     }
 
     @Override
-    public void updatePaymentMean(VoucherDto paymentMean) {
+    public void updatePaymentMean(VoucherDto paymentMean) throws PersistanceException {
         PreparedStatement pst = null;
         VoucherDto voucher = (VoucherDto) paymentMean;
         try {
@@ -101,7 +100,7 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new PersistanceException("Error al actualizar los medios de pago:\n\t" + e);
         } finally {
             Jdbc.close(pst);
         }

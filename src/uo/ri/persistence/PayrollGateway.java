@@ -2,9 +2,10 @@ package uo.ri.persistence;
 
 import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
+import uo.ri.persistence.exception.PersistanceException;
 
 public interface PayrollGateway {
-    public Double getTotalBaseSalary(ContractTypeDto contractTypeDto);
+    Double getTotalBaseSalary(ContractTypeDto contractTypeDto) throws PersistanceException;
 
-    int countPayRolls(ContractDto contractDto);
+    int countPayRolls(ContractDto contractDto) throws PersistanceException;
 }

@@ -17,12 +17,12 @@ public class PaymentMeanCRUDImpl implements PaymentMeanCRUDService {
     }
 
     @Override
-    public void updatePaymentMean(PaymentMeanDto paymentMean) {
+    public void updatePaymentMean(PaymentMeanDto paymentMean) throws BusinessException {
         new UpdatePaymentMean(paymentMean).execute();
     }
 
     @Override
-    public void updatePaymentMean(VoucherDto paymentMean) {
+    public void updatePaymentMean(VoucherDto paymentMean) throws BusinessException {
         new UpdatePaymentMean(paymentMean).execute();
     }
 }

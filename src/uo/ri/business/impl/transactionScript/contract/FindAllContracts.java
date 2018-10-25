@@ -5,7 +5,9 @@ import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.dto.MechanicDto;
+import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.exception.PersistanceException;
 import uo.ri.persistence.impl.ContracStatus;
 
 import java.sql.Connection;
@@ -23,31 +25,32 @@ public class FindAllContracts {
         this.mechanicDto = mechanicDto;
     }
 
-    public Map<ContractDto, Map<String, Object>> execute() {
+    public Map<ContractDto, Map<String, Object>> execute() throws BusinessException {
 
-        Map<ContractDto, Map<String, Object>> contracts = null;
+        Map<ContractDto, Map<String, Object>> contracts = new HashMap<>();
         try {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
             List<ContractDto> mechanicContracts = GatewayFactory.getContractGateway().findContract(mechanicDto);
-            for (ContractDto contractDto : mechanicContracts){
+            for (ContractDto contractDto : mechanicContracts) {
                 ContractTypeDto contractTypeDto = GatewayFactory.getContractTypeGateway().findContractType(contractDto);
                 int numPayRolls = GatewayFactory.getPayrollGateway().countPayRolls(contractDto);
                 double liquidacion = liquidarContrato(contractDto, contractTypeDto);
-                Map<String, Object> mapa  =new HashMap<>();
-                mapa.put("payrolls",numPayRolls);
+                Map<String, Object> mapa = new HashMap<>();
+                mapa.put("payrolls", numPayRolls);
                 mapa.put("liquidacion", liquidacion);
-                contracts.put(contractDto,mapa);
+                contracts.put(contractDto, mapa);
             }
 
             connection.commit();
-        } catch (SQLException e) {
+        } catch (SQLException | PersistanceException e) {
             try {
                 connection.rollback();
+                throw new BusinessException("Imposible encontrar todos contratos.\n\t" + e);
             } catch (SQLException ignored) {
+                throw new BusinessException("Error en rollback.");
             }
-            throw new RuntimeException(e);
         } finally {
             Jdbc.close(connection);
         }
@@ -56,10 +59,10 @@ public class FindAllContracts {
 
     private double liquidarContrato(ContractDto previousContrac, ContractTypeDto contractTypeDto) {
         double contractYears = isOneYearWorked(previousContrac);
-        double total= 0.;
+        double total = 0.;
         Map<String, Object> liquidacion = null;
         if (previousContrac.status.equalsIgnoreCase(ContracStatus.FINISHED.toString()) && contractYears >= 1.0) {
-            total =previousContrac.yearBaseSalary * contractTypeDto.compensationDays * Math.round(contractYears);
+            total = previousContrac.yearBaseSalary * contractTypeDto.compensationDays * Math.round(contractYears);
         }
         return total;
     }

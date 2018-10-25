@@ -102,7 +102,7 @@ public class UpdateInvoice {
         try {
             GatewayFactory.getInvoiceGateway().updateInvoice("status", "ABONADA", invoice.id);
         } catch (PersistanceException e) {
-            throw new BusinessException("Factura no abonada:\n\t" + e.getStackTrace());
+            throw new BusinessException("Factura no abonada:\n\t" + e);
         }
 
     }

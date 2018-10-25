@@ -2,8 +2,9 @@ package uo.ri.business.impl.transactionScript.contractType;
 
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.ContractTypeDto;
-import uo.ri.business.dto.MechanicDto;
+import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class ListContractType {
     private Connection connection;
 
-    public Map<ContractTypeDto, Map<String, Object>> execute() {
+    public Map<ContractTypeDto, Map<String, Object>> execute() throws BusinessException {
         Map<ContractTypeDto, Map<String, Object>> mechanicsByContractTypeAndAcumSalary = new HashMap<>();
         try {
             connection = Jdbc.createThreadConnection();
@@ -33,12 +34,13 @@ public class ListContractType {
             }
 
             connection.commit();
-        } catch (SQLException e) {
+        } catch (SQLException | PersistanceException e) {
             try {
                 connection.rollback();
+                throw new BusinessException("Imposible recuperar los tipos de contratos.\n\t" + e);
             } catch (SQLException ignored) {
+                throw new BusinessException("Error en rollback.");
             }
-            throw new RuntimeException(e);
         } finally {
             Jdbc.close(connection);
         }

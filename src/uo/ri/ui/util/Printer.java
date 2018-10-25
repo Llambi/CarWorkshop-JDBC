@@ -2,6 +2,7 @@ package uo.ri.ui.util;
 
 import alb.util.console.Console;
 import uo.ri.business.dto.ContractDto;
+import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.dto.MechanicDto;
 import uo.ri.persistence.impl.ContracStatus;
 
@@ -221,14 +222,34 @@ public class Printer {
         Console.println("Se ha extinto el contrato");
     }
 
+    public static void printListContractTypes(Map<ContractTypeDto, Map<String, Object>> contractTypeDtos) {
+        Console.println();
+        for (Map.Entry<ContractTypeDto, Map<String, Object>> entry : contractTypeDtos.entrySet()) {
+            ContractTypeDto contractTypeDto = entry.getKey();
+            @SuppressWarnings("unchecked")
+            List<MechanicDto> mechanics = (List<MechanicDto>) entry.getValue().get("mechanic");
+            double acumSalary = (double) entry.getValue().get("acumSalary");
+
+            Console.printf("Los siguientes mecanicos tiene el contrato %s:\n\n", contractTypeDto.name);
+            for (MechanicDto mechanicDto : mechanics) {
+                Console.printf("\t%s %s\tDNI: %s\n", mechanicDto.name, mechanicDto.surname, mechanicDto.dni);
+            }
+            Console.println();
+            Console.printf("\tEl numero total de mecanicos con este tipo de contrato son: %s\n", mechanics.size());
+            Console.printf("\tEl salaruio acumulado de mecanicos con este tipo de contrato son: %s\n", acumSalary);
+            Console.println();
+        }
+    }
+
     public static void printListContracts(MechanicDto mechanicDto, Map<ContractDto, Map<String, Object>> contracts) {
-        Console.println("El mecanico con DNI " + mechanicDto.dni + " tiene los siguientes contratos");
+        Console.println("El mecanico con DNI " + mechanicDto.dni + " tiene los siguientes contratos:");
         for (Map.Entry<ContractDto, Map<String, Object>> entry : contracts.entrySet()) {
             ContractDto contractDto = entry.getKey();
             int payrolls = (int) entry.getValue().get("payrolls");
             double liquidacion = (double) entry.getValue().get("liquidacion");
-            Console.println("\tContrato no." + contractDto.id + (contractDto.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString()) ? " - ACTIVO" : ""));
-            Console.println(liquidacion>0?"\tLiquidacion de "+liquidacion+"€\n":"");
+            Console.println("\t·Contrato no." + contractDto.id + (contractDto.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString()) ? " - ACTIVO" : ""));
+            Console.println(payrolls > 0 ? "\t\t·Nominas expedidas " + payrolls + "€\n" : "\t\t·Sin nominas.");
+            Console.println(liquidacion > 0.0 ? "\t\t·Liquidacion de " + liquidacion + "€\n" : "\t\t·Sin liquidacion.");
         }
     }
 }

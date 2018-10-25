@@ -5,13 +5,14 @@ import java.util.List;
 import alb.util.console.Console;
 import alb.util.menu.Action;
 import uo.ri.business.dto.MechanicDto;
+import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.ServiceFactory;
 
 public class ListMechanicsAction implements Action {
 
 
     @Override
-    public void execute() {
+    public void execute() throws BusinessException {
 
         Console.println("\nListado de mecánicos\n");
 

@@ -25,13 +25,14 @@ public class AddContractAction implements Action {
         contractCategoryDto.name = Console.readString("Categoria del mecanico");
 
         ContractDto contractDto = new ContractDto();
-        String initMonthYear = Console.readString("Mes y año de inicio de contrato (Formato numerico mm/aaaa");
-        contractDto.startDate = Dates.fromString("1/" + initMonthYear);
+        String initMonthYear = Console.readString("Mes y año de inicio de contrato (Formato numerico mm-aaaa");
+        contractDto.startDate = Dates.fromString("1-" + initMonthYear);
         contractDto.yearBaseSalary = Console.readDouble("Salario base anual");
-        String endContractString = Console.readString("Fecha fin del contrato (Formato dd/mm/aaa)");
-        contractDto.endDate = endContractString.equals("") ? null : Dates.fromString(endContractString);
+        String endContractString = Console.readString("Fecha fin del contrato (Formato dd-mm-aaa) si no se desea, escribir no");
+        if (!endContractString.equalsIgnoreCase("no"))
+            contractDto.endDate = endContractString.equals("") ? null : Dates.fromString(endContractString);
 
-        Map<String, Object> liquidacion = ServiceFactory.getContractCRUDService().addContract(mechanicDto,contractTypeDto,contractCategoryDto,contractDto);
+        Map<String, Object> liquidacion = ServiceFactory.getContractCRUDService().addContract(mechanicDto, contractTypeDto, contractCategoryDto, contractDto);
         Printer.printLiquidacion(liquidacion);
 
         Console.println("Contrato añadido");
