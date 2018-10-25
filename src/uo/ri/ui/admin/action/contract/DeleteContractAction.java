@@ -6,6 +6,9 @@ import uo.ri.business.dto.ContractDto;
 import uo.ri.conf.ServiceFactory;
 import uo.ri.ui.util.Printer;
 
+/**
+ * Clase que contiene la ui para eliminar un contrato.
+ */
 public class DeleteContractAction implements Action {
     @Override
     public void execute() throws Exception {

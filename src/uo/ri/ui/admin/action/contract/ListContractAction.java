@@ -9,12 +9,16 @@ import uo.ri.ui.util.Printer;
 
 import java.util.Map;
 
+/**
+ * Clase que contiene la ui para listar los contratos.
+ */
 public class ListContractAction implements Action {
     @Override
     public void execute() throws Exception {
         MechanicDto mechanicDto = new MechanicDto();
         mechanicDto.dni = Console.readString("DNI del mecanico");
-        Map<ContractDto, Map<String,Object>> contracts = ServiceFactory.getContractCRUDService().findAllContract(mechanicDto);
+        Map<ContractDto, Map<String, Object>> contracts = ServiceFactory.getContractCRUDService()
+                .findAllContract(mechanicDto);
 
         Printer.printListContracts(mechanicDto, contracts);
     }

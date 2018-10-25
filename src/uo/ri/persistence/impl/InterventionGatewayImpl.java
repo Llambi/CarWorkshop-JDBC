@@ -9,7 +9,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Clase que contiene la persistencia de las intervenciones.
+ */
 public class InterventionGatewayImpl implements InterventionGateway {
+    /**
+     * Metodo que recupera el coste de mano de obra de una intervencion.
+     *
+     * @param idBreakdown Identificador de la averia de la intervencion.
+     * @return Double con el importe de la mano de obra.
+     * @throws PersistanceException
+     */
     @Override
     public Double getManPowerTotalImport(Long idBreakdown) throws PersistanceException {
         PreparedStatement pst = null;

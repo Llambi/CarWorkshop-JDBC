@@ -9,7 +9,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Clase que contiene la persistencia de los repuestos.
+ */
 public class SpareGatewayImpl implements SpareGateway {
+    /**
+     * Metodo que recupera el importe total de un repuesto.
+     *
+     * @param idBreakdown Identificador del respuesto del que se quiere saber su importe.
+     * @return Double con el importe total de un repuesto.
+     * @throws PersistanceException
+     */
     @Override
     public Double getSpareTotalImport(Long idBreakdown) throws PersistanceException {
         PreparedStatement pst = null;

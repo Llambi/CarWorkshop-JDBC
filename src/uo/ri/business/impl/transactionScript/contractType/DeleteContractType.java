@@ -14,6 +14,9 @@ import java.util.List;
 
 import static uo.ri.persistence.impl.ContracStatus.*;
 
+/**
+ * Clase que contiene la logica para la eliminacion de un tipo de contrato
+ */
 public class DeleteContractType {
     private ContractTypeDto contractTypeDto;
     private Connection connection;
@@ -22,6 +25,11 @@ public class DeleteContractType {
         this.contractTypeDto = contractTypeDto;
     }
 
+    /**
+     * Metodo que comprueba los prerequisitos de la eliminacion de un tipo de contrato y si los cumple lo elimina.
+     *
+     * @throws BusinessException
+     */
     public void execute() throws BusinessException {
 
         try {
@@ -29,14 +37,14 @@ public class DeleteContractType {
             connection.setAutoCommit(false);
 
             List<ContractDto> contractDtos = GatewayFactory.getContractGateway().findContract(contractTypeDto);
-            for (ContractDto contractDto: contractDtos){
-                if(contractDto.status!= ACTIVE.toString()){
+            for (ContractDto contractDto : contractDtos) {
+                if (contractDto.status != ACTIVE.toString()) {
                     contractDtos.remove(contractDto);
                 }
             }
-            if(contractDtos.size()==0) {
+            if (contractDtos.size() == 0) {
                 GatewayFactory.getContractTypeGateway().deleteContractType(contractTypeDto);
-            }else{
+            } else {
                 throw new BusinessException("No se cumple lo requerido para elimianr el tipo de contrato.");
             }
 

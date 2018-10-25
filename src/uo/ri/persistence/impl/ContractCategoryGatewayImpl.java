@@ -11,9 +11,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Clase que contiene la logica de las categorias de contratos.
+ */
 public class ContractCategoryGatewayImpl implements ContractCategoryGateway {
+    /**
+     * Metodo que recupera una categoria de contrato por su nombre.
+     *
+     * @param contractCategoryDto Categoria de contrato que contiene el nombre que se queiere buscar.
+     * @return Categoria de contrato que se ha obtenido.
+     * @throws PersistanceException
+     */
     @Override
-    public ContractCategoryDto findContractCategory(ContractCategoryDto contractCategoryDto) throws PersistanceException {
+    public ContractCategoryDto findContractCategory(ContractCategoryDto contractCategoryDto)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;

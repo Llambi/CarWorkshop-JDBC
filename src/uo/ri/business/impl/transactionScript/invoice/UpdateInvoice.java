@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Clase que contiene la logica para liquidar una factura.
+ */
 public class UpdateInvoice {
 
     private InvoiceDto invoice;
@@ -20,12 +23,19 @@ public class UpdateInvoice {
     private List<PaymentMeanDto> mediosPago;
     private Connection connection;
 
-    public UpdateInvoice(InvoiceDto invoice, Map<Integer, PaymentMeanDto> pagosSeleccionados, List<PaymentMeanDto> mediosPago) {
+    public UpdateInvoice(InvoiceDto invoice, Map<Integer, PaymentMeanDto> pagosSeleccionados
+            , List<PaymentMeanDto> mediosPago) {
         this.invoice = invoice;
         this.pagosSeleccionados = pagosSeleccionados;
         this.mediosPago = mediosPago;
     }
 
+    /**
+     * Metodo que realiza las operaciones necesarias para liquidar un factura dada.
+     *
+     * @return
+     * @throws BusinessException
+     */
     public double execute() throws BusinessException {
         double faltaPorPagar;
         try {
@@ -51,6 +61,12 @@ public class UpdateInvoice {
         return faltaPorPagar;
     }
 
+    /**
+     * Metodo que comprueba los metodos de pago seleccionados para liquidar una factura.
+     *
+     * @return Double con el importe que queda por pagar.
+     * @throws BusinessException
+     */
     private double checkPaymentMeanSelected() throws BusinessException {
         double total = invoice.total;
         Integer type;
@@ -75,6 +91,11 @@ public class UpdateInvoice {
 
     }
 
+    /**
+     * Metodo que liquida la factura.
+     *
+     * @throws BusinessException
+     */
     private void liquidarFactura() throws BusinessException {
         Integer type;
         double cantidad;
@@ -97,6 +118,11 @@ public class UpdateInvoice {
         updateInvoiceAbonada();
     }
 
+    /**
+     * Metodo que actualiza una factura al estado ABONADA.
+     *
+     * @throws BusinessException
+     */
     private void updateInvoiceAbonada() throws BusinessException {
 
         try {
@@ -107,6 +133,13 @@ public class UpdateInvoice {
 
     }
 
+    /**
+     * Metodo que devuelve el metodo de pago del cliente que corresponde.
+     *
+     * @param type Clave para seleccionar el medio de pago.
+     * @return Medio de pago del cliente seleccionado.
+     * @throws BusinessException
+     */
     private PaymentMeanDto findPaymentMean(Integer type) throws BusinessException {
         PaymentMeanDto paymentMean = null;
         switch (type) {
@@ -123,6 +156,12 @@ public class UpdateInvoice {
         return paymentMean;
     }
 
+    /**
+     * Metodo que devuelve el medio de pago de bono del cliente.
+     *
+     * @return Bono de un cliente.
+     * @throws BusinessException
+     */
     private VoucherDto findPaymentMeanVoucher() throws BusinessException {
         for (PaymentMeanDto paymentMean : mediosPago) {
             if (paymentMean instanceof VoucherDto) {
@@ -132,6 +171,12 @@ public class UpdateInvoice {
         throw new BusinessException("El cliente no tiene Bonos para usar como pago.");
     }
 
+    /**
+     * Metodo que devuelve el medio de pago de tarjeta del cliente.
+     *
+     * @return Tarjeta de un cliente.
+     * @throws BusinessException
+     */
     private CardDto findPaymentMeanCard() throws BusinessException {
         for (PaymentMeanDto paymentMean : mediosPago) {
             if (paymentMean instanceof CardDto) {
@@ -141,6 +186,12 @@ public class UpdateInvoice {
         throw new BusinessException("El cliente no tiene Tarjeta para usar como pago.");
     }
 
+    /**
+     * Metodo que devuelve el medio de pago de en metalico del cliente.
+     *
+     * @return Metalico de un cliente.
+     * @throws BusinessException
+     */
     private CashDto findPaymentMeanCash() throws BusinessException {
         for (PaymentMeanDto paymentMean : mediosPago) {
             if (paymentMean instanceof CashDto) {

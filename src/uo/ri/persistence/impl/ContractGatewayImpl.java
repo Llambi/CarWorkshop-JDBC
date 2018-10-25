@@ -19,7 +19,17 @@ import java.util.List;
 import static uo.ri.persistence.impl.ContracStatus.ACTIVE;
 import static uo.ri.persistence.impl.ContracStatus.FINISHED;
 
+/**
+ * Clase que contiene la persistencia de los contratos.
+ */
 public class ContractGatewayImpl implements ContractGateway {
+    /**
+     * Metodo que recupera uno o mas contratos mediante su tipo.
+     *
+     * @param contractTypeDto Categoria de contrato cuyo nombre se quiere usar para encontrar un contrato.
+     * @return Lista de contratos con la categoria dada.
+     * @throws PersistanceException
+     */
     @Override
     public List<ContractDto> findContract(ContractTypeDto contractTypeDto) throws PersistanceException {
         Connection c = null;
@@ -59,6 +69,13 @@ public class ContractGatewayImpl implements ContractGateway {
         return contracts;
     }
 
+    /**
+     * Metodo qu erecupera uno o mas contratos de un mecanico dado.
+     *
+     * @param mechanicDto Mecanico cuyo dni se quiere usar para encontrar los contratos.
+     * @return Lista de contratos del mecanico dado.
+     * @throws PersistanceException
+     */
     @Override
     public List<ContractDto> findContract(MechanicDto mechanicDto) throws PersistanceException {
         Connection c = null;
@@ -96,6 +113,13 @@ public class ContractGatewayImpl implements ContractGateway {
         return contracts;
     }
 
+    /**
+     * Metodo que recupera un contrato dado su identificador.
+     *
+     * @param contractDto Que contiene el identificador a buscar.
+     * @return Contrato encontrado.
+     * @throws PersistanceException
+     */
     @Override
     public ContractDto findContract(ContractDto contractDto) throws PersistanceException {
         Connection c = null;
@@ -131,8 +155,18 @@ public class ContractGatewayImpl implements ContractGateway {
         return contract;
     }
 
+    /**
+     * Metodo que inserta un nuevo contrato.
+     *
+     * @param mechanicDto         Mecanico del contrato.
+     * @param contractTypeDto     Tipo del contrato.
+     * @param contractCategoryDto Categoria del contrato.
+     * @param contractDto         Informacion del nuecvo contrato.
+     * @throws PersistanceException
+     */
     @Override
-    public void addContract(MechanicDto mechanicDto, ContractTypeDto contractTypeDto, ContractCategoryDto contractCategoryDto, ContractDto contractDto) throws PersistanceException {
+    public void addContract(MechanicDto mechanicDto, ContractTypeDto contractTypeDto
+            , ContractCategoryDto contractCategoryDto, ContractDto contractDto) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -142,7 +176,8 @@ public class ContractGatewayImpl implements ContractGateway {
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_ADD_CONTRACT"));
             pst.setDate(1, new java.sql.Date(contractDto.startDate.getTime()));
-            pst.setDate(2, contractDto.endDate == null ? null : new java.sql.Date(contractDto.endDate.getTime()));
+            pst.setDate(2, contractDto.endDate == null
+                    ? null : new java.sql.Date(contractDto.endDate.getTime()));
             pst.setDouble(3, contractDto.yearBaseSalary);
             pst.setDouble(4, contractDto.compensation);
             pst.setString(5, ACTIVE.toString());
@@ -159,6 +194,12 @@ public class ContractGatewayImpl implements ContractGateway {
         }
     }
 
+    /**
+     * Metodo que finaliza un contrato
+     *
+     * @param contractDto Informacion de la finalizacion del contrato.
+     * @throws PersistanceException
+     */
     @Override
     public void terminateContract(ContractDto contractDto) throws PersistanceException {
         Connection c = null;
@@ -182,6 +223,12 @@ public class ContractGatewayImpl implements ContractGateway {
         }
     }
 
+    /**
+     * Metodo para actualizar un contrato.
+     *
+     * @param contractDto Nueca informacion del contrato.
+     * @throws PersistanceException
+     */
     @Override
     public void updateContract(ContractDto contractDto) throws PersistanceException {
         Connection c = null;
@@ -205,6 +252,12 @@ public class ContractGatewayImpl implements ContractGateway {
         }
     }
 
+    /**
+     * Metodo que elimina un contrato.
+     *
+     * @param contractDto Que contiene el identificador del contrato que se quiere eliminar.
+     * @throws PersistanceException
+     */
     @Override
     public void deleteContract(ContractDto contractDto) throws PersistanceException {
         Connection c = null;

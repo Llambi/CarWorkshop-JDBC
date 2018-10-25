@@ -5,6 +5,9 @@ import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
 import uo.ri.persistence.exception.PersistanceException;
 
+/**
+ * Clase que contiene la logica para actualizar un tipo de contrato
+ */
 public class UpdateContractType {
     private ContractTypeDto contractTypeDto;
 
@@ -12,6 +15,11 @@ public class UpdateContractType {
         this.contractTypeDto = contractTypeDto;
     }
 
+    /**
+     * Metodo que actualiza un contrato si es posible
+     *
+     * @throws BusinessException
+     */
     public void execute() throws BusinessException {
         try {
             GatewayFactory.getContractTypeGateway().updateContractType(contractTypeDto);

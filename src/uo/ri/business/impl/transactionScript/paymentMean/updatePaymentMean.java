@@ -6,6 +6,9 @@ import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
 import uo.ri.persistence.exception.PersistanceException;
 
+/**
+ * Clase que contiene la logica para actualizar los medios de pago.
+ */
 public class UpdatePaymentMean {
 
     private PaymentMeanDto paymentMean;
@@ -14,6 +17,11 @@ public class UpdatePaymentMean {
         this.paymentMean = paymentMean;
     }
 
+    /**
+     * Metodo que actuliza un medio de pago dado.
+     *
+     * @throws BusinessException
+     */
     public void execute() throws BusinessException {
         try {
             if (paymentMean instanceof VoucherDto) {
@@ -27,10 +35,20 @@ public class UpdatePaymentMean {
 
     }
 
+    /**
+     * Metodo que actuliza un medio de pago, ya sea en metalico o tarjeta.
+     *
+     * @throws PersistanceException
+     */
     private void updatePayment() throws PersistanceException {
         GatewayFactory.getPaymentMeanGateway().updatePaymentMean(paymentMean);
     }
 
+    /**
+     * Metodo que actuliza un medio de pago de tipo Bono.
+     *
+     * @throws PersistanceException
+     */
     private void updateVoucher() throws PersistanceException {
         GatewayFactory.getPaymentMeanGateway().updatePaymentMean((VoucherDto) paymentMean);
     }

@@ -12,6 +12,9 @@ import uo.ri.ui.util.Printer;
 
 import java.util.Map;
 
+/**
+ * Clase que contiene la ui para añadir un contrato.
+ */
 public class AddContractAction implements Action {
     @Override
     public void execute() throws Exception {
@@ -28,11 +31,13 @@ public class AddContractAction implements Action {
         String initMonthYear = Console.readString("Mes y año de inicio de contrato (Formato numerico mm-aaaa");
         contractDto.startDate = Dates.fromString("1-" + initMonthYear);
         contractDto.yearBaseSalary = Console.readDouble("Salario base anual");
-        String endContractString = Console.readString("Fecha fin del contrato (Formato dd-mm-aaa) si no se desea, escribir no");
+        String endContractString = Console
+                .readString("Fecha fin del contrato (Formato dd-mm-aaa) si no se desea, escribir no");
         if (!endContractString.equalsIgnoreCase("no"))
             contractDto.endDate = endContractString.equals("") ? null : Dates.fromString(endContractString);
 
-        Map<String, Object> liquidacion = ServiceFactory.getContractCRUDService().addContract(mechanicDto, contractTypeDto, contractCategoryDto, contractDto);
+        Map<String, Object> liquidacion = ServiceFactory.getContractCRUDService()
+                .addContract(mechanicDto, contractTypeDto, contractCategoryDto, contractDto);
         Printer.printLiquidacion(liquidacion);
 
         Console.println("Contrato añadido");

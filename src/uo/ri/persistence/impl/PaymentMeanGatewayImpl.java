@@ -15,15 +15,27 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Clase que contiene la persistencia de los medios de pago.
+ */
 public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
 
+    /**
+     * Metodo que recupera los medios de pago.
+     *
+     * @param campo Campo que se quiere observar para recuperar los medios de pago.
+     * @param valor Valor que se quiere buscar en el campo.
+     * @return Lista de medios de pago que se han encontrado.
+     * @throws PersistanceException
+     */
     @Override
     public List<PaymentMeanDto> findPaymentMean(String campo, Long valor) throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
         List<PaymentMeanDto> paymentMeans = new LinkedList<>();
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_FIND_ALL_MEDIOS_PAGO"));
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_ALL_MEDIOS_PAGO"));
             pst.setLong(1, valor);
             rs = pst.executeQuery();
 
@@ -58,7 +70,8 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
                         paymentMean = tarjeta;
                         break;
                     default:
-                        throw new PersistanceException("No existe el metodo de pago: " + rs.getString("dtype"));
+                        throw new PersistanceException("No existe el metodo de pago: "
+                                + rs.getString("dtype"));
                 }
                 paymentMeans.add(paymentMean);
             }
@@ -70,12 +83,19 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
         return paymentMeans;
     }
 
+    /**
+     * Metodo que actualiza un medio de pago de tarjeta o metalico.
+     *
+     * @param paymentMean Nueva informacion del medio de pago.
+     * @throws PersistanceException
+     */
     @Override
     public void updatePaymentMean(PaymentMeanDto paymentMean) throws PersistanceException {
         PreparedStatement pst = null;
 
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_GASTO_MEDIOPAGO_OTROS"));
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_UPDATE_GASTO_MEDIOPAGO_OTROS"));
             pst.setDouble(1, paymentMean.accumulated);
             pst.setLong(2, paymentMean.id);
             pst.executeUpdate();
@@ -87,6 +107,12 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
         }
     }
 
+    /**
+     * Metodo que actualiza un medio de pago de bono.
+     *
+     * @param paymentMean Nueva informacion del medio de pago.
+     * @throws PersistanceException
+     */
     @Override
     public void updatePaymentMean(VoucherDto paymentMean) throws PersistanceException {
         PreparedStatement pst = null;

@@ -9,6 +9,9 @@ import uo.ri.persistence.exception.PersistanceException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Clase que contiene la logica para listar un factura.
+ */
 public class ListInvoice {
 
     private Connection connection;
@@ -18,6 +21,12 @@ public class ListInvoice {
         this.number = number;
     }
 
+    /**
+     * Metodo que comprueba los prerequisitos para el listado de una factura y la realiza.
+     *
+     * @return
+     * @throws BusinessException
+     */
     public InvoiceDto execute() throws BusinessException {
         InvoiceDto invoice = null;
 
@@ -42,6 +51,13 @@ public class ListInvoice {
         return invoice;
     }
 
+    /**
+     * Metodo que comprueba que un factura no esta abonada.
+     *
+     * @param number Numero de la factura que se quiere comprobar.
+     * @return Factura con el numero dado.
+     * @throws BusinessException
+     */
     private InvoiceDto verificarFacturaNoAbonada(Long number) throws BusinessException {
 
         try {

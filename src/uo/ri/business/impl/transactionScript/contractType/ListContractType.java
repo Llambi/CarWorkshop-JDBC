@@ -12,9 +12,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Clase que contiene la logica para el listado de los tipos de contrato con los mecanicos que lo tienen y el acumulado
+ * del salrio de estos.
+ */
 public class ListContractType {
     private Connection connection;
 
+    /**
+     * Metodo que recupera los tipos de contrato existentes junto con los mecanicos que tienen cada uno de ellos y el
+     * acumulado del salario de ellos.
+     *
+     * @return Un Map con la informacion antes detallada.
+     * @throws BusinessException
+     */
     public Map<ContractTypeDto, Map<String, Object>> execute() throws BusinessException {
         Map<ContractTypeDto, Map<String, Object>> mechanicsByContractTypeAndAcumSalary = new HashMap<>();
         try {
@@ -27,7 +38,8 @@ public class ListContractType {
             for (ContractTypeDto contractTypeDto : ContractTypes) {
                 Map<String, Object> auxDic = new HashMap<>();
 
-                auxDic.put("mechanic", GatewayFactory.getMechanicGateway().findAllMechanicsByContractType(contractTypeDto));
+                auxDic.put("mechanic", GatewayFactory.getMechanicGateway()
+                        .findAllMechanicsByContractType(contractTypeDto));
                 auxDic.put("acumSalary", GatewayFactory.getPayrollGateway().getTotalBaseSalary(contractTypeDto));
 
                 mechanicsByContractTypeAndAcumSalary.put(contractTypeDto, auxDic);

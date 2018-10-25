@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Clase que contiene la logica para listar todos los contratos.
+ */
 public class FindAllContracts {
     private MechanicDto mechanicDto;
     private Connection connection;
@@ -25,6 +28,13 @@ public class FindAllContracts {
         this.mechanicDto = mechanicDto;
     }
 
+    /**
+     * Metodo que recupera los contratos por mecanico.
+     *
+     * @return Un Map con los contratos y la informacion tanto de las nominas emitidas de cada uno
+     * como las liquidaciones de estos.
+     * @throws BusinessException
+     */
     public Map<ContractDto, Map<String, Object>> execute() throws BusinessException {
 
         Map<ContractDto, Map<String, Object>> contracts = new HashMap<>();
@@ -57,6 +67,13 @@ public class FindAllContracts {
         return contracts;
     }
 
+    /**
+     * Metodoqu que calcula la liquidacion de un contrato ya finalizado.
+     *
+     * @param previousContrac Contrato del que se quiere calcular la liquidacion.
+     * @param contractTypeDto Tipo de contrato del que se quiere calcular la liquidacion.
+     * @return Un double con la cantidad de la liquidacion.
+     */
     private double liquidarContrato(ContractDto previousContrac, ContractTypeDto contractTypeDto) {
         double contractYears = isOneYearWorked(previousContrac);
         double total = 0.;
@@ -67,6 +84,12 @@ public class FindAllContracts {
         return total;
     }
 
+    /**
+     * Metodo que calcula sobre 365 el tiempo trabajado.
+     *
+     * @param previousContrac Contrato dobre el que se quiere hacer el calculo.
+     * @return Un double con el tiempo trabajado.
+     */
     private double isOneYearWorked(ContractDto previousContrac) {
         Date startDate = previousContrac.startDate;
         Date today = Dates.today();
