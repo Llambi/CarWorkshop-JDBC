@@ -10,6 +10,9 @@ import uo.ri.persistence.exception.PersistanceException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Clase que contiene la logica para la actualizacion de un contrato
+ */
 public class UpdateContract {
     private ContractDto contractDto;
     private Connection connection;
@@ -20,11 +23,16 @@ public class UpdateContract {
     }
 
 
+    /**
+     * Metodo que comprueba los prerequisitos para las actualizacion de un contrato y si lo hace los lleva a cabo.
+     *
+     * @throws BusinessException
+     */
     public void execute() throws BusinessException {
         try {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
-            if(Dates.isBefore(contractDto.endDate,Dates.today())||contractDto.yearBaseSalary<0.){
+            if (Dates.isBefore(contractDto.endDate, Dates.today()) || contractDto.yearBaseSalary < 0.) {
                 throw new BusinessException("No se cumple lo requerido para actualizar el contrato.");
             }
             GatewayFactory.getContractGateway().updateContract(contractDto);

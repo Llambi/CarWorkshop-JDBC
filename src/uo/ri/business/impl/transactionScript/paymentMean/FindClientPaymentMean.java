@@ -12,6 +12,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Clase que contiene la logica necesaria para recuperar los medios de pago de un cliente dada una Factura.
+ */
 public class FindClientPaymentMean {
 
     private Connection connection;
@@ -21,6 +24,12 @@ public class FindClientPaymentMean {
         this.invoice = invoice;
     }
 
+    /**
+     * Metodo que dada una factura recupera los medios de pago del cliente de esta.
+     *
+     * @return Lista de medios de pago del cliente de la factura.
+     * @throws BusinessException
+     */
     public List<PaymentMeanDto> execute() throws BusinessException {
         Long idCliente;
         List<PaymentMeanDto> paymentMeans;
@@ -44,6 +53,12 @@ public class FindClientPaymentMean {
         return paymentMeans;
     }
 
+    /**
+     * Metodo que obtiene el cliente de una factura dada.
+     *
+     * @return Cliente de la factura.
+     * @throws BusinessException
+     */
     private ClientDto findClientByFactura() throws BusinessException {
 
         try {
@@ -59,6 +74,13 @@ public class FindClientPaymentMean {
 
     }
 
+    /**
+     * Metodo que devuelve los medios de pago de un cliente.
+     *
+     * @param idCliente Identificador del cliente del que se quieren obtener sus medios de pago.
+     * @return Lista con los medios de pago del cliente.
+     * @throws BusinessException
+     */
     private List<PaymentMeanDto> findMediosPagoCliente(Long idCliente) throws BusinessException {
 
         try {

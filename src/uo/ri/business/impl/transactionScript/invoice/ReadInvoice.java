@@ -10,6 +10,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Clase que contiene la logica para leer una factura.
+ */
 public class ReadInvoice {
 
     private Connection connection;
@@ -19,6 +22,12 @@ public class ReadInvoice {
         this.id = id;
     }
 
+    /**
+     * Metodo que obtiene las averias no facturadas de un cliente.
+     *
+     * @return Averias no facturadas del cliente dado
+     * @throws BusinessException
+     */
     public List<BreakdownDto> execute() throws BusinessException {
 
         List<BreakdownDto> breakdowns = null;
@@ -44,6 +53,13 @@ public class ReadInvoice {
         return breakdowns;
     }
 
+    /**
+     * Metodo que obtiene las averias no facturadasde un cliente.
+     *
+     * @param id Identificador del cliente.
+     * @return Lista de averias sin facturar del cliente.
+     * @throws BusinessException
+     */
     private List<BreakdownDto> obtenerAveriasNoFacturadas(Long id) throws BusinessException {
 
         try {

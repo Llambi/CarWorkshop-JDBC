@@ -15,6 +15,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Clase que contiene la logica para finalizar un contrato.
+ */
 public class TerminateContract {
     private ContractDto contractDto;
     private Connection connection;
@@ -23,6 +26,12 @@ public class TerminateContract {
         this.contractDto = contractDto;
     }
 
+    /**
+     * Metodo uqe comprueba los prerequisitos para la finalizacion de un contrato y si los cumple lo finaliza.
+     *
+     * @return Un Map con la infomacion de la liquidacion si fuera necesaria.
+     * @throws BusinessException
+     */
     public Map<String, Object> execute() throws BusinessException {
         Map<String, Object> liquidacion = null;
         try {
@@ -31,9 +40,10 @@ public class TerminateContract {
             ContractDto previousContract = GatewayFactory.getContractGateway().findContract(contractDto);
             if (previousContract.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString())) {
                 GatewayFactory.getContractGateway().terminateContract(previousContract);
-                ContractTypeDto contractTypeDto = GatewayFactory.getContractTypeGateway().findContractType(previousContract);
+                ContractTypeDto contractTypeDto = GatewayFactory.getContractTypeGateway()
+                        .findContractType(previousContract);
                 liquidacion = liquidarContrato(previousContract, contractTypeDto);
-            }else{
+            } else {
                 throw new BusinessException("No se cumple lo requerido para actualizar el contrato.");
             }
 
@@ -51,6 +61,13 @@ public class TerminateContract {
         return liquidacion;
     }
 
+    /**
+     * Metodo que genera la liquidacion de un contrato.
+     *
+     * @param previousContrac Contrato que se tiene que liquidar.
+     * @param contractTypeDto Tipo de contrato que se tiene que liquidar.
+     * @return Un Map con toda la informacion de la liquidacion.
+     */
     private Map<String, Object> liquidarContrato(ContractDto previousContrac, ContractTypeDto contractTypeDto) {
         double contractYears = isOneYearWorked(previousContrac);
         Map<String, Object> liquidacion = null;
@@ -59,11 +76,18 @@ public class TerminateContract {
             liquidacion.put("salarioBruto", previousContrac.yearBaseSalary);
             liquidacion.put("indemnizacion", contractTypeDto.compensationDays);
             liquidacion.put("añosContrato", Math.round(contractYears));
-            liquidacion.put("total", previousContrac.yearBaseSalary * contractTypeDto.compensationDays * Math.round(contractYears));
+            liquidacion.put("total", previousContrac.yearBaseSalary * contractTypeDto.compensationDays
+                    * Math.round(contractYears));
         }
         return liquidacion;
     }
 
+    /**
+     * Metodo que comprueba si se ha trabajado un año desde el inicio del contrato.
+     *
+     * @param previousContrac Contrato que se quiere comprobar.
+     * @return Un double con el modificador.
+     */
     private double isOneYearWorked(ContractDto previousContrac) {
         Date startDate = previousContrac.startDate;
         Date today = Dates.today();

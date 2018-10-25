@@ -17,6 +17,9 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Clase que contiene la logica para la creacion de una factura
+ */
 public class CreateInvoice {
 
     private List<Long> ids;
@@ -26,6 +29,12 @@ public class CreateInvoice {
         this.ids = ids;
     }
 
+    /**
+     * Metodo que realiza las operaciones necesarias para crear una factura.
+     *
+     * @return Una InvoiceDto con la informacion de la nueva factura.
+     * @throws BusinessException
+     */
     public InvoiceDto execute() throws BusinessException {
         InvoiceDto invoice = new InvoiceDto();
 
@@ -66,6 +75,12 @@ public class CreateInvoice {
         return invoice;
     }
 
+    /**
+     * Metodo que comprueba que las averias estan terminadas.
+     *
+     * @param ids De las averias a compreobar.
+     * @throws BusinessException
+     */
     private void verificarAveriasTerminadas(List<Long> ids) throws BusinessException {
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -87,6 +102,12 @@ public class CreateInvoice {
 
     }
 
+    /**
+     * Metodo que modifica el estado de las averias a FACTURADA.
+     *
+     * @param ids De las averias a modificar.
+     * @throws BusinessException
+     */
     private void cambiarEstadoAverias(List<Long> ids) throws BusinessException {
 
         for (Long id : ids) {
@@ -99,6 +120,13 @@ public class CreateInvoice {
 
     }
 
+    /**
+     * Metodo que añade la factura a las averias.
+     *
+     * @param idFactura De la factura que se quiere añadir a las averias
+     * @param ids       De las averias a las que se le añadiran la factura
+     * @throws BusinessException
+     */
     private void vincularAveriasConFactura(long idFactura, List<Long> ids) throws BusinessException {
 
         for (Long id : ids) {
@@ -110,6 +138,13 @@ public class CreateInvoice {
         }
     }
 
+    /**
+     * Metodo que genera la factura
+     *
+     * @param invoice InvoiceDto que contiene la informacion de la nueva factura
+     * @return numero identificativo de la factura
+     * @throws BusinessException
+     */
     private long crearFactura(InvoiceDto invoice) throws BusinessException {
         Long numero = null;
         try {
@@ -120,6 +155,13 @@ public class CreateInvoice {
         return numero;
     }
 
+    /**
+     * Metodo que genera el id de la factura.
+     *
+     * @param numeroFactura numero de la factura de la que se quiere facturar el id.
+     * @return Identificador de la factura.
+     * @throws BusinessException
+     */
     private long getGeneratedKey(long numeroFactura) throws BusinessException {
 
         try {
@@ -130,6 +172,12 @@ public class CreateInvoice {
 
     }
 
+    /**
+     * Metodo que genera un nuevo numero para la factura.
+     *
+     * @return Numero de la factura.
+     * @throws BusinessException
+     */
     private Long generarNuevoNumeroFactura() throws BusinessException {
         try {
             return GatewayFactory.getInvoiceGateway().listLastInvoice();
@@ -139,10 +187,23 @@ public class CreateInvoice {
 
     }
 
+    /**
+     * Metodo que devuelve el porcentaje de IVA correspondiente a la fecha de la factura.
+     *
+     * @param fechaFactura Fecha de la creacion de la factura.
+     * @return POrcentage de IVA.
+     */
     private double porcentajeIva(Date fechaFactura) {
         return Dates.fromString("1/7/2012").before(fechaFactura) ? 21.0 : 18.0;
     }
 
+    /**
+     * Metodo que calcula el importe de la factura.
+     *
+     * @param ids Identificadores de las averias de la factura.
+     * @return Double con el importe total de la factura.
+     * @throws BusinessException
+     */
     private double calcularImportesAverias(List<Long> ids)
             throws BusinessException {
 
@@ -159,6 +220,13 @@ public class CreateInvoice {
         return totalFactura;
     }
 
+    /**
+     * Metodo que actualiza el importe de las averias.
+     *
+     * @param idAveria    Identificadores de la averias a modificar.
+     * @param totalAveria Importe total de las averias.
+     * @throws BusinessException
+     */
     private void actualizarImporteAveria(Long idAveria, double totalAveria) throws BusinessException {
 
         try {
@@ -169,6 +237,13 @@ public class CreateInvoice {
 
     }
 
+    /**
+     * Metodo que comprueba el importe de los repuestos.
+     *
+     * @param idAveria Identificadores de las averias.
+     * @return Double el con importe de los repuestos de una averia.
+     * @throws BusinessException
+     */
     private double consultaImporteRepuestos(Long idAveria) throws BusinessException {
 
         try {
@@ -179,6 +254,13 @@ public class CreateInvoice {
 
     }
 
+    /**
+     * Metodo que comprueba el importe de la mano de obra
+     *
+     * @param idAveria Identificadores de las averias para consultar su importe de mano de obra
+     * @return Double con el importe total de la mano de obra de las averias dadas.
+     * @throws BusinessException
+     */
     private double consultaImporteManoObra(Long idAveria) throws BusinessException {
 
         try {

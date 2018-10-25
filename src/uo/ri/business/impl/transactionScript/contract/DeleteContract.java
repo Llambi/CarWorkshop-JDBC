@@ -12,15 +12,22 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Clase con contiene la logica para la eliminacion de un contrato
+ */
 public class DeleteContract {
     private ContractDto contractDto;
-    private Connection connection
-            ;
+    private Connection connection;
 
     public DeleteContract(ContractDto contractDto) {
         this.contractDto = contractDto;
     }
 
+    /**
+     * Metodo que comprueba si el nuevo contrato cumple los prerequisitos y tras ello lo elimina.
+     *
+     * @throws BusinessException
+     */
     public void execute() throws BusinessException {
         try {
             connection = Jdbc.createThreadConnection();
@@ -28,12 +35,12 @@ public class DeleteContract {
 
             //Recuperamos contrato
             contractDto = GatewayFactory.getContractGateway().findContract(contractDto);
-            if(contractDto.id==null){
+            if (contractDto.id == null) {
                 throw new BusinessException("No se cumple lo requerido para eliminar el contrato.");
             }
-            if(!checkMechanicActivity()){
+            if (!checkMechanicActivity()) {
                 GatewayFactory.getContractGateway().deleteContract(contractDto);
-            }else{
+            } else {
                 throw new BusinessException("No se cumple lo requerido para eliminar el contrato.");
             }
 
@@ -50,6 +57,12 @@ public class DeleteContract {
         }
     }
 
+    /**
+     * Metodo que comprueba si se ha trabajado durante un contrato.
+     *
+     * @return True si un mecanico a realizado, al menos, una reparacion y False si no.
+     * @throws BusinessException
+     */
     private boolean checkMechanicActivity() throws BusinessException {
         List<BreakdownDto> breakDowns = null;
         try {
@@ -57,12 +70,13 @@ public class DeleteContract {
         } catch (PersistanceException e) {
             throw new BusinessException("Imposible comprobar la actividad de un mecanico.\n\t" + e);
         }
-        int activityInYear=0;
-        for (BreakdownDto breakdownDto: breakDowns) {
-            if (Dates.isAfter(breakdownDto.date, contractDto.startDate) && Dates.isBefore(breakdownDto.date, contractDto.endDate)) {
+        int activityInYear = 0;
+        for (BreakdownDto breakdownDto : breakDowns) {
+            if (Dates.isAfter(breakdownDto.date, contractDto.startDate)
+                    && Dates.isBefore(breakdownDto.date, contractDto.endDate)) {
                 activityInYear++;
             }
         }
-        return activityInYear>0;
+        return activityInYear > 0;
     }
 }
