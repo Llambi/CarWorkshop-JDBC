@@ -6,6 +6,8 @@ import uo.ri.business.dto.BreakdownDto;
 import uo.ri.business.dto.ContractDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.BreakdownGateway;
+import uo.ri.persistence.ContractGateway;
 import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
@@ -16,11 +18,14 @@ import java.util.List;
  * Clase con contiene la logica para la eliminacion de un contrato
  */
 public class DeleteContract {
-    private ContractDto contractDto;
+    private long id;
     private Connection connection;
+    private ContractGateway contractGateway = GatewayFactory.getContractGateway();
+    private BreakdownGateway breakdownGateway = GatewayFactory.getBreakdownGateway();
+    private ContractDto contractDto;
 
-    public DeleteContract(ContractDto contractDto) {
-        this.contractDto = contractDto;
+    public DeleteContract(Long id) {
+        this.id = id;
     }
 
     /**
@@ -34,12 +39,9 @@ public class DeleteContract {
             connection.setAutoCommit(false);
 
             //Recuperamos contrato
-            contractDto = GatewayFactory.getContractGateway().findContract(contractDto);
-            if (contractDto.id == null) {
-                throw new BusinessException("No se cumple lo requerido para eliminar el contrato.");
-            }
+            contractDto = contractGateway.findContractById(this.id);
             if (!checkMechanicActivity()) {
-                GatewayFactory.getContractGateway().deleteContract(contractDto);
+                contractGateway.deleteContract(contractDto);
             } else {
                 throw new BusinessException("No se cumple lo requerido para eliminar el contrato.");
             }
@@ -60,13 +62,17 @@ public class DeleteContract {
     /**
      * Metodo que comprueba si se ha trabajado durante un contrato.
      *
-     * @return True si un mecanico a realizado, al menos, una reparacion y False si no.
+     * @return True si un mecanico a realizado, al menos, una reparacion o tiene nominas ese mes y False si no.
      * @throws BusinessException
      */
     private boolean checkMechanicActivity() throws BusinessException {
         List<BreakdownDto> breakDowns = null;
+        int payroolCount = 0;
         try {
-            breakDowns = GatewayFactory.getBreakdownGateway().findMechanicBreakDowns(contractDto);
+
+            breakDowns = breakdownGateway.findBreakDownsByMechanicId(contractDto.mechanicId);
+            payroolCount = GatewayFactory.getPayrollGateway().countPayRolls(this.contractDto);
+
         } catch (PersistanceException e) {
             throw new BusinessException("Imposible comprobar la actividad de un mecanico.\n\t" + e);
         }
@@ -77,6 +83,7 @@ public class DeleteContract {
                 activityInYear++;
             }
         }
-        return activityInYear > 0;
+
+        return activityInYear > 0 || payroolCount > 0;
     }
 }

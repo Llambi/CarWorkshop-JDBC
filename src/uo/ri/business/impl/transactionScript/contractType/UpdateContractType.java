@@ -22,6 +22,8 @@ public class UpdateContractType {
      */
     public void execute() throws BusinessException {
         try {
+            if (contractTypeDto.compensationDays < 0)
+                throw new BusinessException("Los dias de compensacion no pueden ser negativos.");
             GatewayFactory.getContractTypeGateway().updateContractType(contractTypeDto);
         } catch (PersistanceException e) {
             throw new BusinessException("Imposible actualizar el tipo de contrato.\n\t" + e);

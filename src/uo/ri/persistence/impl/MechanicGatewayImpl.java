@@ -184,7 +184,7 @@ public class MechanicGatewayImpl implements MechanicGateway {
      * @throws PersistanceException
      */
     @Override
-    public MechanicDto findMechanic(MechanicDto mechanicDto) throws PersistanceException {
+    public MechanicDto findMechanicById(MechanicDto mechanicDto) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;

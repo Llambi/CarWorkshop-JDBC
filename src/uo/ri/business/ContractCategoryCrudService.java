@@ -6,7 +6,7 @@ import uo.ri.business.dto.ContractCategoryDto;
 import uo.ri.business.exception.BusinessException;
 
 public interface ContractCategoryCrudService {
-
+//TODO
 	/**
 	 * Add a new category with the given data
 	 * @param dto, the id value, if any, will be ignored

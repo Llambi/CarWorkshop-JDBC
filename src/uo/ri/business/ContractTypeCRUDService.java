@@ -6,7 +6,6 @@ import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.exception.BusinessException;
 
 public interface ContractTypeCrudService {
-
 	/**
 	 * 
 	 * @param dto, the id field is meaningless for this operation

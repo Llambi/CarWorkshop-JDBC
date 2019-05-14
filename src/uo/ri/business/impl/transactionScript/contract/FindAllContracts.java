@@ -7,25 +7,30 @@ import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.dto.MechanicDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.ContractCategoryGateway;
+import uo.ri.persistence.ContractGateway;
+import uo.ri.persistence.ContractTypeGateway;
+import uo.ri.persistence.PayrollGateway;
 import uo.ri.persistence.exception.PersistanceException;
 import uo.ri.persistence.impl.ContracStatus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Clase que contiene la logica para listar todos los contratos.
  */
 public class FindAllContracts {
-    private MechanicDto mechanicDto;
+    private final ContractGateway contractGateway = GatewayFactory.getContractGateway();
+    private final ContractTypeGateway contractTypeGateway = GatewayFactory.getContractTypeGateway();
+    private final PayrollGateway payrollGateway = GatewayFactory.getPayrollGateway();
+    private final ContractCategoryGateway contractCategoryGateway = GatewayFactory.getContractCategoryGateway();
     private Connection connection;
+    private Long id;
 
-    public FindAllContracts(MechanicDto mechanicDto) {
-        this.mechanicDto = mechanicDto;
+    public FindAllContracts(Long id) {
+        this.id = id;
     }
 
     /**
@@ -35,22 +40,19 @@ public class FindAllContracts {
      * como las liquidaciones de estos.
      * @throws BusinessException
      */
-    public Map<ContractDto, Map<String, Object>> execute() throws BusinessException {
+    public List<ContractDto> execute() throws BusinessException {
 
-        Map<ContractDto, Map<String, Object>> contracts = new HashMap<>();
+        List<ContractDto> contracts = new LinkedList<>();
         try {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
-            List<ContractDto> mechanicContracts = GatewayFactory.getContractGateway().findContract(mechanicDto);
+            List<ContractDto> mechanicContracts = contractGateway.findContractByMechanicId(this.id);
             for (ContractDto contractDto : mechanicContracts) {
-                ContractTypeDto contractTypeDto = GatewayFactory.getContractTypeGateway().findContractType(contractDto);
-                int numPayRolls = GatewayFactory.getPayrollGateway().countPayRolls(contractDto);
-                double liquidacion = liquidarContrato(contractDto, contractTypeDto);
-                Map<String, Object> mapa = new HashMap<>();
-                mapa.put("payrolls", numPayRolls);
-                mapa.put("liquidacion", liquidacion);
-                contracts.put(contractDto, mapa);
+                ContractTypeDto contractTypeDto = contractTypeGateway.findContractType(contractDto);
+                contractDto.categoryName = contractCategoryGateway.findContractCategoryById(contractDto.categoryId).name;
+                contractDto.typeName = contractTypeDto.name;
+                contractDto.compensation = liquidarContrato(contractDto, contractTypeDto);
             }
 
             connection.commit();
@@ -77,7 +79,6 @@ public class FindAllContracts {
     private double liquidarContrato(ContractDto previousContrac, ContractTypeDto contractTypeDto) {
         double contractYears = isOneYearWorked(previousContrac);
         double total = 0.;
-        Map<String, Object> liquidacion = null;
         if (previousContrac.status.equalsIgnoreCase(ContracStatus.FINISHED.toString()) && contractYears >= 1.0) {
             total = previousContrac.yearBaseSalary * contractTypeDto.compensationDays * Math.round(contractYears);
         }

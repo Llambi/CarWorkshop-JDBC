@@ -26,12 +26,12 @@ public class ContractGatewayImpl implements ContractGateway {
     /**
      * Metodo que recupera uno o mas contratos mediante su tipo.
      *
-     * @param contractTypeDto Categoria de contrato cuyo nombre se quiere usar para encontrar un contrato.
+     * @param id Tipo de contrato cuyo nombre se quiere usar para encontrar un contrato.
      * @return Lista de contratos con la categoria dada.
      * @throws PersistanceException
      */
     @Override
-    public List<ContractDto> findContract(ContractTypeDto contractTypeDto) throws PersistanceException {
+    public List<ContractDto> findContractByTypeId(Long id) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -40,8 +40,8 @@ public class ContractGatewayImpl implements ContractGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPE_CONTRACT"));
-            pst.setString(1, contractTypeDto.name);
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPE_CONTRACT_ID"));
+            pst.setLong(1, id);
 
             rs = pst.executeQuery();
 
@@ -62,7 +62,7 @@ public class ContractGatewayImpl implements ContractGateway {
             }
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar los contratos de un tipo:\n\t" + e);
+            throw new PersistanceException("Error al recuperar los contratos de una Categooria:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -72,12 +72,12 @@ public class ContractGatewayImpl implements ContractGateway {
     /**
      * Metodo qu erecupera uno o mas contratos de un mecanico dado.
      *
-     * @param mechanicDto Mecanico cuyo dni se quiere usar para encontrar los contratos.
+     * @param id Mecanico cuyo dni se quiere usar para encontrar los contratos.
      * @return Lista de contratos del mecanico dado.
      * @throws PersistanceException
      */
     @Override
-    public List<ContractDto> findContract(MechanicDto mechanicDto) throws PersistanceException {
+    public List<ContractDto> findContractByMechanicDni(String id) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -86,8 +86,52 @@ public class ContractGatewayImpl implements ContractGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_BY_MECHANIC"));
-            pst.setString(1, mechanicDto.dni);
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_BY_MECHANIC_DNI"));
+            pst.setString(1, id);
+
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                ContractDto contract = new ContractDto();
+                contract.id = rs.getLong(1);
+                contract.startDate = rs.getDate(2);
+                contract.endDate = rs.getDate(3);
+                contract.yearBaseSalary = rs.getDouble(4);
+                contract.compensation = rs.getDouble(5);
+                contract.status = rs.getString(6);
+                contract.categoryId = rs.getLong(7);
+                contract.typeId = rs.getLong(8);
+                contract.mechanicId = rs.getLong(9);
+                contracts.add(contract);
+            }
+
+        } catch (SQLException e) {
+            throw new PersistanceException("Error al recuperar los contratos de un mecanico:\n\t" + e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+        return contracts;
+    }
+
+    /**
+     * Metodo qu erecupera uno o mas contratos de un mecanico dado.
+     *
+     * @param id Mecanico cuyo dni se quiere usar para encontrar los contratos.
+     * @return Lista de contratos del mecanico dado.
+     * @throws PersistanceException
+     */
+    @Override
+    public List<ContractDto> findContractByMechanicId(Long id) throws PersistanceException {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        List<ContractDto> contracts = new LinkedList<>();
+
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_BY_MECHANIC_ID"));
+            pst.setLong(1, id);
 
             rs = pst.executeQuery();
 
@@ -116,12 +160,12 @@ public class ContractGatewayImpl implements ContractGateway {
     /**
      * Metodo que recupera un contrato dado su identificador.
      *
-     * @param contractDto Que contiene el identificador a buscar.
+     * @param id Que contiene el identificador a buscar.
      * @return Contrato encontrado.
      * @throws PersistanceException
      */
     @Override
-    public ContractDto findContract(ContractDto contractDto) throws PersistanceException {
+    public ContractDto findContractById(Long id) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -131,7 +175,7 @@ public class ContractGatewayImpl implements ContractGateway {
             c = Jdbc.getCurrentConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_BY_ID"));
-            pst.setLong(1, contractDto.id);
+            pst.setLong(1, id);
 
             rs = pst.executeQuery();
 
@@ -277,5 +321,44 @@ public class ContractGatewayImpl implements ContractGateway {
         } finally {
             Jdbc.close(rs, pst);
         }
+    }
+
+    @Override
+    public List<ContractDto> findContractByCategoryId(Long id) throws PersistanceException {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        List<ContractDto> contracts = new LinkedList<>();
+
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_CATEGORY_CONTRACT_ID"));
+            pst.setLong(1, id);
+
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                ContractDto contract = new ContractDto();
+                contract.id = rs.getLong(1);
+                contract.startDate = rs.getDate(2);
+                contract.endDate = rs.getDate(3);
+                contract.yearBaseSalary = rs.getDouble(4);
+                contract.compensation = rs.getDouble(5);
+                contract.status = rs.getString(6);
+                contract.categoryId = rs.getLong(7);
+                contract.typeId = rs.getLong(8);
+                contract.mechanicId = rs.getLong(9);
+
+
+                contracts.add(contract);
+            }
+
+        } catch (SQLException e) {
+            throw new PersistanceException("Error al recuperar los contratos de un tipo:\n\t" + e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+        return contracts;
     }
 }

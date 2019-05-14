@@ -9,7 +9,7 @@ import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.exception.BusinessException;
 
 public interface InvoiceService {
-
+	//TODO
 	InvoiceDto createInvoiceFor(List<Long> idsAveria) throws BusinessException;
 	InvoiceDto findInvoice(Long numeroFactura) throws BusinessException;
 	List<PaymentMeanDto> findPayMethodsForInvoice(Long idFactura) throws BusinessException;

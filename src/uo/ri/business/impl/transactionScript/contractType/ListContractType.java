@@ -8,9 +8,7 @@ import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Clase que contiene la logica para el listado de los tipos de contrato con los mecanicos que lo tienen y el acumulado
@@ -20,30 +18,20 @@ public class ListContractType {
     private Connection connection;
 
     /**
-     * Metodo que recupera los tipos de contrato existentes junto con los mecanicos que tienen cada uno de ellos y el
-     * acumulado del salario de ellos.
+     * Metodo que recupera los tipos de contrato existentes j
      *
-     * @return Un Map con la informacion antes detallada.
+     * @return Una lista con la informacion antes detallada.
      * @throws BusinessException
      */
-    public Map<ContractTypeDto, Map<String, Object>> execute() throws BusinessException {
-        Map<ContractTypeDto, Map<String, Object>> mechanicsByContractTypeAndAcumSalary = new HashMap<>();
+    public List<ContractTypeDto> execute() throws BusinessException {
+        List<ContractTypeDto> contractTypes;
         try {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
 
-            List<ContractTypeDto> ContractTypes = GatewayFactory.getContractTypeGateway().findAllContractTypes();
+            contractTypes = GatewayFactory.getContractTypeGateway().findAllContractTypes();
 
-            for (ContractTypeDto contractTypeDto : ContractTypes) {
-                Map<String, Object> auxDic = new HashMap<>();
-
-                auxDic.put("mechanic", GatewayFactory.getMechanicGateway()
-                        .findAllMechanicsByContractType(contractTypeDto));
-                auxDic.put("acumSalary", GatewayFactory.getPayrollGateway().getTotalBaseSalary(contractTypeDto));
-
-                mechanicsByContractTypeAndAcumSalary.put(contractTypeDto, auxDic);
-            }
 
             connection.commit();
         } catch (SQLException | PersistanceException e) {
@@ -56,6 +44,6 @@ public class ListContractType {
         } finally {
             Jdbc.close(connection);
         }
-        return mechanicsByContractTypeAndAcumSalary;
+        return contractTypes;
     }
 }

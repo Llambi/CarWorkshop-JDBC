@@ -18,5 +18,5 @@ public interface MechanicGateway {
 
     List<MechanicDto> findAllMechanicsByContractType(ContractTypeDto contractTypeDto) throws PersistanceException;
 
-    MechanicDto findMechanic(MechanicDto mechanicDto) throws PersistanceException;
+    MechanicDto findMechanicById(long id) throws PersistanceException;
 }
