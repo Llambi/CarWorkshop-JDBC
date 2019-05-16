@@ -3,7 +3,6 @@ package uo.ri.persistence.impl;
 import alb.util.date.Dates;
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.BreakdownDto;
-import uo.ri.business.dto.ContractDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.BreakdownGateway;
 import uo.ri.persistence.exception.PersistanceException;
@@ -153,14 +152,14 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
      * @throws PersistanceException
      */
     @Override
-    public List<BreakdownDto> findUninvoicedBreakdown(Long id) throws PersistanceException {
+    public List<BreakdownDto> findUninvoicedBreakdownByDni(String id) throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
         try {
             pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
-                    .getProperty("SQL_AVERIAS_NO_FACTURADAS_CLIENTE"));
+                    .getProperty("SQL_AVERIAS_NO_FACTURADAS_CLIENTE_DNI"));
 
-            pst.setLong(1, id);
+            pst.setString(1, id);
 
             rs = pst.executeQuery();
 
@@ -185,42 +184,37 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
         }
     }
 
-    /**
-     * Metodo que obtiene las averias realizadas por un mecanico.
-     *
-     * @param contractDto Contrato que contiene el id del mecanico del que se quieren obtener las averias.
-     * @return Lista de averias del mecanico.
-     * @throws PersistanceException
-     */
     @Override
-    public List<BreakdownDto> findMechanicBreakDowns(ContractDto contractDto) throws PersistanceException {
+    public List<BreakdownDto> findBreakDownsByMechanicId(long id) throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
-        List<BreakdownDto> breakdowns = new LinkedList<>();
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_AVERIAS_MECANICO"));
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_AVERIAS_MECANICO_ID"));
 
-            pst.setLong(1, contractDto.mechanicId);
+            pst.setLong(1, id);
 
             rs = pst.executeQuery();
 
+            List<BreakdownDto> breakdowns = new LinkedList<>();
             while (rs.next()) {
                 BreakdownDto breakdown = new BreakdownDto();
                 breakdown.id = rs.getLong(1);
                 breakdown.date = Dates.fromString(rs.getString(2));
                 breakdown.status = rs.getString(3);
-                breakdown.total = rs.getDouble(4);
+                breakdown.total = Double.parseDouble(rs.getString(4));
                 breakdown.description = rs.getString(5);
 
                 breakdowns.add(breakdown);
             }
 
+            return breakdowns;
+
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar averias de un mecanico dado:\n\t" + e);
+            throw new PersistanceException("Error al recuperar averias sin facturar:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
-        return breakdowns;
     }
 
 }

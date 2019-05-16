@@ -15,7 +15,7 @@ public interface BreakdownGateway {
 
     void updateBreakdown(Long id, String column, Double status) throws PersistanceException;
 
-    List<BreakdownDto> findUninvoicedBreakdown(Long id) throws PersistanceException;
+    List<BreakdownDto> findUninvoicedBreakdownByDni(String id) throws PersistanceException;
 
     List<BreakdownDto> findBreakDownsByMechanicId(long id) throws PersistanceException;
 }
