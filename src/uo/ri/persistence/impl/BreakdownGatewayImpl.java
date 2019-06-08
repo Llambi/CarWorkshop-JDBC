@@ -217,4 +217,27 @@ public class BreakdownGatewayImpl implements BreakdownGateway {
         }
     }
 
+    @Override
+    public double getTotalAmountOfMechanicBreakdowns(Integer month, Long mechanicId) throws PersistanceException {
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        double amount = 0D;
+        try {
+            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_GET_AMOUNT_MECHANIC_INTERVENTIONS"));
+
+            pst.setInt(1, month);
+            pst.setLong(2, mechanicId);
+            rs = pst.executeQuery();
+            while (rs.next())
+                amount = rs.getDouble(1);
+
+        } catch (SQLException e) {
+            throw new PersistanceException("Error de persistencia:\n\t" + e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+        return amount;
+    }
+
 }

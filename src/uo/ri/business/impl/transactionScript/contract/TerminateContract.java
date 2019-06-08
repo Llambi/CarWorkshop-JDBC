@@ -45,7 +45,7 @@ public class TerminateContract {
             ContractDto previousContract = contractGateway.findContractById(this.id);
             if (previousContract.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString())) {
                 contractGateway.terminateContract(previousContract);
-                ContractTypeDto contractTypeDto = contractTypeGateway.findContractType(previousContract);
+                ContractTypeDto contractTypeDto = contractTypeGateway.findContractTypeById(previousContract.typeId);
                 liquidarContrato(previousContract, contractTypeDto);
             } else {
                 throw new BusinessException("No se cumple lo requerido para actualizar el contrato.");

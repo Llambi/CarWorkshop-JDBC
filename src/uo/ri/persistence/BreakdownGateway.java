@@ -18,4 +18,6 @@ public interface BreakdownGateway {
     List<BreakdownDto> findUninvoicedBreakdownByDni(String id) throws PersistanceException;
 
     List<BreakdownDto> findBreakDownsByMechanicId(long id) throws PersistanceException;
+
+    double getTotalAmountOfMechanicBreakdowns(Integer month, Long mechanicId) throws PersistanceException;
 }

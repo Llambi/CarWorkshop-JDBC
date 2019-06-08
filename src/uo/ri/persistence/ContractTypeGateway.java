@@ -19,4 +19,5 @@ public interface ContractTypeGateway {
     ContractTypeDto findContractTypeById(long id) throws PersistanceException;
 
     ContractTypeDto findContractTypeByName(String name) throws PersistanceException;
+
 }

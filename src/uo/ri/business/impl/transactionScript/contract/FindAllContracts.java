@@ -49,7 +49,7 @@ public class FindAllContracts {
 
             List<ContractDto> mechanicContracts = contractGateway.findContractByMechanicId(this.id);
             for (ContractDto contractDto : mechanicContracts) {
-                ContractTypeDto contractTypeDto = contractTypeGateway.findContractType(contractDto);
+                ContractTypeDto contractTypeDto = contractTypeGateway.findContractTypeById(contractDto.typeId);
                 contractDto.categoryName = contractCategoryGateway.findContractCategoryById(contractDto.categoryId).name;
                 contractDto.typeName = contractTypeDto.name;
                 contractDto.compensation = liquidarContrato(contractDto, contractTypeDto);
