@@ -3,10 +3,8 @@ package uo.ri.business.impl;
 import uo.ri.business.ContractTypeCrudService;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.exception.BusinessException;
-import uo.ri.business.impl.transactionScript.contractType.AddContractType;
-import uo.ri.business.impl.transactionScript.contractType.DeleteContractType;
-import uo.ri.business.impl.transactionScript.contractType.ListContractType;
-import uo.ri.business.impl.transactionScript.contractType.UpdateContractType;
+import uo.ri.business.impl.transactionScript.contract.FindContractById;
+import uo.ri.business.impl.transactionScript.contractType.*;
 
 import java.util.List;
 
@@ -29,7 +27,7 @@ public class ContractTypeCRUDImpl implements ContractTypeCrudService {
 
     @Override
     public ContractTypeDto findContractTypeById(Long id) throws BusinessException {
-        return null;
+        return new FindContractTypeById(id).execute();
     }
 
     @Override

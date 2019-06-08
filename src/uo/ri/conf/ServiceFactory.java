@@ -1,17 +1,14 @@
 package uo.ri.conf;
 
 import uo.ri.business.*;
-import uo.ri.business.impl.ContractCRUDImpl;
-import uo.ri.business.impl.ContractCategoryCRUDImpl;
-import uo.ri.business.impl.ContractTypeCRUDImpl;
-import uo.ri.business.impl.InvoiceCRUDImpl;
+import uo.ri.business.impl.*;
+import uo.ri.persistence.impl.PayrollGatewayImpl;
 
 public class ServiceFactory implements uo.ri.business.ServiceFactory {
 //TODO:
     @Override
     public MechanicCrudService forMechanicCrudService() {
-        return null;
-        //return new MechanicCRUDImpl();
+        return new MechanicCRUDImpl();
     }
 
     @Override
@@ -31,8 +28,7 @@ public class ServiceFactory implements uo.ri.business.ServiceFactory {
 
     @Override
     public PayrollService forPayroll() {
-        return null;
-        //return new PayrollGatewayImpl();
+        return new PayrollCRUDImpl();
     }
 
     @Override

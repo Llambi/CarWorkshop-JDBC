@@ -1,10 +1,7 @@
 package uo.ri.persistence.impl;
 
 import alb.util.jdbc.Jdbc;
-import uo.ri.business.dto.ContractCategoryDto;
 import uo.ri.business.dto.ContractDto;
-import uo.ri.business.dto.ContractTypeDto;
-import uo.ri.business.dto.MechanicDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.ContractGateway;
 import uo.ri.persistence.exception.PersistanceException;
@@ -202,15 +199,11 @@ public class ContractGatewayImpl implements ContractGateway {
     /**
      * Metodo que inserta un nuevo contrato.
      *
-     * @param mechanicDto         Mecanico del contrato.
-     * @param contractTypeDto     Tipo del contrato.
-     * @param contractCategoryDto Categoria del contrato.
      * @param contractDto         Informacion del nuecvo contrato.
      * @throws PersistanceException
      */
     @Override
-    public void addContract(MechanicDto mechanicDto, ContractTypeDto contractTypeDto
-            , ContractCategoryDto contractCategoryDto, ContractDto contractDto) throws PersistanceException {
+    public void addContract(ContractDto contractDto) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -225,9 +218,9 @@ public class ContractGatewayImpl implements ContractGateway {
             pst.setDouble(3, contractDto.yearBaseSalary);
             pst.setDouble(4, contractDto.compensation);
             pst.setString(5, ACTIVE.toString());
-            pst.setLong(6, mechanicDto.id);
-            pst.setLong(7, contractCategoryDto.id);
-            pst.setLong(8, contractTypeDto.id);
+            pst.setLong(6, contractDto.mechanicId);
+            pst.setLong(7, contractDto.categoryId);
+            pst.setLong(8, contractDto.typeId);
 
             pst.executeUpdate();
 

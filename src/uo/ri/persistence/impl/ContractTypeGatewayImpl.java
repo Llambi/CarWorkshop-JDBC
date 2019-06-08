@@ -54,7 +54,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
      * @throws PersistanceException
      */
     @Override
-    public void deleteContractType(Long id) throws PersistanceException {
+    public void deleteContractType(long id) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;

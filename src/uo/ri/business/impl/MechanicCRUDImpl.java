@@ -36,7 +36,6 @@ public class MechanicCRUDImpl implements MechanicCrudService {
 
     @Override
     public List<MechanicDto> findActiveMechanics() throws BusinessException {
-        //TODO:
         return new FindActiveMechanics().execute();
     }
 }
