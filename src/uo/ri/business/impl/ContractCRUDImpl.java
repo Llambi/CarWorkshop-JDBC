@@ -1,24 +1,19 @@
 package uo.ri.business.impl;
 
-import uo.ri.business.ContractCRUDService;
-import uo.ri.business.dto.ContractCategoryDto;
+import uo.ri.business.ContractCrudService;
 import uo.ri.business.dto.ContractDto;
-import uo.ri.business.dto.ContractTypeDto;
-import uo.ri.business.dto.MechanicDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.business.impl.transactionScript.contract.*;
 
-import java.util.Map;
+import java.util.Date;
+import java.util.List;
 
-public class ContractCRUDImpl implements ContractCRUDService {
-    @Override
-    public Map<String, Object> addContract(MechanicDto mechanicDto, ContractTypeDto contractTypeDto, ContractCategoryDto contractCategoryDto, ContractDto contractDto) throws BusinessException {
-        return new AddContract(mechanicDto, contractTypeDto, contractCategoryDto, contractDto).execute();
-    }
+public class ContractCRUDImpl implements ContractCrudService {
+
 
     @Override
-    public void deleteContract(ContractDto contractDto) throws BusinessException {
-        new DeleteContract(contractDto).execute();
+    public void addContract(ContractDto c) throws BusinessException {
+        new AddContract(c).execute();
     }
 
     @Override
@@ -27,13 +22,23 @@ public class ContractCRUDImpl implements ContractCRUDService {
     }
 
     @Override
-    public Map<ContractDto, Map<String, Object>> findAllContract(MechanicDto mechanicDto) throws BusinessException {
-        return new FindAllContracts(mechanicDto).execute();
+    public void deleteContract(Long id) throws BusinessException {
+        new DeleteContract(id).execute();
     }
 
     @Override
-    public Map<String, Object> terminateContract(ContractDto contractDto) throws BusinessException {
-        return new TerminateContract(contractDto).execute();
+    public void finishContract(Long id, Date endDate) throws BusinessException {
+        new TerminateContract(id, endDate).execute();
+    }
+
+    @Override
+    public ContractDto findContractById(Long id) throws BusinessException {
+        return new FindContractById(id).execute();
+    }
+
+    @Override
+    public List<ContractDto> findContractsByMechanicId(Long id) throws BusinessException {
+        return new FindAllContracts(id).execute();
     }
 
 }

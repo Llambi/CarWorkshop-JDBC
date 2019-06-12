@@ -6,6 +6,8 @@ import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.ContractGateway;
+import uo.ri.persistence.ContractTypeGateway;
 import uo.ri.persistence.exception.PersistanceException;
 import uo.ri.persistence.impl.ContracStatus;
 
@@ -19,11 +21,15 @@ import java.util.Map;
  * Clase que contiene la logica para finalizar un contrato.
  */
 public class TerminateContract {
-    private ContractDto contractDto;
+    private final ContractGateway contractGateway = GatewayFactory.getContractGateway();
+    private final ContractTypeGateway contractTypeGateway = GatewayFactory.getContractTypeGateway();
+    private  Long id;
+    private Date endDate;
     private Connection connection;
 
-    public TerminateContract(ContractDto contractDto) {
-        this.contractDto = contractDto;
+    public TerminateContract(Long id, Date endDate) {
+        this.id = id;
+        this.endDate = endDate;
     }
 
     /**
@@ -32,17 +38,15 @@ public class TerminateContract {
      * @return Un Map con la infomacion de la liquidacion si fuera necesaria.
      * @throws BusinessException
      */
-    public Map<String, Object> execute() throws BusinessException {
-        Map<String, Object> liquidacion = null;
+    public void execute() throws BusinessException {
         try {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
-            ContractDto previousContract = GatewayFactory.getContractGateway().findContract(contractDto);
+            ContractDto previousContract = contractGateway.findContractById(this.id);
             if (previousContract.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString())) {
-                GatewayFactory.getContractGateway().terminateContract(previousContract);
-                ContractTypeDto contractTypeDto = GatewayFactory.getContractTypeGateway()
-                        .findContractType(previousContract);
-                liquidacion = liquidarContrato(previousContract, contractTypeDto);
+                contractGateway.terminateContract(previousContract);
+                ContractTypeDto contractTypeDto = contractTypeGateway.findContractTypeById(previousContract.typeId);
+                liquidarContrato(previousContract, contractTypeDto);
             } else {
                 throw new BusinessException("No se cumple lo requerido para actualizar el contrato.");
             }
@@ -58,7 +62,6 @@ public class TerminateContract {
         } finally {
             Jdbc.close(connection);
         }
-        return liquidacion;
     }
 
     /**

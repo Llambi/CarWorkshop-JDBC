@@ -4,6 +4,7 @@ import alb.util.console.Console;
 import alb.util.menu.Action;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.conf.ServiceFactory;
+import uo.ri.ui.util.Printer;
 
 /**
  * Clase que contiene la ui para actualizar un tipo de contrato.
@@ -17,10 +18,10 @@ public class UpdateContractTypeAction implements Action {
         contractTypeDto.name = Console.readString("Nombre de tipo de contrato");
         contractTypeDto.compensationDays = Console.readInt("Nuevos dias de compensacion");
 
-        ServiceFactory.getContractTypeCRUDService().updateContractType(contractTypeDto);
+        new ServiceFactory().forContractTypeCrud().updateContractType(contractTypeDto);
 
         // Mostrar resultado
-        Console.println("Tipo de contrato actualizado");
+        Printer.printUpdateTypeContract();
     }
 
 

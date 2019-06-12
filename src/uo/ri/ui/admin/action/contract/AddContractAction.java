@@ -18,27 +18,23 @@ import java.util.Map;
 public class AddContractAction implements Action {
     @Override
     public void execute() throws Exception {
-        MechanicDto mechanicDto = new MechanicDto();
-        mechanicDto.dni = Console.readString("DNI del mecanico a contratar");
-
-        ContractTypeDto contractTypeDto = new ContractTypeDto();
-        contractTypeDto.name = Console.readString("Tipo de contrato");
-
-        ContractCategoryDto contractCategoryDto = new ContractCategoryDto();
-        contractCategoryDto.name = Console.readString("Categoria del mecanico");
-
         ContractDto contractDto = new ContractDto();
+        contractDto.dni = Console.readString("DNI del mecanico a contratar");
+
+        contractDto.typeName= Console.readString("Nombre de tipo de contrato");
+
+        contractDto.categoryName = Console.readString("Nombre de categoria del mecanico");
+
         String initMonthYear = Console.readString("Mes y año de inicio de contrato (Formato numerico mm-aaaa");
         contractDto.startDate = Dates.fromString("1-" + initMonthYear);
-        contractDto.yearBaseSalary = Console.readDouble("Salario base anual");
-        String endContractString = Console
-                .readString("Fecha fin del contrato (Formato dd-mm-aaa) si no se desea, escribir no");
-        if (!endContractString.equalsIgnoreCase("no"))
-            contractDto.endDate = endContractString.equals("") ? null : Dates.fromString(endContractString);
 
-        Map<String, Object> liquidacion = ServiceFactory.getContractCRUDService()
-                .addContract(mechanicDto, contractTypeDto, contractCategoryDto, contractDto);
-        Printer.printLiquidacion(liquidacion);
+        contractDto.yearBaseSalary = Console.readDouble("Salario base anual");
+
+        String endContractString = Console.readString("Para no registrar fecha de dinde contrato pulse enter, en caso dontrario indiquela (Formato dd-mm-aaa)");
+        contractDto.endDate = endContractString.equals("") ? null : Dates.fromString(endContractString);
+
+        new ServiceFactory().forContractCrud()
+                .addContract(contractDto);
 
         Console.println("Contrato añadido");
     }

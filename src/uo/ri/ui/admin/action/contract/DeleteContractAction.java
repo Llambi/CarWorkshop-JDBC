@@ -12,10 +12,10 @@ import uo.ri.ui.util.Printer;
 public class DeleteContractAction implements Action {
     @Override
     public void execute() throws Exception {
-        ContractDto contractDto = new ContractDto();
-        contractDto.id = Console.readLong("Identificador de contrato a eliminar");
+        Long id;
+        id = Console.readLong("Identificador de contrato a eliminar");
 
-        ServiceFactory.getContractCRUDService().deleteContract(contractDto);
+        new ServiceFactory().forContractCrud().deleteContract(id);
 
         Printer.printDeleteContract();
 

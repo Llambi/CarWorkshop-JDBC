@@ -54,7 +54,7 @@ public class MechanicGatewayImpl implements MechanicGateway {
      * @throws PersistanceException
      */
     @Override
-    public void deleteMechanic(MechanicDto mechanic) throws PersistanceException {
+    public void deleteMechanic(Long mechanic) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -63,7 +63,7 @@ public class MechanicGatewayImpl implements MechanicGateway {
             c = Jdbc.getConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_DELETE_MECHANIC"));
-            pst.setLong(1, mechanic.id);
+            pst.setLong(1, mechanic);
 
             pst.executeUpdate();
 
@@ -179,31 +179,32 @@ public class MechanicGatewayImpl implements MechanicGateway {
     /**
      * Metodo que recupera un mecanico dado su dni.
      *
-     * @param mechanicDto Que contiene el dni del mecanico a recuperar.
+     * @param dni Que contiene el mecanico a recuperar.
      * @return Mecanico que se ha encontrado.
      * @throws PersistanceException
      */
     @Override
-    public MechanicDto findMechanic(MechanicDto mechanicDto) throws PersistanceException {
+    public MechanicDto findMechanicByDni(String dni) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
-        MechanicDto mechanic = new MechanicDto();
+        MechanicDto mechanic = null;
 
         try {
             c = Jdbc.getCurrentConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_MECHANIC_BY_DNI"));
-            pst.setString(1, mechanicDto.dni);
+            pst.setString(1, dni);
 
             rs = pst.executeQuery();
+            mechanic = new MechanicDto();
             if (rs.next()) {
                 mechanic.id = rs.getLong(1);
                 mechanic.dni = rs.getString(2);
                 mechanic.name = rs.getString(3);
                 mechanic.surname = rs.getString(4);
             } else {
-                throw new PersistanceException("No existe el mecanico: " + mechanicDto.dni);
+                throw new PersistanceException("No existe el mecanico: " + dni);
             }
         } catch (SQLException e) {
             throw new PersistanceException("Error al recuperar el mecanico por dni:\n\t" + e);
@@ -211,5 +212,144 @@ public class MechanicGatewayImpl implements MechanicGateway {
             Jdbc.close(rs, pst);
         }
         return mechanic;
+    }
+
+    @Override
+    public MechanicDto findMechanicById(long id) throws PersistanceException {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        MechanicDto mechanic = null;
+
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_MECHANIC_BY_ID"));
+            pst.setLong(1, id);
+
+            rs = pst.executeQuery();
+            mechanic = new MechanicDto();
+            if (rs.next()) {
+                mechanic.id = rs.getLong(1);
+                mechanic.dni = rs.getString(2);
+                mechanic.name = rs.getString(3);
+                mechanic.surname = rs.getString(4);
+            } else {
+                throw new PersistanceException("No existe el mecanico: " + id);
+            }
+        } catch (SQLException e) {
+            throw new PersistanceException("Error al recuperar el mecanico por dni:\n\t" + e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+        return mechanic;
+    }
+
+    @Override
+    public List<MechanicDto> findActiveMechanics() throws PersistanceException {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        LinkedList<MechanicDto> mechanics = new LinkedList<MechanicDto>();
+
+        try {
+            c = Jdbc.getConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_ACTIVE_MECHANICS"));
+
+            rs = pst.executeQuery();
+            while (rs.next()) {
+                MechanicDto mechanic = new MechanicDto();
+                mechanic.id = rs.getLong(1);
+                mechanic.dni = rs.getString(2);
+                mechanic.name = rs.getString(3);
+                mechanic.surname = rs.getString(4);
+                mechanics.add(mechanic);
+            }
+        } catch (SQLException e) {
+            throw new PersistanceException("Error al recuperar todos los mecanicos activos:\n\t" + e);
+        } finally {
+            Jdbc.close(rs, pst, c);
+        }
+        return mechanics;
+    }
+
+    @Override
+    public int findMechanicContracts(Long id) throws PersistanceException {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_MECHANIC_CONTRACTS"));
+            pst.setLong(1, id);
+
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            } else {
+                throw new PersistanceException("No existe el mecanico: " + id);
+            }
+            return count;
+        } catch (SQLException e) {
+            throw new PersistanceException("Error de persistencia:\n\t" + e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+
+    }
+
+    @Override
+    public int findMechanicInterventions(Long id) throws PersistanceException {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_MECHANIC_INTERVENTIONS"));
+            pst.setLong(1, id);
+
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            } else {
+                throw new PersistanceException("No existe el mecanico: " + id);
+            }
+            return count;
+        } catch (SQLException e) {
+            throw new PersistanceException("Error de persistencia:\n\t" + e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
+    }
+
+    @Override
+    public int findMechanicBreakdowns(Long id) throws PersistanceException {
+        Connection c = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        int count = 0;
+        try {
+            c = Jdbc.getCurrentConnection();
+
+            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_MECHANIC_BREAKDOWNS"));
+            pst.setLong(1, id);
+
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            } else {
+                throw new PersistanceException("No existe el mecanico: " + id);
+            }
+            return count;
+        } catch (SQLException e) {
+            throw new PersistanceException("Error de persistencia:\n\t" + e);
+        } finally {
+            Jdbc.close(rs, pst);
+        }
     }
 }

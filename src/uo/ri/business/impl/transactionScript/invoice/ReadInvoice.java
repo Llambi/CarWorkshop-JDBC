@@ -4,6 +4,7 @@ import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.BreakdownDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.BreakdownGateway;
 import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
@@ -15,10 +16,11 @@ import java.util.List;
  */
 public class ReadInvoice {
 
+    private final BreakdownGateway breakdownGateway = GatewayFactory.getBreakdownGateway();
     private Connection connection;
-    private Long id;
+    private String id;
 
-    public ReadInvoice(Long id) {
+    public ReadInvoice(String id) {
         this.id = id;
     }
 
@@ -60,10 +62,10 @@ public class ReadInvoice {
      * @return Lista de averias sin facturar del cliente.
      * @throws BusinessException
      */
-    private List<BreakdownDto> obtenerAveriasNoFacturadas(Long id) throws BusinessException {
+    private List<BreakdownDto> obtenerAveriasNoFacturadas(String id) throws BusinessException {
 
         try {
-            return GatewayFactory.getBreakdownGateway().findUninvoicedBreakdown(id);
+            return breakdownGateway.findUninvoicedBreakdownByDni(id);
         } catch (PersistanceException e) {
             throw new BusinessException("Fallo al recuperar las averias no facturadas:\n\t" + e);
         }

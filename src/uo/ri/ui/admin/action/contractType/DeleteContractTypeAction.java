@@ -4,6 +4,7 @@ import alb.util.console.Console;
 import alb.util.menu.Action;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.conf.ServiceFactory;
+import uo.ri.ui.util.Printer;
 
 /**
  * Clase que contiene la ui para elimiar un tipo de contrato.
@@ -14,11 +15,11 @@ public class DeleteContractTypeAction implements Action {
         ContractTypeDto contractTypeDto = new ContractTypeDto();
 
         // Pedir datos
-        contractTypeDto.name = Console.readString("Nombre del tipo de contrato");
+        Long id = Console.readLong("Id del tipo de contrato");
 
-        ServiceFactory.getContractTypeCRUDService().deleteContractType(contractTypeDto);
+        new ServiceFactory().forContractTypeCrud().deleteContractType(id);
 
         // Mostrar resultado
-        Console.println("Tipo de contrato eliminado");
+        Printer.printDeleteTypeContract();
     }
 }

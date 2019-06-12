@@ -1,28 +1,26 @@
-package uo.ri.business.impl.transactionScript.paymentMean;
+package uo.ri.business.impl.transactionScript.invoice;
 
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.ClientDto;
-import uo.ri.business.dto.InvoiceDto;
 import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.ClientGateway;
 import uo.ri.persistence.exception.PersistanceException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Clase que contiene la logica necesaria para recuperar los medios de pago de un cliente dada una Factura.
- */
-public class FindClientPaymentMean {
-
+public class FindPayMethodsForInvoice {
+    private final ClientGateway clientGateway = GatewayFactory.getClientGateway();
+    private Long idFactura;
     private Connection connection;
-    private InvoiceDto invoice;
 
-    public FindClientPaymentMean(InvoiceDto invoice) {
-        this.invoice = invoice;
+    public FindPayMethodsForInvoice(Long idFactura) {
+        this.idFactura = idFactura;
     }
+
 
     /**
      * Metodo que dada una factura recupera los medios de pago del cliente de esta.
@@ -62,7 +60,7 @@ public class FindClientPaymentMean {
     private ClientDto findClientByFactura() throws BusinessException {
 
         try {
-            ClientDto cliente = GatewayFactory.getClientGateway().findClient("FACTURA_ID", invoice.id);
+            ClientDto cliente = clientGateway.findClient("FACTURA_ID", idFactura);
             if (cliente.id == 0) {
                 throw new BusinessException(
                         "El cliente no se encuentra en el sistema");
@@ -90,4 +88,5 @@ public class FindClientPaymentMean {
         }
 
     }
+
 }

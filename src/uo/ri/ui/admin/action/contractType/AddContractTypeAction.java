@@ -4,6 +4,7 @@ import alb.util.console.Console;
 import alb.util.menu.Action;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.conf.ServiceFactory;
+import uo.ri.ui.util.Printer;
 
 /**
  * Clase que contiene la ui para añadir un tipo de contrato.
@@ -17,9 +18,9 @@ public class AddContractTypeAction implements Action {
         contractTypeDto.name = Console.readString("Nombre");
         contractTypeDto.compensationDays = Console.readInt("Dias de compensacion");
 
-        ServiceFactory.getContractTypeCRUDService().addContractType(contractTypeDto);
+        new ServiceFactory().forContractTypeCrud().addContractType(contractTypeDto);
 
         // Mostrar resultado
-        Console.println("Nuevo tipo de contrato añadido");
+        Printer.printAddTypeContract();
     }
 }

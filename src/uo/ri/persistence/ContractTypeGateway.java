@@ -10,13 +10,14 @@ public interface ContractTypeGateway {
 
     void addContractType(ContractTypeDto contracTypeDto) throws PersistanceException;
 
-    void deleteContractType(ContractTypeDto contracTypeDto) throws PersistanceException;
+    void deleteContractType(long id) throws PersistanceException;
 
     void updateContractType(ContractTypeDto contracTypeDto) throws PersistanceException;
 
     List<ContractTypeDto> findAllContractTypes() throws PersistanceException;
 
-    ContractTypeDto findContractType(ContractTypeDto contractTypeDto) throws PersistanceException;
+    ContractTypeDto findContractTypeById(long id) throws PersistanceException;
 
-    ContractTypeDto findContractType(ContractDto contractDto) throws PersistanceException;
+    ContractTypeDto findContractTypeByName(String name) throws PersistanceException;
+
 }
