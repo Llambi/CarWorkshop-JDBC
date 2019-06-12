@@ -25,7 +25,7 @@ public class DeleteContractCategory {
         try {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
-
+            if(categoryGateway.findContractCategoryById(this.id)==null)throw new BusinessException("La categoria no existe.");
             if(!contractGateway.findContractByCategoryId(this.id).isEmpty()) throw new BusinessException("La categoria tiene contratos asignados.");
 
             categoryGateway.deleteContractCategory(id);

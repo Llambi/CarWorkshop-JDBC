@@ -5,6 +5,7 @@ import alb.util.menu.Action;
 import uo.ri.business.dto.MechanicDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.ServiceFactory;
+import uo.ri.ui.util.Printer;
 
 /**
  * Clase que contiene la ui para actualizar un mecanico.
@@ -21,10 +22,10 @@ public class UpdateMechanicAction implements Action {
         mechanic.name = Console.readString("Nombre");
         mechanic.surname = Console.readString("Apellidos");
 
-        ServiceFactory.getMechanicCRUDService().updateMechanic(mechanic);
+        new ServiceFactory().forMechanicCrudService().updateMechanic(mechanic);
 
         // Mostrar resultado
-        Console.println("Mecánico actualizado");
+        Printer.printUpdateMechanic();
     }
 
 }

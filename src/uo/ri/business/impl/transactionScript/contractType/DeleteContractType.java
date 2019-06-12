@@ -38,6 +38,8 @@ public class DeleteContractType {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
+            if (contractTypeGateway.findContractTypeById(id) == null)
+                throw new BusinessException("El tipo de contrato no existe.");
             List<ContractDto> contractDtos = contractGateway.findContractByTypeId(id);
             for (ContractDto contractDto : contractDtos) {
                 if (!contractDto.status.equals(ACTIVE.toString())) {

@@ -5,6 +5,7 @@ import alb.util.menu.Action;
 import uo.ri.business.dto.MechanicDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.ServiceFactory;
+import uo.ri.ui.util.Printer;
 
 /**
  * Clase que contiene la ui para añadir un mecanico.
@@ -22,10 +23,10 @@ public class AddMechanicAction implements Action {
         mechanicDto.name = Console.readString("Nombre");
         mechanicDto.surname = Console.readString("Apellidos");
 
-        ServiceFactory.getMechanicCRUDService().addMechanic(mechanicDto);
+        new ServiceFactory().forMechanicCrudService().addMechanic(mechanicDto);
 
         // Mostrar resultado
-        Console.println("Nuevo mecánico añadido");
+        Printer.printAddMechanic();
     }
 
 }

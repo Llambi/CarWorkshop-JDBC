@@ -149,7 +149,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
-        ContractTypeDto contractType = new ContractTypeDto();
+        ContractTypeDto contractType = null;
 
         try {
             c = Jdbc.getCurrentConnection();
@@ -158,6 +158,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
             pst.setString(1, name);
 
             rs = pst.executeQuery();
+            contractType = new ContractTypeDto();
             if (rs.next()) {
                 contractType.id = rs.getLong(1);
                 contractType.name = rs.getString(2);

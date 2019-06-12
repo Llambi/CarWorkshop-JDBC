@@ -5,7 +5,9 @@ import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.ContractDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
+import uo.ri.persistence.ContractGateway;
 import uo.ri.persistence.exception.PersistanceException;
+import uo.ri.persistence.impl.ContracStatus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,6 +16,7 @@ import java.sql.SQLException;
  * Clase que contiene la logica para la actualizacion de un contrato
  */
 public class UpdateContract {
+    private final ContractGateway contractGateway = GatewayFactory.getContractGateway();
     private ContractDto contractDto;
     private Connection connection;
 
@@ -32,10 +35,15 @@ public class UpdateContract {
         try {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
-            if (Dates.isBefore(contractDto.endDate, Dates.today()) || contractDto.yearBaseSalary < 0.) {
+            ContractDto contractDto = contractGateway.findContractById(this.contractDto.id);
+            if (contractDto == null)
+                throw new BusinessException("El Contrato a actualizar no existe.");
+            else if (!contractDto.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString()))
+                throw new BusinessException("El contrato a actualizar no esta activo.");
+            if (Dates.isBefore(this.contractDto.endDate, Dates.today()) || this.contractDto.yearBaseSalary < 0.) {
                 throw new BusinessException("No se cumple lo requerido para actualizar el contrato.");
             }
-            GatewayFactory.getContractGateway().updateContract(contractDto);
+            contractGateway.updateContract(contractDto);
 
             connection.commit();
         } catch (SQLException | PersistanceException e) {

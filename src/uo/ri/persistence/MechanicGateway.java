@@ -23,4 +23,10 @@ public interface MechanicGateway {
     MechanicDto findMechanicById(long id) throws PersistanceException;
 
     List<MechanicDto> findActiveMechanics() throws PersistanceException;
+
+    int findMechanicContracts(Long id) throws PersistanceException;
+
+    int findMechanicInterventions(Long id) throws PersistanceException;
+
+    int findMechanicBreakdowns(Long id) throws PersistanceException;
 }

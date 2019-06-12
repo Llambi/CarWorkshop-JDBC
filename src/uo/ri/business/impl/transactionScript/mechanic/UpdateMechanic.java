@@ -17,12 +17,10 @@ public class UpdateMechanic {
 
     public void execute() throws BusinessException {
         try {
-            try {
-                if (mechanicGateway.findMechanicById(mechanic.id).dni != null)
-                    throw new BusinessException("El mecanico no existe.");
-            } catch (PersistanceException ignored) {
 
-            }
+            if (mechanicGateway.findMechanicById(mechanic.id) != null)
+                throw new BusinessException("El mecanico no existe.");
+
             mechanicGateway.updateMechanic(mechanic);
         } catch (PersistanceException e) {
             throw new BusinessException("Imposible actualizar el mecanico.\n\t" + e);

@@ -2,7 +2,6 @@ package uo.ri.persistence.impl;
 
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.ContractCategoryDto;
-import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.ContractCategoryGateway;
 import uo.ri.persistence.exception.PersistanceException;
@@ -25,7 +24,7 @@ public class ContractCategoryGatewayImpl implements ContractCategoryGateway {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
-        ContractCategoryDto contractCategory = new ContractCategoryDto();
+        ContractCategoryDto contractCategory = null;
 
         try {
             c = Jdbc.getCurrentConnection();
@@ -34,6 +33,7 @@ public class ContractCategoryGatewayImpl implements ContractCategoryGateway {
             pst.setLong(1, id);
 
             rs = pst.executeQuery();
+            contractCategory = new ContractCategoryDto();
             if (rs.next()) {
                 contractCategory.id = rs.getLong(1);
                 contractCategory.name = rs.getString(2);
@@ -62,7 +62,7 @@ public class ContractCategoryGatewayImpl implements ContractCategoryGateway {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
-        ContractCategoryDto contractCategory = new ContractCategoryDto();
+        ContractCategoryDto contractCategory = null;
 
         try {
             c = Jdbc.getCurrentConnection();
@@ -71,6 +71,7 @@ public class ContractCategoryGatewayImpl implements ContractCategoryGateway {
             pst.setString(1, name);
 
             rs = pst.executeQuery();
+            contractCategory = new ContractCategoryDto();
             if (rs.next()) {
                 contractCategory.id = rs.getLong(1);
                 contractCategory.name = rs.getString(2);

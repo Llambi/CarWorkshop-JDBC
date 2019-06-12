@@ -1,6 +1,7 @@
-package uo.ri.ui.admin.action.contractType;
+package uo.ri.ui.admin.action.category;
 
 import alb.util.menu.Action;
+import uo.ri.business.dto.ContractCategoryDto;
 import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.dto.MechanicDto;
@@ -9,21 +10,17 @@ import uo.ri.persistence.impl.ContracStatus;
 import uo.ri.ui.util.Printer;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Clase que contiene la ui para listar los tipos de contratos.
- */
-public class ListContractTypeAction implements Action {
+public class ListCategoryAction implements Action {
     @Override
     public void execute() throws Exception {
 
         List<MechanicDto> mechanicDtos = new ServiceFactory().forMechanicCrudService().findActiveMechanics();
-        List<ContractTypeDto> contractTypeDtos = new ServiceFactory().forContractTypeCrud().findAllContractTypes();
+        List<ContractCategoryDto> categoryDtos= new ServiceFactory().forContractCategoryCrud().findAllContractCategories();
 
-        Map<ContractTypeDto, Map<MechanicDto, ContractDto>> map = new HashMap<>();
+        Map<ContractCategoryDto, Map<MechanicDto, ContractDto>> map = new HashMap<>();
         Map<MechanicDto, ContractDto> activeContractDtos = new HashMap<>();
 
 
@@ -32,14 +29,15 @@ public class ListContractTypeAction implements Action {
                     .filter(contractDto -> contractDto.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString())).findFirst().orElse(null);
             activeContractDtos.put(m,activeContract);
         }
-        for (ContractTypeDto ct : contractTypeDtos){
+
+        for (ContractCategoryDto ct : categoryDtos){
             for (Map.Entry<MechanicDto, ContractDto> entry: activeContractDtos.entrySet()){
-                if(ct.name.equalsIgnoreCase(entry.getValue().typeName)){
+                if(ct.name.equalsIgnoreCase(entry.getValue().categoryName)){
                     map.put(ct, (Map<MechanicDto, ContractDto>) entry);
                 }
             }
         }
 
-        Printer.printListContractTypes(map);
+        Printer.printListCategories(map);
     }
 }

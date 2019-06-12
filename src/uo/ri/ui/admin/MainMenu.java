@@ -11,7 +11,9 @@ public class MainMenu extends BaseMenu {
                 {"Gestión de repuestos", RepuestosMenu.class},
                 {"Gestión de tipos de vehículo", TiposVehiculoMenu.class},
                 {"Gestión de contratos", ContratosMenu.class},
-                {"Gestion de tipos de contratos", ContractTypeMenu.class}
+                {"Gestion de tipos de contratos", ContractTypeMenu.class},
+                {"Gestion de categorias de contratos", CategoryMenu.class},
+                {"Gestion de nominas", PayrollMenu.class},
         };
     }
 

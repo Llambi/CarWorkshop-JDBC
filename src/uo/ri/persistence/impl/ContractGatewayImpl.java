@@ -166,16 +166,17 @@ public class ContractGatewayImpl implements ContractGateway {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
-        ContractDto contract = new ContractDto();
+        ContractDto contract =null;
 
         try {
+
             c = Jdbc.getCurrentConnection();
 
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_BY_ID"));
             pst.setLong(1, id);
 
             rs = pst.executeQuery();
-
+            contract = new ContractDto();
             while (rs.next()) {
                 contract.id = rs.getLong(1);
                 contract.startDate = rs.getDate(2);

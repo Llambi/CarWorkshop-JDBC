@@ -16,12 +16,16 @@ public class DeleteMechanic {
 
     public void execute() throws BusinessException {
         try {
-            try {
-                if (mechanicGateway.findMechanicById(idMecanico).dni != null)
-                    throw new BusinessException("El mecanico no existe.");
-            } catch (PersistanceException ignored) {
 
-            }
+            if (mechanicGateway.findMechanicById(idMecanico) != null)
+                throw new BusinessException("El mecanico no existe.");
+            if (mechanicGateway.findMechanicContracts(idMecanico) > 0)
+                throw new BusinessException("El mecanico tiene contratos asignados.");
+            if (mechanicGateway.findMechanicInterventions(idMecanico) > 0)
+                throw new BusinessException("El mecanico tiene contratos asignados.");
+            if (mechanicGateway.findMechanicBreakdowns(idMecanico) > 0)
+                throw new BusinessException("El mecanico tiene contratos asignados.");
+
             mechanicGateway.deleteMechanic(idMecanico);
         } catch (PersistanceException e) {
             throw new BusinessException("Imposible eliminar el mecanico.\n\t" + e);

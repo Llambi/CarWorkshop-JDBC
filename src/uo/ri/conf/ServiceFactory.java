@@ -5,9 +5,9 @@ import uo.ri.business.impl.*;
 import uo.ri.persistence.impl.PayrollGatewayImpl;
 
 public class ServiceFactory implements uo.ri.business.ServiceFactory {
-//TODO:
+
     @Override
-    public MechanicCrudService forMechanicCrudService() {
+    public  MechanicCrudService forMechanicCrudService() {
         return new MechanicCRUDImpl();
     }
 

@@ -54,7 +54,7 @@ public class AddContractType {
     private void checkData() throws BusinessException, PersistanceException {
         if (contractTypeDto.compensationDays < 0)
             throw new BusinessException("El numero de dias de compensacion debe ser mayor que 0.");
-        if (contractTypeGateway.findContractTypeByName(contractTypeDto.name).name != null)
+        if (contractTypeGateway.findContractTypeByName(contractTypeDto.name) != null)
             throw new BusinessException("Ya existe un tipo de contrato con ese nombre.");
     }
 }

@@ -18,7 +18,7 @@ public class AddMechanic {
     public void execute() throws BusinessException {
         try {
             try {
-                if(mechanicGateway.findMechanicByDni(mechanic.dni).dni!=null)
+                if(mechanicGateway.findMechanicByDni(mechanic.dni)!=null)
                     throw new BusinessException("Este DNI ya existe.");
             }catch (PersistanceException ignored){
 

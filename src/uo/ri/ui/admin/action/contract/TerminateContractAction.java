@@ -22,9 +22,8 @@ public class TerminateContractAction implements Action {
         contractDto.endDate = Dates.fromString(Console
                 .readString("Fecha de extincion del contrato (Formato dd-mm-aaaa)"));
 
-        Map<String, Object> liquidacion = ServiceFactory.getContractCRUDService().terminateContract(contractDto);
+        new ServiceFactory().forContractCrud().finishContract(contractDto.id,contractDto.endDate);
 
-        Printer.printLiquidacion(liquidacion);
         Printer.printTerminateContract();
     }
 }

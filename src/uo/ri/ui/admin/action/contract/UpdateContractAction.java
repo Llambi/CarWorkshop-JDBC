@@ -19,7 +19,7 @@ public class UpdateContractAction implements Action {
         contractDto.endDate = Dates.fromString(Console.readString("Nuevo fin de contrato (Formato dd-mm-aaaa"));
         contractDto.yearBaseSalary = Console.readDouble("Nuevo salario base por año");
 
-        ServiceFactory.getContractCRUDService().updateContract(contractDto);
+        new ServiceFactory().forContractCrud().updateContract(contractDto);
 
         Printer.printUpdateContract();
     }

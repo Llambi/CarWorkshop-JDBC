@@ -40,7 +40,8 @@ public class UpdateContractCategory {
         }
     }
 
-    private void checkData() throws BusinessException {
+    private void checkData() throws BusinessException, PersistanceException {
+        if(GatewayFactory.getContractCategoryGateway().findContractCategoryByName(dto.name)==null)throw new BusinessException("La categoria no existe");
         if(dto.productivityPlus<=0)throw new BusinessException("Plus de productividad no puede ser igual o menor que 0.");
         if(dto.trieniumSalary<=0)throw new BusinessException("Trienio no puede ser igual o menor que 0.");
     }
