@@ -197,14 +197,12 @@ public class MechanicGatewayImpl implements MechanicGateway {
             pst.setString(1, dni);
 
             rs = pst.executeQuery();
-            mechanic = new MechanicDto();
             if (rs.next()) {
+                mechanic = new MechanicDto();
                 mechanic.id = rs.getLong(1);
                 mechanic.dni = rs.getString(2);
                 mechanic.name = rs.getString(3);
                 mechanic.surname = rs.getString(4);
-            } else {
-                throw new PersistanceException("No existe el mecanico: " + dni);
             }
         } catch (SQLException e) {
             throw new PersistanceException("Error al recuperar el mecanico por dni:\n\t" + e);

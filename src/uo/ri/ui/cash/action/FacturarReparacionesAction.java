@@ -20,7 +20,7 @@ public class FacturarReparacionesAction implements Action {
 			ids.add(id);
 		} while ( masAverias() );
 
-		InvoiceDto invoice = new ServiceFactory().getInvoiceCRUDService().createInvoice(ids);
+		InvoiceDto invoice = new ServiceFactory().forInvoice().createInvoiceFor(ids);
 
 		mostrarFactura(invoice);
 

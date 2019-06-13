@@ -17,7 +17,7 @@ public class MecanicosMenu extends BaseMenu {
                 {"Modificar datos de mecánico", UpdateMechanicAction.class},
                 {"Eliminar mecánico", DeleteMechanicAction.class},
                 {"Listar mecánicos", ListMechanicsAction.class},
-                {"Listar mecánicos", ListActiveMechanicsAction.class},
+                {"Listar mecánicos activos", ListActiveMechanicsAction.class},
         };
     }
 

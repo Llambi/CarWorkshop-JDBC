@@ -3,8 +3,11 @@ package uo.ri.ui.cash.action;
 import alb.util.console.Console;
 import alb.util.date.Dates;
 import alb.util.menu.Action;
-import uo.ri.business.InvoiceCRUDService;
-import uo.ri.business.dto.*;
+import uo.ri.business.InvoiceService;
+import uo.ri.business.dto.CardDto;
+import uo.ri.business.dto.InvoiceDto;
+import uo.ri.business.dto.PaymentMeanDto;
+import uo.ri.business.dto.VoucherDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.ServiceFactory;
 import uo.ri.ui.util.Printer;
@@ -15,10 +18,10 @@ import java.util.Map;
 
 public class LiquidarFacturaAction implements Action {
 
-    private InvoiceCRUDService invoiceService;
+    private InvoiceService invoiceService;
 
     public LiquidarFacturaAction() {
-        this.invoiceService = ServiceFactory.getInvoiceCRUDService();
+        this.invoiceService = new ServiceFactory().forInvoice();
     }
 
     /**
@@ -41,9 +44,9 @@ public class LiquidarFacturaAction implements Action {
 
         Long id = Console.readLong("Numero de la factura");
 
-        InvoiceDto invoice = invoiceService.ListInvoice(id);
+        InvoiceDto invoice = invoiceService.findInvoice(id);
         mostrarFactura(invoice);
-        List<PaymentMeanDto> paymentMeans = ServiceFactory.getPaymentMeanCRUDService().findClientPaymentMean(invoice);
+        List<PaymentMeanDto> paymentMeans = invoiceService.findPayMethodsForInvoice(id);
         mostrarPaymentMean(paymentMeans);
 
         payInvoice(paymentMeans, invoice);
@@ -53,39 +56,28 @@ public class LiquidarFacturaAction implements Action {
     private void payInvoice(List<PaymentMeanDto> mediosPago, InvoiceDto invoice) throws BusinessException {
 
         double total, restante, pagado = 0;
-        Integer eleccion;
+        Long eleccion;
         Double cantidad;
-        Map<Integer,PaymentMeanDto> pagosSeleccionados = new HashMap<>();
-
+        Map<Long, Double> pagosSeleccionados = new HashMap<>();
         total = invoice.total;
 
         Printer.printRecaudarMediosPago("Total", total);
 
         do {
-            PaymentMeanDto paymentMean;
             Printer.printRecaudarMediosPago("Restante", total - pagado);
-            eleccion = Console.readInt("Selecciona el numero del medio de"
+            eleccion = Console.readLong("Selecciona el numero del medio de"
                     + " pago que desea utilizar:\n\t1) Metalico\n\t2) Tarjeta\n\t3) Bono\nIndice  seleccionado");
-            switch (eleccion) {
-                case 1:
-                    paymentMean = new CashDto();
-                    break;
-                case 2:
-                    paymentMean = new CardDto();
-                    break;
-                case 3:
-                    paymentMean = new VoucherDto();
-                    break;
-                default:
-                    throw new BusinessException("Metodo de pago inexistente");
-            }
             cantidad = Console.readDouble(
                     "Selecciona la cantidad que desea pagar con este medio");
-            paymentMean.accumulated = cantidad;
-            pagosSeleccionados.put(eleccion, paymentMean);
-            restante = invoiceService.checkTotalInvoice(invoice, pagosSeleccionados,
-                    mediosPago);
-            pagado = total - restante;
+            if (pagosSeleccionados.containsKey(eleccion)) {
+                Double oldAmount = pagosSeleccionados.get(eleccion);
+                pagosSeleccionados.replace(eleccion, oldAmount + cantidad);
+            } else {
+                pagosSeleccionados.put(eleccion, cantidad);
+            }
+            invoiceService.settleInvoice(invoice.id, pagosSeleccionados);
+            pagado += cantidad;
+            restante = total - pagado;
         } while (restante != 0);
         Printer.printLiquidarFactura();
     }
@@ -102,7 +94,7 @@ public class LiquidarFacturaAction implements Action {
     private void mostrarPaymentMean(List<PaymentMeanDto> paymentMeans) {
         Console.printf("Medios de pago para el cliente %s:\n\n", paymentMeans.get(1).clientId);
         for (PaymentMeanDto payment : paymentMeans) {
-            Console.printf("\t> Numero de metodo de pago: %s || Con una cantidad acumulada de %s\n", payment.id, Math.round(payment.accumulated*100)/100);
+            Console.printf("\t> Numero de metodo de pago: %s || Con una cantidad acumulada de %s\n", payment.id, Math.round(payment.accumulated * 100) / 100);
             mostrarPaymentMean(payment);
         }
         System.out.println();
@@ -116,8 +108,7 @@ public class LiquidarFacturaAction implements Action {
         } else if (payment instanceof VoucherDto) {
             VoucherDto voucher = (VoucherDto) payment;
             Console.printf("\t\tTipo bono, numero: %s || Validez: %d || Descripcion: %s\n\n", voucher.code, voucher.available, voucher.description);
-        }
-        else{
+        } else {
             Console.println("\t\tTipo efectivo.\n");
         }
     }
