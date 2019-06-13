@@ -38,13 +38,21 @@ public class AddContractType {
             contractTypeGateway.addContractType(contractTypeDto);
 
             connection.commit();
-        } catch (SQLException | PersistanceException e) {
+        } catch (PersistanceException e) {
             try {
                 connection.rollback();
-                throw new BusinessException("Error al añadir el tipo de contrato.\n\t" + e);
+                throw new BusinessException("Error al añadir el tipo de contrato.\n\t" + e.getMessage());
             } catch (SQLException ignored) {
                 throw new BusinessException("Error en rollback.");
             }
+        } catch (SQLException e1) {
+            try {
+                connection.rollback();
+                throw new BusinessException("Error al añadir el tipo de contrato.\n\t" + e1);
+            } catch (SQLException ignored) {
+                throw new BusinessException("Error en rollback.");
+            }
+
         } finally {
             Jdbc.close(connection);
         }

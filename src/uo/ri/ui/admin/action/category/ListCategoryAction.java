@@ -33,7 +33,9 @@ public class ListCategoryAction implements Action {
         for (ContractCategoryDto ct : categoryDtos){
             for (Map.Entry<MechanicDto, ContractDto> entry: activeContractDtos.entrySet()){
                 if(ct.name.equalsIgnoreCase(entry.getValue().categoryName)){
-                    map.put(ct, (Map<MechanicDto, ContractDto>) entry);
+                    Map<MechanicDto, ContractDto> aux = new HashMap<>();
+                    aux.put(entry.getKey(),entry.getValue());
+                    map.put(ct, aux);
                 }
             }
         }

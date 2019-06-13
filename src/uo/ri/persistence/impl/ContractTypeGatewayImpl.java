@@ -1,7 +1,6 @@
 package uo.ri.persistence.impl;
 
 import alb.util.jdbc.Jdbc;
-import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.ContractTypeGateway;
@@ -43,7 +42,7 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         } catch (SQLException e) {
             throw new PersistanceException("Error al insertar el tipo de contrato:\n\t" + e);
         } finally {
-            Jdbc.close(rs, pst, c);
+            Jdbc.close(rs, pst);
         }
     }
 
@@ -158,13 +157,11 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
             pst.setString(1, name);
 
             rs = pst.executeQuery();
-            contractType = new ContractTypeDto();
             if (rs.next()) {
+                contractType = new ContractTypeDto();
                 contractType.id = rs.getLong(1);
                 contractType.name = rs.getString(2);
                 contractType.compensationDays = rs.getInt(3);
-            } else {
-                throw new PersistanceException("No existe el tipo de contrato con nombre: " + name);
             }
         } catch (SQLException e) {
             throw new PersistanceException("Error al recuperar el tipo de contrato por nombre:\n\t" + e);

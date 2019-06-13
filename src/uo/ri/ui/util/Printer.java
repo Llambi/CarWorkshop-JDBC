@@ -270,7 +270,7 @@ public class Printer {
             }
             Console.println();
             Console.printf("\tEl numero total de mecanicos con este tipo de contrato son: %s\n", mechanicsCounter);
-            Console.printf("\tEl salaruio acumulado de mecanicos con este tipo de contrato son: %s\n", acumSalary);
+            Console.printf("\tEl salario acumulado de mecanicos con este tipo de contrato son: %s\n", acumSalary);
             Console.println();
         }
     }
@@ -293,7 +293,7 @@ public class Printer {
             }
             Console.println();
             Console.printf("\tEl numero total de mecanicos con esta categoria son: %s\n", mechanicsCounter);
-            Console.printf("\tEl salaruio acumulado de mecanicos con esta categoria son: %s\n", acumSalary);
+            Console.printf("\tEl salario acumulado de mecanicos con esta categoria son: %s\n", acumSalary);
             Console.println();
         }
     }

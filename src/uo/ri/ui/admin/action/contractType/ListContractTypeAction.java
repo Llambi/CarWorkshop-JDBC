@@ -9,7 +9,6 @@ import uo.ri.persistence.impl.ContracStatus;
 import uo.ri.ui.util.Printer;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,14 +27,20 @@ public class ListContractTypeAction implements Action {
 
 
         for (MechanicDto m : mechanicDtos) {
-            ContractDto activeContract= new ServiceFactory().forContractCrud().findContractsByMechanicId(m.id).stream()
-                    .filter(contractDto -> contractDto.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString())).findFirst().orElse(null);
-            activeContractDtos.put(m,activeContract);
+            List<ContractDto> activeContract = new ServiceFactory().forContractCrud().findContractsByMechanicId(m.id);
+
+            ContractDto c = activeContract.stream()
+                    .filter(contractDto -> contractDto.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString()))
+                    .findFirst().get();
+
+            activeContractDtos.put(m, c);
         }
-        for (ContractTypeDto ct : contractTypeDtos){
-            for (Map.Entry<MechanicDto, ContractDto> entry: activeContractDtos.entrySet()){
-                if(ct.name.equalsIgnoreCase(entry.getValue().typeName)){
-                    map.put(ct, (Map<MechanicDto, ContractDto>) entry);
+        for (ContractTypeDto ct : contractTypeDtos) {
+            for (Map.Entry<MechanicDto, ContractDto> entry : activeContractDtos.entrySet()) {
+                if (ct.name.equalsIgnoreCase(entry.getValue().typeName)) {
+                    Map<MechanicDto, ContractDto> aux = new HashMap<>();
+                    aux.put(entry.getKey(),entry.getValue());
+                    map.put(ct, aux);
                 }
             }
         }

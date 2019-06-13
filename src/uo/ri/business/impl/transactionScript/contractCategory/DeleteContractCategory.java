@@ -34,7 +34,7 @@ public class DeleteContractCategory {
         } catch (SQLException | PersistanceException e) {
             try {
                 connection.rollback();
-                throw new BusinessException("Imposible eliminar la categoria de contrato.\n\t" + e);
+                throw new BusinessException("Imposible eliminar la categoria de contrato.\n\t" + e.getMessage());
             } catch (SQLException ignored) {
                 throw new BusinessException("Fallo en rollback.");
             }

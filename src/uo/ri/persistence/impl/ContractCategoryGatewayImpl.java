@@ -78,7 +78,7 @@ public class ContractCategoryGatewayImpl implements ContractCategoryGateway {
                 contractCategory.productivityPlus = rs.getDouble(3);
                 contractCategory.trieniumSalary = rs.getDouble(4);
             } else {
-                throw new PersistanceException("No existe el tipo de contrato: " + name);
+                throw new PersistanceException("No existe la categoria de contrato: " + name);
             }
         } catch (SQLException e) {
             throw new PersistanceException("Error al recuperar la categoria de contrato:\n\t" + e);
@@ -144,7 +144,7 @@ public class ContractCategoryGatewayImpl implements ContractCategoryGateway {
             pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_CONTRACT_CATEGORY"));
             pst.setDouble(1, dto.productivityPlus);
             pst.setDouble(2, dto.trieniumSalary);
-            pst.setLong(3, dto.id);
+            pst.setString(3, dto.name);
 
             pst.executeUpdate();
 

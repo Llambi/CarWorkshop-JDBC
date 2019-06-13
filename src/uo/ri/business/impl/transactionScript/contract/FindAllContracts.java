@@ -53,6 +53,7 @@ public class FindAllContracts {
                 contractDto.categoryName = contractCategoryGateway.findContractCategoryById(contractDto.categoryId).name;
                 contractDto.typeName = contractTypeDto.name;
                 contractDto.compensation = liquidarContrato(contractDto, contractTypeDto);
+                contracts.add(contractDto);
             }
 
             connection.commit();
