@@ -2,7 +2,6 @@ package uo.ri.ui.admin.action.contractType;
 
 import alb.util.console.Console;
 import alb.util.menu.Action;
-import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.conf.ServiceFactory;
 import uo.ri.ui.util.Printer;
 
@@ -12,7 +11,6 @@ import uo.ri.ui.util.Printer;
 public class DeleteContractTypeAction implements Action {
     @Override
     public void execute() throws Exception {
-        ContractTypeDto contractTypeDto = new ContractTypeDto();
 
         // Pedir datos
         Long id = Console.readLong("Id del tipo de contrato");

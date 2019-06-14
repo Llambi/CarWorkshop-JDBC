@@ -13,7 +13,8 @@ public class ListMechanics {
         try {
             return GatewayFactory.getMechanicGateway().findAllMechanics();
         } catch (PersistanceException e) {
-            throw new BusinessException("Imposible recuperar los mecanicos.\n\t" + e);
+            throw new BusinessException
+                    ("Imposible recuperar los mecanicos.\n\t" + e);
         }
     }
 }

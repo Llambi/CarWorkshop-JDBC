@@ -1,10 +1,9 @@
 package uo.ri.persistence;
 
-import uo.ri.business.dto.ContractDto;
+import java.util.List;
+
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.persistence.exception.PersistanceException;
-
-import java.util.List;
 
 public interface ContractTypeGateway {
 

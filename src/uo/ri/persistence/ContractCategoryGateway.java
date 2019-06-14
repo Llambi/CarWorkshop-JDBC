@@ -1,9 +1,9 @@
 package uo.ri.persistence;
 
+import java.util.List;
+
 import uo.ri.business.dto.ContractCategoryDto;
 import uo.ri.persistence.exception.PersistanceException;
-
-import java.util.List;
 
 public interface ContractCategoryGateway {
     ContractCategoryDto findContractCategoryById(long id) throws PersistanceException;

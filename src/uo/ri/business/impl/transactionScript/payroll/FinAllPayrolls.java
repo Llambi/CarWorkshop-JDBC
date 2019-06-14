@@ -28,7 +28,8 @@ public class FinAllPayrolls {
         } catch (SQLException | PersistanceException e) {
             try {
                 connection.rollback();
-                throw new BusinessException("Imposible recuperar nominas.\n\t" + e);
+                throw new BusinessException
+                        ("Imposible recuperar nominas.\n\t" + e);
             } catch (SQLException ignored) {
                 throw new BusinessException("Fallo en rollback.");
             }

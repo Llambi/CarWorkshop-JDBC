@@ -13,7 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 public class DeleteLastGeneratePayrolls {
-    private final PayrollGateway payrollGateway = GatewayFactory.getPayrollGateway();
+    private final PayrollGateway payrollGateway =
+            GatewayFactory.getPayrollGateway();
     private Connection connection;
 
     public int execute() throws BusinessException {
@@ -22,7 +23,8 @@ public class DeleteLastGeneratePayrolls {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
-            List<PayrollDto> payrollDtoList = payrollGateway.findAllPayrolls();
+            List<PayrollDto> payrollDtoList = payrollGateway
+                    .findAllPayrolls();
             if (!payrollDtoList.isEmpty()) {
                 Date newestDate = payrollDtoList.stream()
                         .map(payrollDto -> payrollDto.date)
@@ -35,7 +37,9 @@ public class DeleteLastGeneratePayrolls {
         } catch (SQLException | PersistanceException e) {
             try {
                 connection.rollback();
-                throw new BusinessException("Imposible eliminar las nominas generadas\n\t" + e);
+                throw new BusinessException
+                        ("Imposible eliminar las nominas " +
+                                "generadas\n\t" + e);
             } catch (SQLException ignored) {
                 throw new BusinessException("Error en rollback.");
             }

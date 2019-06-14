@@ -12,7 +12,8 @@ import java.sql.SQLException;
 
 
 public class AddMechanic {
-    private final MechanicGateway mechanicGateway = GatewayFactory.getMechanicGateway();
+    private final MechanicGateway mechanicGateway =
+            GatewayFactory.getMechanicGateway();
     private MechanicDto mechanic;
     private Connection connection;
 
@@ -33,7 +34,8 @@ public class AddMechanic {
                 connection.rollback();
             } catch (SQLException ignored) {
             }
-            throw new BusinessException("Imposible añadir el mecanico.\n\t" + e.getMessage());
+            throw new BusinessException
+                    ("Imposible añadir el mecanico.\n\t" + e.getMessage());
         } catch (SQLException e) {
             try {
                 connection.rollback();

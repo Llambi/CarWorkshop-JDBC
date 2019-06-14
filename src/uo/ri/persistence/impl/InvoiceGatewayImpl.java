@@ -23,13 +23,17 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
      * @throws PersistanceException
      */
     @Override
-    public InvoiceDto createInvoice(InvoiceDto invoice) throws PersistanceException {
+    public InvoiceDto createInvoice(InvoiceDto invoice)
+            throws PersistanceException {
         PreparedStatement pst = null;
 
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_INSERTAR_FACTURA"));
+            pst = Jdbc.getCurrentConnection()
+                    .prepareStatement(Conf.getInstance()
+                            .getProperty("SQL_INSERTAR_FACTURA"));
             pst.setLong(1, invoice.number);
-            pst.setDate(2, new java.sql.Date(invoice.date.getTime()));
+            pst.setDate(2, new java.sql.Date
+                    (invoice.date.getTime()));
             pst.setDouble(3, invoice.vat);
             pst.setDouble(4, invoice.total);
             pst.setString(5, "SIN_ABONAR");
@@ -53,19 +57,23 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
      * @throws PersistanceException
      */
     @Override
-    public InvoiceDto listInvoice(Long number) throws PersistanceException {
+    public InvoiceDto listInvoice(Long number)
+            throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
         InvoiceDto resultInvoice = new InvoiceDto();
         try {
 
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_INVOICE"));
+            pst = Jdbc.getCurrentConnection()
+                    .prepareStatement(Conf.getInstance()
+                            .getProperty("SQL_INVOICE"));
             pst.setLong(1, number);
 
             rs = pst.executeQuery();
 
             if (!rs.next()) {
-                throw new PersistanceException("No existe la factura con numero: " + number);
+                throw new PersistanceException
+                        ("No existe la factura con numero: " + number);
             }
 
             resultInvoice.id = rs.getLong(1);
@@ -74,10 +82,12 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
             resultInvoice.vat = rs.getLong(4);
             resultInvoice.number = rs.getLong(5);
             resultInvoice.status = rs.getString(6);
-            resultInvoice.total = resultInvoice.amount * (1 + (resultInvoice.vat / 100));
+            resultInvoice.total = resultInvoice.amount * (1 +
+                    (resultInvoice.vat / 100));
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar la factura:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar la factura:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -96,7 +106,8 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
         ResultSet rs = null;
 
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
+            pst = Jdbc.getCurrentConnection()
+                    .prepareStatement(Conf.getInstance()
                     .getProperty("SQL_ULTIMO_NUMERO_FACTURA"));
             rs = pst.executeQuery();
 
@@ -106,7 +117,8 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
                 return 1L;
             }
         } catch (SQLException e) {
-            throw new PersistanceException("Problemas al recuperar la ultima factura:\n\t" + e);
+            throw new PersistanceException
+                    ("Problemas al recuperar la ultima factura:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -121,11 +133,13 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
      * @throws PersistanceException
      */
     @Override
-    public void updateInvoice(String campo, String estado, Long id) throws PersistanceException {
+    public void updateInvoice(String campo, String estado, Long id)
+            throws PersistanceException {
         PreparedStatement pst = null;
 
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
+            pst = Jdbc.getCurrentConnection()
+                    .prepareStatement(Conf.getInstance()
                     .getProperty("SQL_UPDATE_INVOICE_ABONADA"));
 //            pst.setString(1, campo);
             pst.setString(1, estado);
@@ -133,7 +147,8 @@ public class InvoiceGatewayImpl implements InvoiceGateway {
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Factura no actualizada:\n\t" + e);
+            throw new PersistanceException
+                    ("Factura no actualizada:\n\t" + e);
         } finally {
             Jdbc.close(pst);
         }

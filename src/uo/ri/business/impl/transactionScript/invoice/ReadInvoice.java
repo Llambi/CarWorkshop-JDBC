@@ -1,5 +1,9 @@
 package uo.ri.business.impl.transactionScript.invoice;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.BreakdownDto;
 import uo.ri.business.exception.BusinessException;
@@ -7,16 +11,13 @@ import uo.ri.conf.GatewayFactory;
 import uo.ri.persistence.BreakdownGateway;
 import uo.ri.persistence.exception.PersistanceException;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
-
 /**
  * Clase que contiene la logica para leer una factura.
  */
 public class ReadInvoice {
 
-    private final BreakdownGateway breakdownGateway = GatewayFactory.getBreakdownGateway();
+    private final BreakdownGateway breakdownGateway =
+            GatewayFactory.getBreakdownGateway();
     private Connection connection;
     private String id;
 
@@ -62,12 +63,15 @@ public class ReadInvoice {
      * @return Lista de averias sin facturar del cliente.
      * @throws BusinessException
      */
-    private List<BreakdownDto> obtenerAveriasNoFacturadas(String id) throws BusinessException {
+    private List<BreakdownDto> obtenerAveriasNoFacturadas(String id)
+            throws BusinessException {
 
         try {
             return breakdownGateway.findUninvoicedBreakdownByDni(id);
         } catch (PersistanceException e) {
-            throw new BusinessException("Fallo al recuperar las averias no facturadas:\n\t" + e);
+            throw new BusinessException
+                    ("Fallo al recuperar las averias " +
+                            "no facturadas:\n\t" + e);
         }
 
     }

@@ -1,8 +1,27 @@
 package uo.ri.conf;
 
-import uo.ri.business.dto.ContractCategoryDto;
-import uo.ri.persistence.*;
-import uo.ri.persistence.impl.*;
+import uo.ri.persistence.BreakdownGateway;
+import uo.ri.persistence.ClientGateway;
+import uo.ri.persistence.ContractCategoryGateway;
+import uo.ri.persistence.ContractGateway;
+import uo.ri.persistence.ContractTypeGateway;
+import uo.ri.persistence.InterventionGateway;
+import uo.ri.persistence.InvoiceGateway;
+import uo.ri.persistence.MechanicGateway;
+import uo.ri.persistence.PaymentMeanGateway;
+import uo.ri.persistence.PayrollGateway;
+import uo.ri.persistence.SpareGateway;
+import uo.ri.persistence.impl.BreakdownGatewayImpl;
+import uo.ri.persistence.impl.ClientGatewayImpl;
+import uo.ri.persistence.impl.ContractCategoryGatewayImpl;
+import uo.ri.persistence.impl.ContractGatewayImpl;
+import uo.ri.persistence.impl.ContractTypeGatewayImpl;
+import uo.ri.persistence.impl.InterventionGatewayImpl;
+import uo.ri.persistence.impl.InvoiceGatewayImpl;
+import uo.ri.persistence.impl.MechanicGatewayImpl;
+import uo.ri.persistence.impl.PaymentMeanGatewayImpl;
+import uo.ri.persistence.impl.PayrollGatewayImpl;
+import uo.ri.persistence.impl.SpareGatewayImpl;
 
 public class GatewayFactory {
 

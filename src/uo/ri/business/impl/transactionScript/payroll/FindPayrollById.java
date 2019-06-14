@@ -13,7 +13,8 @@ import java.sql.SQLException;
 public class FindPayrollById {
     private Long id;
     private Connection connection;
-    private PayrollGateway payrollGateway = GatewayFactory.getPayrollGateway();
+    private PayrollGateway payrollGateway =
+            GatewayFactory.getPayrollGateway();
 
     public FindPayrollById(Long id) {
         this.id = id;
@@ -24,7 +25,8 @@ public class FindPayrollById {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
-            PayrollDto payrollDto = payrollGateway.findPayrollsById(this.id);
+            PayrollDto payrollDto = payrollGateway
+                    .findPayrollsById(this.id);
 
             connection.commit();
 
@@ -32,7 +34,9 @@ public class FindPayrollById {
         } catch (SQLException | PersistanceException e) {
             try {
                 connection.rollback();
-                throw new BusinessException("Imposible encontrar la nomina del id dado\n\t" + e);
+                throw new BusinessException
+                        ("Imposible encontrar la nomina del" +
+                                " id dado\n\t" + e);
             } catch (SQLException ignored) {
                 throw new BusinessException("Error en rollback.");
             }

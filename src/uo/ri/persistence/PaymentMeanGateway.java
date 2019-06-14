@@ -1,10 +1,10 @@
 package uo.ri.persistence;
 
+import java.util.List;
+
 import uo.ri.business.dto.PaymentMeanDto;
 import uo.ri.business.dto.VoucherDto;
 import uo.ri.persistence.exception.PersistanceException;
-
-import java.util.List;
 
 public interface PaymentMeanGateway {
 

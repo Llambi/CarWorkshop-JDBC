@@ -1,8 +1,17 @@
 package uo.ri.business.impl.transactionScript.invoice;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.InvoiceService;
-import uo.ri.business.dto.*;
+import uo.ri.business.dto.CardDto;
+import uo.ri.business.dto.CashDto;
+import uo.ri.business.dto.InvoiceDto;
+import uo.ri.business.dto.PaymentMeanDto;
+import uo.ri.business.dto.VoucherDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
 import uo.ri.conf.ServiceFactory;
@@ -10,19 +19,17 @@ import uo.ri.persistence.InvoiceGateway;
 import uo.ri.persistence.PaymentMeanGateway;
 import uo.ri.persistence.exception.PersistanceException;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Clase que contiene la logica para liquidar una factura.
  */
 public class SettleInvoice {
 
-    private final InvoiceService forInvoice = new ServiceFactory().forInvoice();
-    private final PaymentMeanGateway paymentMeanGateway = GatewayFactory.getPaymentMeanGateway();
-    private final InvoiceGateway invoiceGateway = GatewayFactory.getInvoiceGateway();
+    private final InvoiceService forInvoice =
+            new ServiceFactory().forInvoice();
+    private final PaymentMeanGateway paymentMeanGateway =
+            GatewayFactory.getPaymentMeanGateway();
+    private final InvoiceGateway invoiceGateway =
+            GatewayFactory.getInvoiceGateway();
     private Long idFactura;
     private Map<Long, Double> cargos;   //Metodo de pago al que cargar la cantidad dada
     private Connection connection;
@@ -44,9 +51,11 @@ public class SettleInvoice {
         try {
             this.connection = Jdbc.createThreadConnection();
             this.connection.setAutoCommit(false);
-            List<PaymentMeanDto> paymentMeanDtos = forInvoice.findPayMethodsForInvoice(this.idFactura);
+            List<PaymentMeanDto> paymentMeanDtos = forInvoice
+                    .findPayMethodsForInvoice(this.idFactura);
 
-            faltaPorPagar = checkPaymentMeanSelected(GatewayFactory.getInvoiceGateway().listInvoice(idFactura)
+            faltaPorPagar = checkPaymentMeanSelected(GatewayFactory
+                            .getInvoiceGateway().listInvoice(idFactura)
                     , paymentMeanDtos);
             if (faltaPorPagar <= 0) {
                 liquidarFactura(paymentMeanDtos);
@@ -61,7 +70,8 @@ public class SettleInvoice {
             }
             throw new RuntimeException();
         } catch (PersistanceException e) {
-            throw new BusinessException("La Factura solicitada no existe.");
+            throw new BusinessException
+                    ("La Factura solicitada no existe.");
         } finally {
             Jdbc.close(connection);
         }
@@ -69,21 +79,23 @@ public class SettleInvoice {
     }
 
     /**
-     * Metodo que comprueba los metodos de pago seleccionados para liquidar una factura.
+     * Metodo que comprueba los metodos de pago seleccionados para
+     * liquidar una factura.
      *
      * @param invoice
      * @param paymentMeanDtos
      * @return Double con el importe que queda por pagar.
      * @throws BusinessException
      */
-    private double checkPaymentMeanSelected(InvoiceDto invoice, List<PaymentMeanDto> paymentMeanDtos)
+    private double checkPaymentMeanSelected
+    (InvoiceDto invoice, List<PaymentMeanDto> paymentMeanDtos)
             throws BusinessException {
         double total = invoice.total;
-        Integer type;
         double cantidad;
 
         for (Long tipoPago : cargos.keySet()) {
-            PaymentMeanDto paymentMeanDto = findPaymentMean(paymentMeanDtos, tipoPago);
+            PaymentMeanDto paymentMeanDto =
+                    findPaymentMean(paymentMeanDtos, tipoPago);
             cantidad = cargos.get(tipoPago);
 
             if (cantidad <= 0) {
@@ -92,7 +104,9 @@ public class SettleInvoice {
             }
             if (Math.toIntExact(tipoPago) == 3) {
                 if (cantidad > ((VoucherDto) paymentMeanDto).available) {
-                    throw new BusinessException("La cantidad introducida para este bono supera la disponible");
+                    throw new BusinessException
+                            ("La cantidad introducida para " +
+                                    "este bono supera la disponible");
                 }
             }
             total -= cantidad;
@@ -107,12 +121,14 @@ public class SettleInvoice {
      * @param paymentMeanDtos
      * @throws BusinessException
      */
-    private void liquidarFactura(List<PaymentMeanDto> paymentMeanDtos) throws BusinessException {
-        Integer type;
+    private void liquidarFactura(List<PaymentMeanDto> paymentMeanDtos)
+            throws BusinessException {
         double cantidad;
 
         for (Long tipoPago : cargos.keySet()) {
-            PaymentMeanDto paymentMeanDto = findPaymentMean(paymentMeanDtos, tipoPago);
+            PaymentMeanDto paymentMeanDto =
+
+                    findPaymentMean(paymentMeanDtos, tipoPago);
             cantidad = cargos.get(tipoPago);
 
             paymentMeanDto.accumulated += cantidad;
@@ -123,7 +139,8 @@ public class SettleInvoice {
             try {
                 paymentMeanGateway.updatePaymentMean(paymentMeanDto);
             } catch (PersistanceException e) {
-                throw new BusinessException("No se puede actualizar el metodo de pago.");
+                throw new BusinessException
+                        ("No se puede actualizar el metodo de pago.");
             }
         }
         updateInvoiceAbonada();
@@ -137,7 +154,8 @@ public class SettleInvoice {
     private void updateInvoiceAbonada() throws BusinessException {
 
         try {
-            invoiceGateway.updateInvoice("status", "ABONADA", this.idFactura);
+            invoiceGateway.updateInvoice("status",
+                    "ABONADA", this.idFactura);
         } catch (PersistanceException e) {
             throw new BusinessException("Factura no abonada:\n\t" + e);
         }
@@ -152,7 +170,9 @@ public class SettleInvoice {
      * @return Medio de pago del cliente seleccionado.
      * @throws BusinessException
      */
-    private PaymentMeanDto findPaymentMean(List<PaymentMeanDto> mediosPago, Long type) throws BusinessException {
+    private PaymentMeanDto findPaymentMean
+    (List<PaymentMeanDto> mediosPago, Long type)
+            throws BusinessException {
         PaymentMeanDto paymentMean = null;
         switch (Math.toIntExact(type)) {
             case 1:
@@ -175,13 +195,15 @@ public class SettleInvoice {
      * @return Bono de un cliente.
      * @throws BusinessException
      */
-    private VoucherDto findPaymentMeanVoucher(List<PaymentMeanDto> mediosPago) throws BusinessException {
+    private VoucherDto findPaymentMeanVoucher
+    (List<PaymentMeanDto> mediosPago) throws BusinessException {
         for (PaymentMeanDto paymentMean : mediosPago) {
             if (paymentMean instanceof VoucherDto) {
                 return (VoucherDto) paymentMean;
             }
         }
-        throw new BusinessException("El cliente no tiene Bonos para usar como pago.");
+        throw new BusinessException("El cliente no tiene Bonos para" +
+                " usar como pago.");
     }
 
     /**
@@ -191,13 +213,15 @@ public class SettleInvoice {
      * @return Tarjeta de un cliente.
      * @throws BusinessException
      */
-    private CardDto findPaymentMeanCard(List<PaymentMeanDto> mediosPago) throws BusinessException {
+    private CardDto findPaymentMeanCard(List<PaymentMeanDto> mediosPago)
+            throws BusinessException {
         for (PaymentMeanDto paymentMean : mediosPago) {
             if (paymentMean instanceof CardDto) {
                 return (CardDto) paymentMean;
             }
         }
-        throw new BusinessException("El cliente no tiene Tarjeta para usar como pago.");
+        throw new BusinessException
+                ("El cliente no tiene Tarjeta para usar como pago.");
     }
 
     /**
@@ -207,12 +231,14 @@ public class SettleInvoice {
      * @return Metalico de un cliente.
      * @throws BusinessException
      */
-    private CashDto findPaymentMeanCash(List<PaymentMeanDto> mediosPago) throws BusinessException {
+    private CashDto findPaymentMeanCash(List<PaymentMeanDto> mediosPago)
+            throws BusinessException {
         for (PaymentMeanDto paymentMean : mediosPago) {
             if (paymentMean instanceof CashDto) {
                 return (CashDto) paymentMean;
             }
         }
-        throw new BusinessException("El cliente no tiene Metalico para usar como pago.");
+        throw new BusinessException
+                ("El cliente no tiene Metalico para usar como pago.");
     }
 }

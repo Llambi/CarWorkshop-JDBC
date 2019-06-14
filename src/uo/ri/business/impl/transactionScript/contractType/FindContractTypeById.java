@@ -1,13 +1,13 @@
 package uo.ri.business.impl.transactionScript.contractType;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
 import uo.ri.persistence.exception.PersistanceException;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class FindContractTypeById {
     private Long id;
@@ -23,13 +23,16 @@ public class FindContractTypeById {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
-            dto = GatewayFactory.getContractTypeGateway().findContractTypeById(id);
+            dto = GatewayFactory.getContractTypeGateway()
+                    .findContractTypeById(id);
 
             connection.commit();
         } catch (SQLException | PersistanceException e) {
             try {
                 connection.rollback();
-                throw new BusinessException("Imposible recuperar el tipo de contrato.\n\t" + e);
+                throw new BusinessException
+                        ("Imposible recuperar el tipo de " +
+                                "contrato.\n\t" + e);
             } catch (SQLException ignored) {
                 throw new BusinessException("Fallo en rollback.");
             }

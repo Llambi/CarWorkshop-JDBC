@@ -16,9 +16,11 @@ public class AddContractTypeAction implements Action {
 
         // Pedir datos
         contractTypeDto.name = Console.readString("Nombre");
-        contractTypeDto.compensationDays = Console.readInt("Dias de compensacion");
+        contractTypeDto.compensationDays = Console
+                .readInt("Dias de compensacion");
 
-        new ServiceFactory().forContractTypeCrud().addContractType(contractTypeDto);
+        new ServiceFactory().forContractTypeCrud()
+                .addContractType(contractTypeDto);
 
         // Mostrar resultado
         Printer.printAddTypeContract();

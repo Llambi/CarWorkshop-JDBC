@@ -26,11 +26,14 @@ public class DeleteMechanic {
             if (mechanicGateway.findMechanicById(idMecanico) == null)
                 throw new BusinessException("El mecanico no existe.");
             if (mechanicGateway.findMechanicContracts(idMecanico) > 0)
-                throw new BusinessException("El mecanico tiene contratos asignados.");
+                throw new BusinessException
+                        ("El mecanico tiene contratos asignados.");
             if (mechanicGateway.findMechanicInterventions(idMecanico) > 0)
-                throw new BusinessException("El mecanico tiene intervenciones asignadas.");
+                throw new BusinessException
+                        ("El mecanico tiene intervenciones asignadas.");
             if (mechanicGateway.findMechanicBreakdowns(idMecanico) > 0)
-                throw new BusinessException("El mecanico tiene reparaciones asignadas.");
+                throw new BusinessException
+                        ("El mecanico tiene reparaciones asignadas.");
 
             mechanicGateway.deleteMechanic(idMecanico);
         } catch (PersistanceException e) {
@@ -38,7 +41,8 @@ public class DeleteMechanic {
                 connection.rollback();
             } catch (SQLException ignored) {
             }
-            throw new BusinessException("Imposible eliminar el mecanico.\n\t" + e.getMessage());
+            throw new BusinessException
+                    ("Imposible eliminar el mecanico.\n\t" + e.getMessage());
         } catch (SQLException e) {
             try {
                 connection.rollback();

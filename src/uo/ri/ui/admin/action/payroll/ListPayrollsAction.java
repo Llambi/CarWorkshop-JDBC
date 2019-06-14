@@ -12,7 +12,9 @@ public class ListPayrollsAction implements Action {
     @Override
     public void execute() throws Exception {
         long id = Console.readLong("ID del mecanico");
-        List<PayrollDto> payrollDtos = new ServiceFactory().forPayroll().findPayrollsByMechanicId(id);
+        List<PayrollDto> payrollDtos =
+                new ServiceFactory().forPayroll()
+                        .findPayrollsByMechanicId(id);
 
         Printer.printListPayrolls(id, payrollDtos);
     }

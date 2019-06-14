@@ -10,8 +10,9 @@ public class FindPayrollAction implements Action {
     @Override
     public void execute() throws Exception {
         long id = Console.readLong("ID de la nomina");
-        PayrollDto payrollDto = new ServiceFactory().forPayroll().findPayrollById(id);
-
-        Printer.printPayroll(payrollDto);
+        PayrollDto payrollDto =
+                new ServiceFactory().forPayroll().findPayrollById(id);
+        if (payrollDto != null)
+            Printer.printPayroll(payrollDto);
     }
 }
