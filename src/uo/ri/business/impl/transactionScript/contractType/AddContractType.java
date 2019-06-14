@@ -1,5 +1,8 @@
 package uo.ri.business.impl.transactionScript.contractType;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import alb.util.jdbc.Jdbc;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.business.exception.BusinessException;
@@ -7,14 +10,12 @@ import uo.ri.conf.GatewayFactory;
 import uo.ri.persistence.ContractTypeGateway;
 import uo.ri.persistence.exception.PersistanceException;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 /**
  * Clase que contiene la logica para la creacion de un tipo de contrato.
  */
 public class AddContractType {
-    private final ContractTypeGateway contractTypeGateway = GatewayFactory.getContractTypeGateway();
+    private final ContractTypeGateway contractTypeGateway =
+            GatewayFactory.getContractTypeGateway();
     private ContractTypeDto contractTypeDto;
     private Connection connection;
 
@@ -38,23 +39,39 @@ public class AddContractType {
             contractTypeGateway.addContractType(contractTypeDto);
 
             connection.commit();
-        } catch (SQLException | PersistanceException e) {
+        } catch (PersistanceException e) {
             try {
                 connection.rollback();
-                throw new BusinessException("Error al añadir el tipo de contrato.\n\t" + e);
+                throw new BusinessException
+                        ("Error al añadir el tipo de contr" +
+                                "ato.\n\t" + e.getMessage());
             } catch (SQLException ignored) {
                 throw new BusinessException("Error en rollback.");
             }
+        } catch (SQLException e1) {
+            try {
+                connection.rollback();
+                throw new BusinessException
+                        ("Error al añadir el tipo de contrato.\n\t" + e1);
+            } catch (SQLException ignored) {
+                throw new BusinessException("Error en rollback.");
+            }
+
         } finally {
             Jdbc.close(connection);
         }
 
     }
 
-    private void checkData() throws BusinessException, PersistanceException {
+    private void checkData() throws BusinessException,
+            PersistanceException {
         if (contractTypeDto.compensationDays < 0)
-            throw new BusinessException("El numero de dias de compensacion debe ser mayor que 0.");
-        if (contractTypeGateway.findContractTypeByName(contractTypeDto.name) != null)
-            throw new BusinessException("Ya existe un tipo de contrato con ese nombre.");
+            throw new BusinessException
+                    ("El numero de dias de compensacion " +
+                            "debe ser mayor que 0.");
+        if (contractTypeGateway
+                .findContractTypeByName(contractTypeDto.name) != null)
+            throw new BusinessException
+                    ("Ya existe un tipo de contrato con ese nombre.");
     }
 }

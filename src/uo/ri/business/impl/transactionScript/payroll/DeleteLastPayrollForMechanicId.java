@@ -10,7 +10,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DeleteLastPayrollForMechanicId {
-    private final PayrollGateway payrollGateway = GatewayFactory.getPayrollGateway();
+    private final PayrollGateway payrollGateway =
+            GatewayFactory.getPayrollGateway();
     private Long id;
     private Connection connection;
 
@@ -24,7 +25,8 @@ public class DeleteLastPayrollForMechanicId {
             connection.setAutoCommit(false);
 
             if (payrollGateway.findPayrollsByMechanicId(this.id).isEmpty())
-                throw new BusinessException("El mecanico con el id dado no pose nominas");
+                throw new BusinessException
+                        ("El mecanico con el id dado no pose nominas");
 
             payrollGateway.deletePayrollById(this.id);
 
@@ -33,7 +35,9 @@ public class DeleteLastPayrollForMechanicId {
         } catch (SQLException | PersistanceException e) {
             try {
                 connection.rollback();
-                throw new BusinessException("Imposible encontrar la nomina del id dado\n\t" + e);
+                throw new BusinessException
+                        ("Imposible encontrar la nomina del" +
+                                " id dado\n\t" + e.getMessage());
             } catch (SQLException ignored) {
                 throw new BusinessException("Error en rollback.");
             }

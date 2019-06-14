@@ -20,7 +20,8 @@ public class ListMechanicsAction implements Action {
 
         Console.println("\nListado de mecánicos\n");
 
-        List<MechanicDto> listMechanics = new ServiceFactory().forMechanicCrudService().findAllMechanics();
+        List<MechanicDto> listMechanics = new ServiceFactory()
+                .forMechanicCrudService().findAllMechanics();
 
         Printer.printListMechanics(listMechanics);
 

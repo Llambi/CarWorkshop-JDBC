@@ -1,11 +1,5 @@
 package uo.ri.persistence.impl;
 
-import alb.util.jdbc.Jdbc;
-import uo.ri.business.dto.ContractDto;
-import uo.ri.conf.Conf;
-import uo.ri.persistence.ContractGateway;
-import uo.ri.persistence.exception.PersistanceException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +7,11 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import static uo.ri.persistence.impl.ContracStatus.ACTIVE;
-import static uo.ri.persistence.impl.ContracStatus.FINISHED;
+import alb.util.jdbc.Jdbc;
+import uo.ri.business.dto.ContractDto;
+import uo.ri.conf.Conf;
+import uo.ri.persistence.ContractGateway;
+import uo.ri.persistence.exception.PersistanceException;
 
 /**
  * Clase que contiene la persistencia de los contratos.
@@ -23,12 +20,14 @@ public class ContractGatewayImpl implements ContractGateway {
     /**
      * Metodo que recupera uno o mas contratos mediante su tipo.
      *
-     * @param id Tipo de contrato cuyo nombre se quiere usar para encontrar un contrato.
+     * @param id Tipo de contrato cuyo nombre se quiere usar para
+     *           encontrar un contrato.
      * @return Lista de contratos con la categoria dada.
      * @throws PersistanceException
      */
     @Override
-    public List<ContractDto> findContractByTypeId(Long id) throws PersistanceException {
+    public List<ContractDto> findContractByTypeId(Long id)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -37,7 +36,8 @@ public class ContractGatewayImpl implements ContractGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPE_CONTRACT_ID"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_CONTRACT_TYPE_CONTRACT_ID"));
             pst.setLong(1, id);
 
             rs = pst.executeQuery();
@@ -59,7 +59,9 @@ public class ContractGatewayImpl implements ContractGateway {
             }
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar los contratos de una Categooria:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar los contratos de una Categooria:\n\t"
+                            + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -74,7 +76,8 @@ public class ContractGatewayImpl implements ContractGateway {
      * @throws PersistanceException
      */
     @Override
-    public List<ContractDto> findContractByMechanicDni(String id) throws PersistanceException {
+    public List<ContractDto> findContractByMechanicDni(String id)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -83,7 +86,8 @@ public class ContractGatewayImpl implements ContractGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_BY_MECHANIC_DNI"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_CONTRACT_BY_MECHANIC_DNI"));
             pst.setString(1, id);
 
             rs = pst.executeQuery();
@@ -103,7 +107,9 @@ public class ContractGatewayImpl implements ContractGateway {
             }
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar los contratos de un mecanico:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar los contratos de un mecanico:\n\t"
+                            + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -113,12 +119,14 @@ public class ContractGatewayImpl implements ContractGateway {
     /**
      * Metodo qu erecupera uno o mas contratos de un mecanico dado.
      *
-     * @param id Mecanico cuyo dni se quiere usar para encontrar los contratos.
+     * @param id Mecanico cuyo dni se quiere usar para encontrar los
+     *           contratos.
      * @return Lista de contratos del mecanico dado.
      * @throws PersistanceException
      */
     @Override
-    public List<ContractDto> findContractByMechanicId(Long id) throws PersistanceException {
+    public List<ContractDto> findContractByMechanicId(Long id)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -127,7 +135,8 @@ public class ContractGatewayImpl implements ContractGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_BY_MECHANIC_ID"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_CONTRACT_BY_MECHANIC_ID"));
             pst.setLong(1, id);
 
             rs = pst.executeQuery();
@@ -147,7 +156,9 @@ public class ContractGatewayImpl implements ContractGateway {
             }
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar los contratos de un mecanico:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar los contratos de un mecanico:\n\t"
+                            + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -162,22 +173,24 @@ public class ContractGatewayImpl implements ContractGateway {
      * @throws PersistanceException
      */
     @Override
-    public ContractDto findContractById(Long id) throws PersistanceException {
+    public ContractDto findContractById(Long id)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
-        ContractDto contract =null;
+        ContractDto contract = null;
 
         try {
 
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_BY_ID"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_CONTRACT_BY_ID"));
             pst.setLong(1, id);
 
             rs = pst.executeQuery();
-            contract = new ContractDto();
             while (rs.next()) {
+                contract = new ContractDto();
                 contract.id = rs.getLong(1);
                 contract.startDate = rs.getDate(2);
                 contract.endDate = rs.getDate(3);
@@ -190,7 +203,9 @@ public class ContractGatewayImpl implements ContractGateway {
             }
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar un contrato por su identificador:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar un contrato por su identificador:\n\t"
+                            + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -200,11 +215,12 @@ public class ContractGatewayImpl implements ContractGateway {
     /**
      * Metodo que inserta un nuevo contrato.
      *
-     * @param contractDto         Informacion del nuecvo contrato.
+     * @param contractDto Informacion del nuecvo contrato.
      * @throws PersistanceException
      */
     @Override
-    public void addContract(ContractDto contractDto) throws PersistanceException {
+    public void addContract(ContractDto contractDto)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -212,13 +228,15 @@ public class ContractGatewayImpl implements ContractGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_ADD_CONTRACT"));
-            pst.setDate(1, new java.sql.Date(contractDto.startDate.getTime()));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_ADD_CONTRACT"));
+            pst.setDate(1, new java.sql.Date
+                    (contractDto.startDate.getTime()));
             pst.setDate(2, contractDto.endDate == null
                     ? null : new java.sql.Date(contractDto.endDate.getTime()));
             pst.setDouble(3, contractDto.yearBaseSalary);
             pst.setDouble(4, contractDto.compensation);
-            pst.setString(5, ACTIVE.toString());
+            pst.setString(5, uo.ri.business.dto.ContracStatus.ACTIVE.toString());
             pst.setLong(6, contractDto.mechanicId);
             pst.setLong(7, contractDto.categoryId);
             pst.setLong(8, contractDto.typeId);
@@ -226,7 +244,8 @@ public class ContractGatewayImpl implements ContractGateway {
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al insertar un contrato:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al insertar un contrato:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -239,7 +258,8 @@ public class ContractGatewayImpl implements ContractGateway {
      * @throws PersistanceException
      */
     @Override
-    public void terminateContract(ContractDto contractDto) throws PersistanceException {
+    public void terminateContract(ContractDto contractDto)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -247,10 +267,13 @@ public class ContractGatewayImpl implements ContractGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_TERMINATE_CONTRACT"));
-            pst.setString(1, FINISHED.toString());
-            pst.setDate(2, new java.sql.Date(contractDto.endDate.getTime()));
-            pst.setLong(3, contractDto.id);
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_TERMINATE_CONTRACT"));
+            pst.setString(1, uo.ri.business.dto.ContracStatus.FINISHED.toString());
+            pst.setDate(2, new java.sql.Date
+                    (contractDto.endDate.getTime()));
+            pst.setDouble(3, contractDto.compensation);
+            pst.setLong(4, contractDto.id);
 
             pst.executeUpdate();
 
@@ -268,7 +291,8 @@ public class ContractGatewayImpl implements ContractGateway {
      * @throws PersistanceException
      */
     @Override
-    public void updateContract(ContractDto contractDto) throws PersistanceException {
+    public void updateContract(ContractDto contractDto)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -276,15 +300,18 @@ public class ContractGatewayImpl implements ContractGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_CONTRACT"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_UPDATE_CONTRACT"));
             pst.setDouble(1, contractDto.yearBaseSalary);
-            pst.setDate(2, new java.sql.Date(contractDto.endDate.getTime()));
+            pst.setDate(2, new java.sql.Date
+                    (contractDto.endDate.getTime()));
             pst.setLong(3, contractDto.id);
 
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al actualizar el contrato:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al actualizar el contrato:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -293,11 +320,13 @@ public class ContractGatewayImpl implements ContractGateway {
     /**
      * Metodo que elimina un contrato.
      *
-     * @param contractDto Que contiene el identificador del contrato que se quiere eliminar.
+     * @param contractDto Que contiene el identificador del
+     *                    contrato que se quiere eliminar.
      * @throws PersistanceException
      */
     @Override
-    public void deleteContract(ContractDto contractDto) throws PersistanceException {
+    public void deleteContract(ContractDto contractDto)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -305,20 +334,23 @@ public class ContractGatewayImpl implements ContractGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_DELETE_CONTRACT"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_DELETE_CONTRACT"));
             pst.setLong(1, contractDto.id);
 
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al eliminar el contrato:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al eliminar el contrato:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
     }
 
     @Override
-    public List<ContractDto> findContractByCategoryId(Long id) throws PersistanceException {
+    public List<ContractDto> findContractByCategoryId(Long id)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -327,7 +359,8 @@ public class ContractGatewayImpl implements ContractGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_CATEGORY_CONTRACT_ID"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_CONTRACT_CATEGORY_CONTRACT_ID"));
             pst.setLong(1, id);
 
             rs = pst.executeQuery();
@@ -349,7 +382,9 @@ public class ContractGatewayImpl implements ContractGateway {
             }
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar los contratos de un tipo:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar los contratos de un tipo:\n\t"
+                            + e);
         } finally {
             Jdbc.close(rs, pst);
         }

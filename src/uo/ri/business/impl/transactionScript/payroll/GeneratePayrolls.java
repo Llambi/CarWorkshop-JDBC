@@ -19,9 +19,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class GeneratePayrolls {
-    private final PayrollGateway payrollGateway = GatewayFactory.getPayrollGateway();
-    private final Date generationDate = Dates.lastDayOfMonth(Dates.subMonths(Dates.today(), 1));
-    private final BreakdownGateway breakdownGateway = GatewayFactory.getBreakdownGateway();
+    private final PayrollGateway payrollGateway =
+            GatewayFactory.getPayrollGateway();
+    private final Date generationDate =
+            Dates.lastDayOfMonth(Dates.subMonths(Dates.today(), 1));
+    private final BreakdownGateway breakdownGateway =
+            GatewayFactory.getBreakdownGateway();
     private Connection connection;
 
     public int execute() throws BusinessException {
@@ -30,7 +33,8 @@ public class GeneratePayrolls {
             connection = Jdbc.createThreadConnection();
             connection.setAutoCommit(false);
 
-            List<ContractDto> contracts = getContractsThatGeneratePayrolls();
+            List<ContractDto> contracts =
+                    getContractsThatGeneratePayrolls();
             List<PayrollDto> payrolls = new LinkedList<>();
             for (ContractDto c : contracts) {
                 payrolls.add(generatePayroll(c));
@@ -42,7 +46,9 @@ public class GeneratePayrolls {
         } catch (SQLException | PersistanceException e) {
             try {
                 connection.rollback();
-                throw new BusinessException("Imposible generar las nominas\n\t" + e);
+                throw new BusinessException
+                        ("Imposible generar las nominas\n\t"
+                                + e.getMessage());
             } catch (SQLException ignored) {
                 throw new BusinessException("Error en rollback.");
             }
@@ -53,19 +59,25 @@ public class GeneratePayrolls {
         return count;
     }
 
-    private List<ContractDto> getContractsThatGeneratePayrolls() throws PersistanceException {
-        Date getFirstDayPreviousMonth = Dates.firstDayOfMonth(Dates.subMonths(Dates.today(), 1));
-        return payrollGateway.getContractsThatGeneratePayrolls(generationDate, getFirstDayPreviousMonth);
+    private List<ContractDto> getContractsThatGeneratePayrolls()
+            throws PersistanceException {
+        Date getFirstDayPreviousMonth = Dates
+                .firstDayOfMonth(Dates.subMonths(Dates.today(), 1));
+        return payrollGateway.getContractsThatGeneratePayrolls
+                (generationDate, getFirstDayPreviousMonth);
     }
 
-    private PayrollDto generatePayroll(ContractDto contrato) throws PersistanceException {
+    private PayrollDto generatePayroll(ContractDto contrato)
+            throws PersistanceException {
         PayrollDto payroll = new PayrollDto();
         payroll.date = generationDate;
         payroll.baseSalary = contrato.yearBaseSalary
                 / 14;
         payroll.extraSalary = calculateExtraSalary(payroll.baseSalary);
 
-        ContractCategoryDto category = GatewayFactory.getContractCategoryGateway().findContractCategoryById(contrato.categoryId);
+        ContractCategoryDto category = GatewayFactory
+                .getContractCategoryGateway()
+                .findContractCategoryById(contrato.categoryId);
         payroll.productivity = category.productivityPlus
                 * getProductivityPlus(contrato);
         payroll.triennium = category.trieniumSalary
@@ -86,8 +98,10 @@ public class GeneratePayrolls {
         return 0;
     }
 
-    private double getProductivityPlus(ContractDto contract) throws PersistanceException {
-        return breakdownGateway.getTotalAmountOfMechanicBreakdowns(Dates.month(generationDate), contract.mechanicId);
+    private double getProductivityPlus(ContractDto contract)
+            throws PersistanceException {
+        return breakdownGateway.getTotalAmountOfMechanicBreakdowns
+                (Dates.month(generationDate), contract.mechanicId);
     }
 
     private int getTrieniums(ContractDto c) {
@@ -115,17 +129,19 @@ public class GeneratePayrolls {
     }
 
     private int savePayrolls(List<ContractDto> contracts,
-                             List<PayrollDto> payrolls) throws PersistanceException {
+                             List<PayrollDto> payrolls)
+            throws PersistanceException {
         int count = 0;
         for (int i = 0; i < contracts.size(); i++) {
-            this.generatePayrolls(payrolls.get(i),
+            this.loadPayrolls(payrolls.get(i),
                     contracts.get(i));
             count++;
         }
         return count;
     }
 
-    private void generatePayrolls(PayrollDto payroll, ContractDto contract) throws PersistanceException {
+    private void loadPayrolls(PayrollDto payroll, ContractDto contract)
+            throws PersistanceException {
         payrollGateway.generatePayrolls(generationDate, payroll, contract);
     }
 

@@ -5,7 +5,6 @@ import uo.ri.ui.admin.action.category.AddCategoryAction;
 import uo.ri.ui.admin.action.category.DeleteCategoryAction;
 import uo.ri.ui.admin.action.category.ListCategoryAction;
 import uo.ri.ui.admin.action.category.UpdateCategoryAction;
-import uo.ri.ui.admin.action.contract.*;
 
 public class CategoryMenu extends BaseMenu {
 

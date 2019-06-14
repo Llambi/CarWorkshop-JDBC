@@ -1,12 +1,17 @@
 package uo.ri.business.impl;
 
+import java.util.Date;
+import java.util.List;
+
 import uo.ri.business.ContractCrudService;
 import uo.ri.business.dto.ContractDto;
 import uo.ri.business.exception.BusinessException;
-import uo.ri.business.impl.transactionScript.contract.*;
-
-import java.util.Date;
-import java.util.List;
+import uo.ri.business.impl.transactionScript.contract.AddContract;
+import uo.ri.business.impl.transactionScript.contract.DeleteContract;
+import uo.ri.business.impl.transactionScript.contract.FindAllContracts;
+import uo.ri.business.impl.transactionScript.contract.FindContractById;
+import uo.ri.business.impl.transactionScript.contract.TerminateContract;
+import uo.ri.business.impl.transactionScript.contract.UpdateContract;
 
 public class ContractCRUDImpl implements ContractCrudService {
 
@@ -17,7 +22,8 @@ public class ContractCRUDImpl implements ContractCrudService {
     }
 
     @Override
-    public void updateContract(ContractDto contractDto) throws BusinessException {
+    public void updateContract(ContractDto contractDto)
+            throws BusinessException {
         new UpdateContract(contractDto).execute();
     }
 
@@ -27,17 +33,20 @@ public class ContractCRUDImpl implements ContractCrudService {
     }
 
     @Override
-    public void finishContract(Long id, Date endDate) throws BusinessException {
+    public void finishContract(Long id, Date endDate)
+            throws BusinessException {
         new TerminateContract(id, endDate).execute();
     }
 
     @Override
-    public ContractDto findContractById(Long id) throws BusinessException {
+    public ContractDto findContractById(Long id)
+            throws BusinessException {
         return new FindContractById(id).execute();
     }
 
     @Override
-    public List<ContractDto> findContractsByMechanicId(Long id) throws BusinessException {
+    public List<ContractDto> findContractsByMechanicId(Long id)
+            throws BusinessException {
         return new FindAllContracts(id).execute();
     }
 

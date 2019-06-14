@@ -14,9 +14,11 @@ public class FindMechanicById {
 
     public MechanicDto execute() throws BusinessException {
         try {
-            return GatewayFactory.getMechanicGateway().findMechanicById(id);
+            return GatewayFactory.getMechanicGateway()
+                    .findMechanicById(id);
         } catch (PersistanceException e) {
-            throw new BusinessException("Imposible recuperar el mecanico.\n\t" + e);
+            throw new BusinessException
+                    ("Imposible recuperar el mecanico.\n\t" + e);
         }
     }
 }

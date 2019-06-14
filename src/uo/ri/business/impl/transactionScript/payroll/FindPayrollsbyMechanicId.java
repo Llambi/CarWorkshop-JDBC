@@ -13,7 +13,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class FindPayrollsbyMechanicId {
-    private final MechanicGateway mechanicGateway = GatewayFactory.getMechanicGateway();
+    private final MechanicGateway mechanicGateway =
+            GatewayFactory.getMechanicGateway();
     PayrollGateway payrollGateway = GatewayFactory.getPayrollGateway();
     private Long id;
     private Connection connection;
@@ -30,7 +31,8 @@ public class FindPayrollsbyMechanicId {
 
             List<PayrollDto> payrollDtoList = null;
             if (mechanicGateway.findMechanicById(this.id) != null)
-                payrollDtoList = payrollGateway.findPayrollsByMechanicId(this.id);
+                payrollDtoList = payrollGateway
+                        .findPayrollsByMechanicId(this.id);
 
             connection.commit();
 
@@ -38,7 +40,9 @@ public class FindPayrollsbyMechanicId {
         } catch (SQLException | PersistanceException e) {
             try {
                 connection.rollback();
-                throw new BusinessException("Imposible encontrar la nomina del mecanico dado\n\t" + e);
+                throw new BusinessException
+                        ("Imposible encontrar la nomina del " +
+                                "mecanico dado\n\t" + e);
             } catch (SQLException ignored) {
                 throw new BusinessException("Error en rollback.");
             }

@@ -13,7 +13,6 @@ public class ListarReparacionesAction implements Action {
 
     // Para pruebas dni: 222620568
 
-
     /**
      * Proceso:
      * <p>
@@ -26,9 +25,9 @@ public class ListarReparacionesAction implements Action {
     @Override
     public void execute() throws BusinessException {
 
-       Long dni = Console.readLong("DNI del cliente");
+       String dni = Console.readString("DNI del cliente");
 
-        List<BreakdownDto> breakdowns = new ServiceFactory().getInvoiceCRUDService().readInvoice(dni);
+        List<BreakdownDto> breakdowns = new ServiceFactory().forInvoice().findRepairsByClient(dni);
 
         Console.printf("El cliente con DNI: %s tiene las siguientes facturas sin pagar:\n\n", dni);
         Console.println("ID - FECHA - STATUS - IMPORTE - DESCRIPCION\n");

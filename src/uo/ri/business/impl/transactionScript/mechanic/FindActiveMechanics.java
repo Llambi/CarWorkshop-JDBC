@@ -10,9 +10,11 @@ import java.util.List;
 public class FindActiveMechanics {
     public List<MechanicDto> execute() throws BusinessException {
         try {
-            return GatewayFactory.getMechanicGateway().findActiveMechanics();
+            return GatewayFactory.getMechanicGateway()
+                    .findActiveMechanics();
         } catch (PersistanceException e) {
-            throw new BusinessException("Imposible recuperar los mecanicos activos.\n\t" + e);
+            throw new BusinessException
+                    ("Imposible recuperar los mecanicos activos.\n\t" + e);
         }
     }
 }

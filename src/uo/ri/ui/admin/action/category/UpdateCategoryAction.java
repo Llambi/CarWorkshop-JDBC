@@ -14,10 +14,13 @@ public class UpdateCategoryAction implements Action {
 
         // Pedir datos
         contractCategoryDto.name = Console.readString("Nombre");
-        contractCategoryDto.trieniumSalary = Console.readInt("Importe de trienios");
-        contractCategoryDto.productivityPlus = Console.readInt("Porcentaje de plus de productividad (Sin \"%\")");
+        contractCategoryDto.trieniumSalary = Console
+                .readInt("Importe de trienios");
+        contractCategoryDto.productivityPlus = Console
+                .readInt("Porcentaje de plus de productividad (Sin \"%\")");
 
-        new ServiceFactory().forContractCategoryCrud().updateContractCategory(contractCategoryDto);
+        new ServiceFactory().forContractCategoryCrud()
+                .updateContractCategory(contractCategoryDto);
 
         // Mostrar resultado
         Printer.printUpdateCategory();

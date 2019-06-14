@@ -21,14 +21,18 @@ import java.util.List;
  */
 public class PayrollGatewayImpl implements PayrollGateway {
     /**
-     * Metodo que recupera el total de salario base dado un tipo de contrato.
+     * Metodo que recupera el total de salario base dado un tipo
+     * de contrato.
      *
-     * @param contractTypeDto Que contiene el nombre del tipo de contrato del que se quieren sumar los salarios base.
+     * @param contractTypeDto Que contiene el nombre del tipo de
+     *                        contrato del que se quieren sumar
+     *                        los salarios base.
      * @return Double con el acumulado de salarios base.
      * @throws PersistanceException
      */
     @Override
-    public Double getTotalBaseSalary(ContractTypeDto contractTypeDto) throws PersistanceException {
+    public Double getTotalBaseSalary(ContractTypeDto contractTypeDto)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -36,19 +40,24 @@ public class PayrollGatewayImpl implements PayrollGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_GET_ACUMSALARI_BY_CONTRACT_TYPE"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_GET_ACUMSALARI_BY_CONTRACT_TYPE"));
             pst.setString(1, contractTypeDto.name);
             rs = pst.executeQuery();
 
             if (rs.next()) {
                 acumSalary = rs.getDouble(1);
             } else {
-                throw new PersistanceException("No existe un acumulado de salario por tipo de contrato con nombre: "
+                throw new PersistanceException
+                        ("No existe un acumulado de salario por tipo" +
+                                " de contrato con nombre: "
                         + contractTypeDto.name);
             }
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar el acumulado de salario de un tipo de contrato:\n\t"
+            throw new PersistanceException
+                    ("Error al recuperar el acumulado de salario de" +
+                            " un tipo de contrato:\n\t"
                     + e);
         } finally {
             Jdbc.close(rs, pst);
@@ -64,7 +73,8 @@ public class PayrollGatewayImpl implements PayrollGateway {
      * @throws PersistanceException
      */
     @Override
-    public int countPayRolls(ContractDto contractDto) throws PersistanceException {
+    public int countPayRolls(ContractDto contractDto)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -72,19 +82,23 @@ public class PayrollGatewayImpl implements PayrollGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_COUNT_PAYROLLS_BY_CONTRACT_ID"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_COUNT_PAYROLLS_BY_CONTRACT_ID"));
             pst.setLong(1, contractDto.id);
             rs = pst.executeQuery();
 
             if (rs.next()) {
                 payrolls = rs.getInt(1);
             } else {
-                throw new PersistanceException("No existen nominas para el contrato con identificador: "
+                throw new PersistanceException
+                        ("No existen nominas para el contrato con identificador: "
                         + contractDto.id);
             }
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar las nominas de un contrato:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar las nominas de un" +
+                            " contrato:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -101,7 +115,8 @@ public class PayrollGatewayImpl implements PayrollGateway {
         try {
             c = Jdbc.getCurrentConnection();
             payrollsList = new LinkedList<>();
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_ALL_PAYROLL"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_ALL_PAYROLL"));
             rs = pst.executeQuery();
             while (rs.next()) {
                 payrollsList.add(getPayrollData(rs));
@@ -115,7 +130,8 @@ public class PayrollGatewayImpl implements PayrollGateway {
     }
 
     @Override
-    public List<PayrollDto> findPayrollsByMechanicId(Long id) throws PersistanceException {
+    public List<PayrollDto> findPayrollsByMechanicId(Long id)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -124,7 +140,8 @@ public class PayrollGatewayImpl implements PayrollGateway {
         try {
             c = Jdbc.getCurrentConnection();
             payrollsList = new LinkedList<>();
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_GET_PAYROLLS_MECHANIC"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_GET_PAYROLLS_MECHANIC"));
             pst.setLong(1, id);
             rs = pst.executeQuery();
             while (rs.next()) {
@@ -139,14 +156,16 @@ public class PayrollGatewayImpl implements PayrollGateway {
     }
 
     @Override
-    public PayrollDto findPayrollsById(Long id) throws PersistanceException {
+    public PayrollDto findPayrollsById(Long id)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
         PayrollDto payrollDto = null;
         try {
             c = Jdbc.getCurrentConnection();
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_GET_PAYROLL_ID"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_GET_PAYROLL_ID"));
             pst.setLong(1, id);
             rs = pst.executeQuery();
             while (rs.next()) {
@@ -168,33 +187,39 @@ public class PayrollGatewayImpl implements PayrollGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_DELETE_LAST_PAYROLL_MACHANIC"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_DELETE_LAST_PAYROLL_MACHANIC"));
             pst.setLong(1, id);
 
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al eliminar la nomina:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al eliminar la nomina:\n\t" + e.getMessage());
         } finally {
             Jdbc.close(pst);
         }
     }
 
     @Override
-    public int deletePayrollByDate(Date newestDate) throws PersistanceException {
+    public int deletePayrollByDate(Date newestDate)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         int count = 0;
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_DELETE_LAST_GENERATED_PAYROLLS"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_DELETE_LAST_GENERATED_PAYROLLS"));
             pst.setDate(1, new java.sql.Date(newestDate.getTime()));
 
             count = pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al eliminar las nominas generadas:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al eliminar las nominas generadas:\n\t"
+                            + e.getMessage());
         } finally {
             Jdbc.close(pst);
         }
@@ -202,7 +227,8 @@ public class PayrollGatewayImpl implements PayrollGateway {
     }
 
     @Override
-    public List<ContractDto> getContractsThatGeneratePayrolls(Date date1, Date date2) throws PersistanceException {
+    public List<ContractDto> getContractsThatGeneratePayrolls
+            (Date date1, Date date2) throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -211,7 +237,8 @@ public class PayrollGatewayImpl implements PayrollGateway {
             c = Jdbc.getCurrentConnection();
             contractsList = new LinkedList<>();
             ContractDto contractDto = null;
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_GET_CONTRACTS_PAYROLLS"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_GET_CONTRACTS_PAYROLLS"));
             pst.setDate(1, new java.sql.Date(date1.getTime()));
             pst.setDate(2, new java.sql.Date(date1.getTime()));
             pst.setDate(3, new java.sql.Date(date2.getTime()));
@@ -221,12 +248,12 @@ public class PayrollGatewayImpl implements PayrollGateway {
                 contractDto = new ContractDto();
                 contractDto.id = rs.getLong("id");
                 contractDto.yearBaseSalary = rs.getDouble(
-                        "salario_base_anual");
+                        "salariobase");
                 contractDto.categoryId = rs.getLong(
-                        "categoria_contrato_id");
+                        "categoriacontrato_id");
                 contractDto.mechanicId = rs.getLong("mecanico_id");
-                contractDto.startDate = rs.getDate("fecha_inicio");
-                contractDto.endDate = rs.getDate("fecha_fin");
+                contractDto.startDate = rs.getDate("startdate");
+                contractDto.endDate = rs.getDate("enddate");
                 contractsList.add(contractDto);
             }
         } catch (SQLException e) {
@@ -238,14 +265,16 @@ public class PayrollGatewayImpl implements PayrollGateway {
     }
 
     @Override
-    public void generatePayrolls(Date date, PayrollDto payroll, ContractDto contract) throws PersistanceException {
+    public void generatePayrolls(Date date, PayrollDto payroll,
+                                 ContractDto contract)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
-        List<ContractDto> contractsList = null;
         try {
             c = Jdbc.getCurrentConnection();
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_GENERAR_PAYROLLS"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_GENERAR_PAYROLLS"));
             pst.setDate(1, new java.sql.Date(date.getTime()));
             pst.setDouble(2, payroll.baseSalary);
             pst.setDouble(3, payroll.extraSalary);

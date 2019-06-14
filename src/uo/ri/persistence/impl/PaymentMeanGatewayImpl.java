@@ -29,12 +29,15 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
      * @throws PersistanceException
      */
     @Override
-    public List<PaymentMeanDto> findPaymentMean(String campo, Long valor) throws PersistanceException {
+    public List<PaymentMeanDto> findPaymentMean(String campo,
+                                                Long valor)
+            throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
         List<PaymentMeanDto> paymentMeans = new LinkedList<>();
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance()
+            pst = Jdbc.getCurrentConnection()
+                    .prepareStatement(Conf.getInstance()
                     .getProperty("SQL_FIND_ALL_MEDIOS_PAGO"));
             pst.setLong(1, valor);
             rs = pst.executeQuery();
@@ -56,7 +59,6 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
                         bono.clientId = rs.getLong("cliente_id");
                         bono.code = rs.getString("codigo");
                         bono.available = rs.getDouble("disponible");
-//                        bono.description = rs.getString("descripcion");   // No exite este campo en la bbdd.
                         paymentMean = bono;
                         break;
                     case "TTarjetasCredito":
@@ -76,7 +78,8 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
                 paymentMeans.add(paymentMean);
             }
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar los medios de pago:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar los medios de pago:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -90,7 +93,8 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
      * @throws PersistanceException
      */
     @Override
-    public void updatePaymentMean(PaymentMeanDto paymentMean) throws PersistanceException {
+    public void updatePaymentMean(PaymentMeanDto paymentMean)
+            throws PersistanceException {
         PreparedStatement pst = null;
 
         try {
@@ -101,7 +105,8 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al actualizar los medios de pago:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al actualizar los medios de pago:\n\t" + e);
         } finally {
             Jdbc.close(pst);
         }
@@ -114,19 +119,22 @@ public class PaymentMeanGatewayImpl implements PaymentMeanGateway {
      * @throws PersistanceException
      */
     @Override
-    public void updatePaymentMean(VoucherDto paymentMean) throws PersistanceException {
+    public void updatePaymentMean(VoucherDto paymentMean)
+            throws PersistanceException {
         PreparedStatement pst = null;
         VoucherDto voucher = (VoucherDto) paymentMean;
         try {
             pst = Jdbc.getCurrentConnection().prepareStatement(
-                    Conf.getInstance().getProperty("SQL_UPDATE_GASTO_MEDIOPAGO_BONO"));
+                    Conf.getInstance()
+                            .getProperty("SQL_UPDATE_GASTO_MEDIOPAGO_BONO"));
             pst.setDouble(1, voucher.accumulated);
             pst.setDouble(2, voucher.available);
             pst.setLong(3, voucher.id);
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al actualizar los medios de pago:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al actualizar los medios de pago:\n\t" + e);
         } finally {
             Jdbc.close(pst);
         }

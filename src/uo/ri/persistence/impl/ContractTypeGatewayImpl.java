@@ -1,7 +1,6 @@
 package uo.ri.persistence.impl;
 
 import alb.util.jdbc.Jdbc;
-import uo.ri.business.dto.ContractDto;
 import uo.ri.business.dto.ContractTypeDto;
 import uo.ri.conf.Conf;
 import uo.ri.persistence.ContractTypeGateway;
@@ -26,7 +25,8 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
      * @throws PersistanceException
      */
     @Override
-    public void addContractType(ContractTypeDto contracTypeDto) throws PersistanceException {
+    public void addContractType(ContractTypeDto contracTypeDto)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -34,16 +34,18 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_ADD_CONTRACT_TYPE"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_ADD_CONTRACT_TYPE"));
             pst.setString(1, contracTypeDto.name);
             pst.setInt(2, contracTypeDto.compensationDays);
 
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al insertar el tipo de contrato:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al insertar el tipo de contrato:\n\t" + e);
         } finally {
-            Jdbc.close(rs, pst, c);
+            Jdbc.close(rs, pst);
         }
     }
 
@@ -62,13 +64,15 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_DELETE_CONTRACT_TYPE_ID"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_DELETE_CONTRACT_TYPE_ID"));
             pst.setLong(1, id);
 
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al eliminar el tipo de contrato:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al eliminar el tipo de contrato:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -81,7 +85,8 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
      * @throws PersistanceException
      */
     @Override
-    public void updateContractType(ContractTypeDto contracTypeDto) throws PersistanceException {
+    public void updateContractType(ContractTypeDto contracTypeDto)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -89,14 +94,16 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         try {
             c = Jdbc.getConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_UPDATE_CONTRACT_TYPE"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_UPDATE_CONTRACT_TYPE"));
             pst.setLong(1, contracTypeDto.compensationDays);
             pst.setString(2, contracTypeDto.name);
 
             pst.executeUpdate();
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al actualizar el tipo de contrato:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al actualizar el tipo de contrato:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst, c);
         }
@@ -109,7 +116,8 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
      * @throws PersistanceException
      */
     @Override
-    public List<ContractTypeDto> findAllContractTypes() throws PersistanceException {
+    public List<ContractTypeDto> findAllContractTypes()
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -117,7 +125,8 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPES"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_CONTRACT_TYPES"));
 
             rs = pst.executeQuery();
             while (rs.next()) {
@@ -130,7 +139,8 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
             }
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar los tipos de contrato:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar los tipos de contrato:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -145,7 +155,8 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
      * @throws PersistanceException
      */
     @Override
-    public ContractTypeDto findContractTypeByName(String name) throws PersistanceException {
+    public ContractTypeDto findContractTypeByName(String name)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
@@ -154,20 +165,21 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPE_BY_NAME"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_CONTRACT_TYPE_BY_NAME"));
             pst.setString(1, name);
 
             rs = pst.executeQuery();
-            contractType = new ContractTypeDto();
             if (rs.next()) {
+                contractType = new ContractTypeDto();
                 contractType.id = rs.getLong(1);
                 contractType.name = rs.getString(2);
                 contractType.compensationDays = rs.getInt(3);
-            } else {
-                throw new PersistanceException("No existe el tipo de contrato con nombre: " + name);
             }
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar el tipo de contrato por nombre:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar el tipo de contrato por nombre:\n\t"
+                            + e);
         } finally {
             Jdbc.close(rs, pst);
         }
@@ -177,34 +189,37 @@ public class ContractTypeGatewayImpl implements ContractTypeGateway {
     /**
      * Metodo que recupera el tipo de contrato de un contrato dado
      *
-     * @param id Contrato que contiene el identificador del tipo de contrato a recuperar.
+     * @param id Contrato que contiene el identificador del tipo de
+     *          contrato a recuperar.
      * @return Tipo de contrato que se ha encontrado.
      * @throws PersistanceException
      */
     @Override
-    public ContractTypeDto findContractTypeById(long id) throws PersistanceException {
+    public ContractTypeDto findContractTypeById(long id)
+            throws PersistanceException {
         Connection c = null;
         PreparedStatement pst = null;
         ResultSet rs = null;
-        ContractTypeDto contractType = new ContractTypeDto();
+        ContractTypeDto contractType = null;
 
         try {
             c = Jdbc.getCurrentConnection();
 
-            pst = c.prepareStatement(Conf.getInstance().getProperty("SQL_FIND_CONTRACT_TYPE_BY_ID"));
+            pst = c.prepareStatement(Conf.getInstance()
+                    .getProperty("SQL_FIND_CONTRACT_TYPE_BY_ID"));
             pst.setLong(1, id);
 
             rs = pst.executeQuery();
             if (rs.next()) {
+                contractType = new ContractTypeDto();
                 contractType.id = rs.getLong(1);
                 contractType.name = rs.getString(2);
                 contractType.compensationDays = rs.getInt(3);
-            } else {
-                throw new PersistanceException("No existe el tipo de contrato por identificador: "
-                        + id);
             }
         } catch (SQLException e) {
-            throw new PersistanceException("Error al recuperar el tipo de contrato por identificador:\n\t" + e);
+            throw new PersistanceException
+                    ("Error al recuperar el tipo de contrato por" +
+                            " identificador:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }

@@ -1,5 +1,10 @@
 package uo.ri.business.impl.transactionScript.invoice;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+
 import alb.util.date.Dates;
 import alb.util.jdbc.Jdbc;
 import alb.util.math.Round;
@@ -9,13 +14,6 @@ import uo.ri.business.exception.BusinessException;
 import uo.ri.conf.GatewayFactory;
 import uo.ri.persistence.BreakdownGateway;
 import uo.ri.persistence.exception.PersistanceException;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Clase que contiene la logica para la creacion de una factura
@@ -30,7 +28,8 @@ public class CreateInvoice {
     }
 
     /**
-     * Metodo que realiza las operaciones necesarias para crear una factura.
+     * Metodo que realiza las operaciones necesarias para crear una
+     * factura.
      *
      * @return Una InvoiceDto con la informacion de la nueva factura.
      * @throws BusinessException
@@ -81,21 +80,23 @@ public class CreateInvoice {
      * @param ids De las averias a compreobar.
      * @throws BusinessException
      */
-    private void verificarAveriasTerminadas(List<Long> ids) throws BusinessException {
-        PreparedStatement pst = null;
-        ResultSet rs = null;
-        BreakdownGateway breakdownGateway = GatewayFactory.getBreakdownGateway();
+    private void verificarAveriasTerminadas(List<Long> ids)
+            throws BusinessException {
+        BreakdownGateway breakdownGateway = GatewayFactory
+                .getBreakdownGateway();
         for (Long id : ids) {
             BreakdownDto breakdown = null;
 
             try {
                 breakdown = breakdownGateway.findBreakdown(id);
             } catch (PersistanceException e) {
-                throw new BusinessException("No existe la averia:\n\t" + e);
+                throw new BusinessException
+                        ("No existe la averia:\n\t" + e);
             }
 
             if (!"TERMINADA".equalsIgnoreCase(breakdown.status)) {
-                throw new BusinessException("No está terminada la avería " + id);
+                throw new BusinessException
+                        ("No está terminada la avería " + id);
             }
         }
 
@@ -108,13 +109,17 @@ public class CreateInvoice {
      * @param ids De las averias a modificar.
      * @throws BusinessException
      */
-    private void cambiarEstadoAverias(List<Long> ids) throws BusinessException {
+    private void cambiarEstadoAverias(List<Long> ids)
+            throws BusinessException {
 
         for (Long id : ids) {
             try {
-                GatewayFactory.getBreakdownGateway().updateBreakdown(id, "status", "FACTURADA");
+                GatewayFactory.getBreakdownGateway()
+                        .updateBreakdown(id, "status",
+                                "FACTURADA");
             } catch (PersistanceException e) {
-                throw new BusinessException("Averia no actualizada:\n\t" + e);
+                throw new BusinessException
+                        ("Averia no actualizada:\n\t" + e);
             }
         }
 
@@ -127,11 +132,14 @@ public class CreateInvoice {
      * @param ids       De las averias a las que se le añadiran la factura
      * @throws BusinessException
      */
-    private void vincularAveriasConFactura(long idFactura, List<Long> ids) throws BusinessException {
+    private void vincularAveriasConFactura(long idFactura, List<Long> ids)
+            throws BusinessException {
 
         for (Long id : ids) {
             try {
-                GatewayFactory.getBreakdownGateway().updateBreakdown(id, "factura_id", idFactura);
+                GatewayFactory.getBreakdownGateway()
+                        .updateBreakdown(id, "factura_id",
+                                idFactura);
             } catch (PersistanceException e) {
                 throw new BusinessException("Averia no vinculada:\n\t" + e);
             }
@@ -141,14 +149,17 @@ public class CreateInvoice {
     /**
      * Metodo que genera la factura
      *
-     * @param invoice InvoiceDto que contiene la informacion de la nueva factura
+     * @param invoice InvoiceDto que contiene la informacion de la
+     *                nueva factura
      * @return numero identificativo de la factura
      * @throws BusinessException
      */
-    private long crearFactura(InvoiceDto invoice) throws BusinessException {
+    private long crearFactura(InvoiceDto invoice)
+            throws BusinessException {
         Long numero = null;
         try {
-            numero = getGeneratedKey(GatewayFactory.getInvoiceGateway().createInvoice(invoice).number);
+            numero = getGeneratedKey(GatewayFactory.getInvoiceGateway()
+                    .createInvoice(invoice).number);
         } catch (PersistanceException e) {
             throw new BusinessException("Factura no creada:\n\t" + e);
         }
@@ -158,14 +169,17 @@ public class CreateInvoice {
     /**
      * Metodo que genera el id de la factura.
      *
-     * @param numeroFactura numero de la factura de la que se quiere facturar el id.
+     * @param numeroFactura numero de la factura de la que se quiere
+     *                      facturar el id.
      * @return Identificador de la factura.
      * @throws BusinessException
      */
-    private long getGeneratedKey(long numeroFactura) throws BusinessException {
+    private long getGeneratedKey(long numeroFactura)
+            throws BusinessException {
 
         try {
-            return GatewayFactory.getInvoiceGateway().listInvoice(numeroFactura).id;
+            return GatewayFactory.getInvoiceGateway()
+                    .listInvoice(numeroFactura).id;
         } catch (PersistanceException e) {
             throw new BusinessException("Clave no generada:\n\t" + e);
         }
@@ -182,19 +196,23 @@ public class CreateInvoice {
         try {
             return GatewayFactory.getInvoiceGateway().listLastInvoice();
         } catch (PersistanceException e) {
-            throw new BusinessException("Error al generar un nuevo numero de factura:\n\t" + e);
+            throw new BusinessException
+                    ("Error al generar un nuevo numero de" +
+                            " factura:\n\t" + e);
         }
 
     }
 
     /**
-     * Metodo que devuelve el porcentaje de IVA correspondiente a la fecha de la factura.
+     * Metodo que devuelve el porcentaje de IVA correspondiente
+     * a la fecha de la factura.
      *
      * @param fechaFactura Fecha de la creacion de la factura.
      * @return POrcentage de IVA.
      */
     private double porcentajeIva(Date fechaFactura) {
-        return Dates.fromString("1/7/2012").before(fechaFactura) ? 21.0 : 18.0;
+        return Dates.fromString("1/7/2012")
+                .before(fechaFactura) ? 21.0 : 18.0;
     }
 
     /**
@@ -227,12 +245,18 @@ public class CreateInvoice {
      * @param totalAveria Importe total de las averias.
      * @throws BusinessException
      */
-    private void actualizarImporteAveria(Long idAveria, double totalAveria) throws BusinessException {
+    private void actualizarImporteAveria(Long idAveria,
+                                         double totalAveria)
+            throws BusinessException {
 
         try {
-            GatewayFactory.getBreakdownGateway().updateBreakdown(idAveria, "importe", totalAveria);
+            GatewayFactory.getBreakdownGateway()
+                    .updateBreakdown(idAveria, "importe",
+                            totalAveria);
         } catch (PersistanceException e) {
-            throw new BusinessException("No se ha actualizado el importe de la averia:\n\t" + e);
+            throw new BusinessException
+                    ("No se ha actualizado el importe de la" +
+                            " averia:\n\t" + e);
         }
 
     }
@@ -244,12 +268,16 @@ public class CreateInvoice {
      * @return Double el con importe de los repuestos de una averia.
      * @throws BusinessException
      */
-    private double consultaImporteRepuestos(Long idAveria) throws BusinessException {
+    private double consultaImporteRepuestos(Long idAveria)
+            throws BusinessException {
 
         try {
-            return GatewayFactory.getSpareGateway().getSpareTotalImport(idAveria);
+            return GatewayFactory.getSpareGateway()
+                    .getSpareTotalImport(idAveria);
         } catch (PersistanceException e) {
-            throw new BusinessException("Error en el calculo del importe de los repuestos:\n\t" + e);
+            throw new BusinessException
+                    ("Error en el calculo del importe de " +
+                            "los repuestos:\n\t" + e);
         }
 
     }
@@ -257,16 +285,22 @@ public class CreateInvoice {
     /**
      * Metodo que comprueba el importe de la mano de obra
      *
-     * @param idAveria Identificadores de las averias para consultar su importe de mano de obra
-     * @return Double con el importe total de la mano de obra de las averias dadas.
+     * @param idAveria Identificadores de las averias para
+     *                 consultar su importe de mano de obra
+     * @return Double con el importe total de la mano de
+     * obra de las averias dadas.
      * @throws BusinessException
      */
-    private double consultaImporteManoObra(Long idAveria) throws BusinessException {
+    private double consultaImporteManoObra(Long idAveria)
+            throws BusinessException {
 
         try {
-            return GatewayFactory.getInterventionGateway().getManPowerTotalImport(idAveria);
+            return GatewayFactory.getInterventionGateway()
+                    .getManPowerTotalImport(idAveria);
         } catch (PersistanceException e) {
-            throw new BusinessException("Error en el calculo del importe de la mano de obra:\n\t" + e);
+            throw new BusinessException
+                    ("Error en el calculo del importe de " +
+                            "la mano de obra:\n\t" + e);
         }
 
     }

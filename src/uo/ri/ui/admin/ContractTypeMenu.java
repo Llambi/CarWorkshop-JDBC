@@ -1,7 +1,6 @@
 package uo.ri.ui.admin;
 
 import alb.util.menu.BaseMenu;
-import alb.util.menu.NotYetImplementedAction;
 import uo.ri.ui.admin.action.contractType.AddContractTypeAction;
 import uo.ri.ui.admin.action.contractType.DeleteContractTypeAction;
 import uo.ri.ui.admin.action.contractType.ListContractTypeAction;

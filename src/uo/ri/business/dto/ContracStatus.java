@@ -1,4 +1,4 @@
-package uo.ri.persistence.impl;
+package uo.ri.business.dto;
 
 public enum ContracStatus {
     FINISHED {

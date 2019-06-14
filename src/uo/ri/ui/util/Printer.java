@@ -1,13 +1,17 @@
 package uo.ri.ui.util;
 
-import alb.util.console.Console;
-import uo.ri.business.dto.*;
-import uo.ri.persistence.impl.ContracStatus;
-
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+
+import alb.util.console.Console;
+import uo.ri.business.dto.ContracStatus;
+import uo.ri.business.dto.ContractCategoryDto;
+import uo.ri.business.dto.ContractDto;
+import uo.ri.business.dto.ContractTypeDto;
+import uo.ri.business.dto.MechanicDto;
+import uo.ri.business.dto.PayrollDto;
 
 public class Printer {
 
@@ -247,9 +251,9 @@ public class Printer {
         Console.println("Se ha actualizado el contrato");
     }
 
-    public static void printTerminateContract() {
+    public static void printTerminateContract(ContractDto c) {
         Console.println();
-        Console.println("Se ha extinto el contrato");
+        Console.println("Se ha extinto el contrato con una liquidacion de " + c.compensation + "€.");
     }
 
     public static void printListContractTypes(Map<ContractTypeDto, Map<MechanicDto, ContractDto>> contractTypeDtos) {
@@ -270,7 +274,7 @@ public class Printer {
             }
             Console.println();
             Console.printf("\tEl numero total de mecanicos con este tipo de contrato son: %s\n", mechanicsCounter);
-            Console.printf("\tEl salaruio acumulado de mecanicos con este tipo de contrato son: %s\n", acumSalary);
+            Console.printf("\tEl salario acumulado de mecanicos con este tipo de contrato son: %s\n", acumSalary);
             Console.println();
         }
     }
@@ -293,7 +297,7 @@ public class Printer {
             }
             Console.println();
             Console.printf("\tEl numero total de mecanicos con esta categoria son: %s\n", mechanicsCounter);
-            Console.printf("\tEl salaruio acumulado de mecanicos con esta categoria son: %s\n", acumSalary);
+            Console.printf("\tEl salario acumulado de mecanicos con esta categoria son: %s\n", acumSalary);
             Console.println();
         }
     }
@@ -302,17 +306,19 @@ public class Printer {
         Console.println("El mecanico con ID " + id + " tiene los siguientes contratos:");
         for (Map.Entry<ContractDto, Map<String, Object>> entry : contracts.entrySet()) {
             ContractDto contractDto = entry.getKey();
-            int payrolls = (int) entry.getValue().get("payrolls");
+            @SuppressWarnings("unchecked") // Soy yo el que crea el map que se envia desde la ui
+			int payrolls = ((List<PayrollDto>) entry.getValue().get("payrolls")).size();
             double liquidacion = (double) entry.getValue().get("liquidacion");
+
             Console.println("\t·Contrato no." + contractDto.id + (contractDto.status.equalsIgnoreCase(ContracStatus.ACTIVE.toString()) ? " - ACTIVO" : ""));
             Console.println(payrolls > 0 ? "\t\t·Nominas expedidas " + payrolls + "€\n" : "\t\t·Sin nominas.");
             Console.println(liquidacion > 0.0 ? "\t\t·Liquidacion de " + liquidacion + "€\n" : "\t\t·Sin liquidacion.");
         }
     }
 
-    public static void generetePayrolls() {
+    public static void generetePayrolls(int count) {
         Console.println();
-        Console.println("Nominas generadas");
+        Console.println("Nominas generadas: "+count);
     }
 
     public static void printListPayrolls(Long id, List<PayrollDto> payrollDtos) {

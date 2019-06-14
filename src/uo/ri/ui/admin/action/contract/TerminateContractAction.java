@@ -3,11 +3,10 @@ package uo.ri.ui.admin.action.contract;
 import alb.util.console.Console;
 import alb.util.date.Dates;
 import alb.util.menu.Action;
+import uo.ri.business.ContractCrudService;
 import uo.ri.business.dto.ContractDto;
 import uo.ri.conf.ServiceFactory;
 import uo.ri.ui.util.Printer;
-
-import java.util.Map;
 
 /**
  * Clase que contiene la ui para terminar un contrato.
@@ -22,8 +21,12 @@ public class TerminateContractAction implements Action {
         contractDto.endDate = Dates.fromString(Console
                 .readString("Fecha de extincion del contrato (Formato dd-mm-aaaa)"));
 
-        new ServiceFactory().forContractCrud().finishContract(contractDto.id,contractDto.endDate);
+        ContractCrudService contractCrudService = new ServiceFactory().forContractCrud();
 
-        Printer.printTerminateContract();
+        contractCrudService.finishContract(contractDto.id,contractDto.endDate);
+        ContractDto c = contractCrudService.findContractById(contractDto.id);
+
+
+        Printer.printTerminateContract(c);
     }
 }

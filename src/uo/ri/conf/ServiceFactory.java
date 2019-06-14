@@ -1,8 +1,19 @@
 package uo.ri.conf;
 
-import uo.ri.business.*;
-import uo.ri.business.impl.*;
-import uo.ri.persistence.impl.PayrollGatewayImpl;
+import uo.ri.business.CloseBreakdownService;
+import uo.ri.business.ContractCategoryCrudService;
+import uo.ri.business.ContractCrudService;
+import uo.ri.business.ContractTypeCrudService;
+import uo.ri.business.InvoiceService;
+import uo.ri.business.MechanicCrudService;
+import uo.ri.business.PayrollService;
+import uo.ri.business.VehicleReceptionService;
+import uo.ri.business.impl.ContractCRUDImpl;
+import uo.ri.business.impl.ContractCategoryCRUDImpl;
+import uo.ri.business.impl.ContractTypeCRUDImpl;
+import uo.ri.business.impl.InvoiceCRUDImpl;
+import uo.ri.business.impl.MechanicCRUDImpl;
+import uo.ri.business.impl.PayrollCRUDImpl;
 
 public class ServiceFactory implements uo.ri.business.ServiceFactory {
 

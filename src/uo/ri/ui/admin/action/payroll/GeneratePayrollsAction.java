@@ -7,7 +7,7 @@ import uo.ri.ui.util.Printer;
 public class GeneratePayrollsAction implements Action {
     @Override
     public void execute() throws Exception {
-        new ServiceFactory().forPayroll().generatePayrolls();
-        Printer.generetePayrolls();
+        int count = new ServiceFactory().forPayroll().generatePayrolls();
+        Printer.generetePayrolls(count);
     }
 }

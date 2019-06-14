@@ -16,17 +16,21 @@ public class SpareGatewayImpl implements SpareGateway {
     /**
      * Metodo que recupera el importe total de un repuesto.
      *
-     * @param idBreakdown Identificador del respuesto del que se quiere saber su importe.
+     * @param idBreakdown Identificador del respuesto del que
+     *                    se quiere saber su importe.
      * @return Double con el importe total de un repuesto.
      * @throws PersistanceException
      */
     @Override
-    public Double getSpareTotalImport(Long idBreakdown) throws PersistanceException {
+    public Double getSpareTotalImport(Long idBreakdown)
+            throws PersistanceException {
         PreparedStatement pst = null;
         ResultSet rs = null;
 
         try {
-            pst = Jdbc.getCurrentConnection().prepareStatement(Conf.getInstance().getProperty("SQL_IMPORTE_REPUESTOS"));
+            pst = Jdbc.getCurrentConnection()
+                    .prepareStatement(Conf.getInstance()
+                            .getProperty("SQL_IMPORTE_REPUESTOS"));
             pst.setLong(1, idBreakdown);
 
             rs = pst.executeQuery();
@@ -37,7 +41,9 @@ public class SpareGatewayImpl implements SpareGateway {
             return rs.getDouble(1);
 
         } catch (SQLException e) {
-            throw new PersistanceException("Error en el calculo del importe total de repuestos:\n\t" + e);
+            throw new PersistanceException
+                    ("Error en el calculo del importe total " +
+                            "de repuestos:\n\t" + e);
         } finally {
             Jdbc.close(rs, pst);
         }

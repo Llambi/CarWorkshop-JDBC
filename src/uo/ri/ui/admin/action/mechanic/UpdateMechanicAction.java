@@ -22,7 +22,8 @@ public class UpdateMechanicAction implements Action {
         mechanic.name = Console.readString("Nombre");
         mechanic.surname = Console.readString("Apellidos");
 
-        new ServiceFactory().forMechanicCrudService().updateMechanic(mechanic);
+        new ServiceFactory().forMechanicCrudService()
+                .updateMechanic(mechanic);
 
         // Mostrar resultado
         Printer.printUpdateMechanic();

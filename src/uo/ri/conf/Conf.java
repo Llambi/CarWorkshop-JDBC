@@ -11,7 +11,8 @@ public class Conf {
 	public Conf() {
 		this.props = new Properties();
 		try {
-			props.load(Conf.class.getClassLoader().getResourceAsStream(FILE_CONF));
+			props.load(Conf.class.getClassLoader()
+					.getResourceAsStream(FILE_CONF));
 		} catch (IOException e) {
 			throw new RuntimeException("File properties cannot be loaded",e);
 		}
